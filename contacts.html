@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Контакты — РУСИнтеграция</title>
+<meta name="description" content="Контакты РУСИнтеграции: телефон, почта, Telegram, реквизиты и адрес офиса. Директор — Святослав Швед.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============== tokens ============== */
+:root{
+  --bg:#EFEFEB;
+  --srf:#FFFFFF;
+  --ink:#0C0C0E;
+  --ink-2:#3A3A40;
+  --muted:#78787F;
+  --acc:#1F3CFF;
+  --acc-2:#E8FF4D;
+  --line:rgba(12,12,14,.14);
+  --line-2:rgba(12,12,14,.07);
+  --body:"Onest","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --wrap:1400px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--acc);color:#fff}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 40px}
+section[id]{scroll-margin-top:104px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+
+/* курсор-сердечко на кнопке отправки */
+.heart{position:fixed;top:0;left:0;z-index:400;pointer-events:none;display:none;margin:-9px 0 0 -10px}
+.heart.on{display:block}
+.heart svg{display:block}
+.heart-z{cursor:none}
+
+/* ============== header ============== */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:200;transition:.45s;border-bottom:1px solid transparent}
+.hdr.stuck{background:rgba(239,239,235,.86);backdrop-filter:blur(16px);border-bottom-color:var(--line)}
+.hdr-in{display:flex;align-items:center;height:84px;gap:36px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15.5px;letter-spacing:-.02em}
+.logo span{color:var(--acc)}
+.nav{display:flex;gap:32px;margin-left:auto}
+.nav a{font-size:15px;position:relative;padding:5px 0;color:var(--ink-2);transition:color .3s}
+.nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--acc);transition:width .35s var(--ease)}
+.nav a:hover{color:var(--ink)}.nav a:hover::after{width:100%}
+.nav a.act{color:var(--ink)}.nav a.act::after{width:100%}
+.msg{display:flex;gap:8px}
+.msg a{width:38px;height:38px;border:1px solid var(--line);border-radius:100px;display:flex;align-items:center;justify-content:center;transition:.3s}
+.msg a:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:500;font-size:15px;padding:15px 28px;border:1px solid var(--ink);border-radius:100px;background:var(--ink);color:var(--bg);position:relative;overflow:hidden;transition:color .35s,border-color .35s,transform .3s var(--ease),box-shadow .3s}
+.btn>*{position:relative;z-index:1}
+.btn::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,var(--acc),#5C74FF);transform:translateY(101%);transition:transform .45s var(--ease)}
+.btn:hover::before{transform:translateY(0)}
+.btn:hover{transform:translateY(-2px);border-color:transparent;box-shadow:0 16px 34px -16px rgba(31,60,255,.6)}
+.btn-o{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-o:hover{color:#fff;border-color:transparent}
+.btn-sm{padding:12px 22px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:100px;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger i{width:16px;height:1.5px;background:var(--ink);transition:.3s}
+.burger.on i:nth-child(1){transform:translateY(3.2px) rotate(45deg)}
+.burger.on i:nth-child(2){opacity:0}
+.burger.on i:nth-child(3){transform:translateY(-3.2px) rotate(-45deg)}
+
+/* ============== page head ============== */
+main{position:relative;z-index:1}
+.top{padding:158px 0 0;position:relative}
+.top-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.top-bg::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+  background-size:78px 78px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 30% 30%,#000 8%,transparent 72%);
+  mask-image:radial-gradient(ellipse 70% 60% at 30% 30%,#000 8%,transparent 72%)}
+.top-bg i{position:absolute;display:block;border-radius:50%;filter:blur(90px);opacity:.5}
+.top-bg .b1{width:42vw;height:42vw;background:radial-gradient(circle,rgba(31,60,255,.32),transparent 68%);top:-16vw;right:-8vw;animation:fl 25s ease-in-out infinite}
+.top-bg .b2{width:26vw;height:26vw;background:radial-gradient(circle,rgba(232,255,77,.55),transparent 66%);top:22vw;left:-6vw;animation:fl 31s ease-in-out infinite reverse}
+@keyframes fl{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,5vw) scale(1.14)}}
+.top-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center}
+.phone-box{position:relative;aspect-ratio:1/1}
+#phone{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+#phone:active{cursor:grabbing}
+.crumbs{display:flex;align-items:center;gap:10px;color:var(--muted);margin-bottom:26px}
+.crumbs a:hover{color:var(--acc)}
+h1{font-weight:600;font-size:clamp(34px,6.2vw,88px);line-height:1;letter-spacing:-.05em;max-width:16ch}
+h1 em{font-style:normal;color:var(--acc)}
+.l{display:block;overflow:hidden}
+.l>i{display:block;font-style:normal;transform:translateY(108%);animation:rise 1.05s var(--ease) forwards}
+.l:nth-child(2)>i{animation-delay:.08s}
+@keyframes rise{to{transform:translateY(0)}}
+.lead{color:var(--muted);max-width:520px;font-size:clamp(15.5px,1.3vw,18px);margin-top:28px}
+.top-cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:34px}
+.up{opacity:0;transform:translateY(24px);animation:up .9s var(--ease) forwards}
+.d1{animation-delay:.3s}.d2{animation-delay:.42s}
+@keyframes up{to{opacity:1;transform:none}}
+
+/* ============== sections ============== */
+.sec{padding:110px 0}
+.lbl{display:flex;align-items:center;margin-bottom:30px;color:var(--ink)}
+.lbl.mono{font-family:var(--body);font-size:clamp(24px,3vw,32px);font-weight:600;letter-spacing:-.04em;text-transform:none;line-height:1.1}
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* карточка руководителя */
+.person{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.person>div{background:var(--srf);padding:44px 42px}
+.p-av{width:78px;height:78px;border-radius:100px;background:linear-gradient(140deg,var(--acc),#7B8CFF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:26px}
+.p-n{font-size:clamp(26px,3vw,38px);font-weight:600;letter-spacing:-.045em;line-height:1.05}
+.p-r{color:var(--muted);margin-top:8px;font-size:16.5px}
+.p-c{margin-top:30px;display:grid;gap:2px}
+.p-c a{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line-2);font-size:clamp(17px,1.9vw,22px);font-weight:600;letter-spacing:-.03em;transition:.35s}
+.p-c a:hover{color:var(--acc);padding-left:10px}
+.p-c a i{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.p-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.p-side{display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.p-quote{font-size:clamp(18px,2vw,25px);font-weight:500;letter-spacing:-.03em;line-height:1.35}
+.p-quote span{display:block;color:var(--muted);font-size:15px;font-weight:400;margin-top:16px;letter-spacing:0}
+.p-facts{display:grid;grid-template-columns:1fr 1fr;gap:20px;border-top:1px solid var(--line-2);padding-top:26px}
+.p-facts b{display:block;font-size:30px;font-weight:600;letter-spacing:-.05em;line-height:1}
+.p-facts u{display:block;text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+/* офис и реквизиты */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--srf);border:1px solid var(--line);border-radius:22px;padding:38px 36px}
+.card h3{font-size:21px;font-weight:600;letter-spacing:-.035em;margin-bottom:22px}
+.rows{display:grid;gap:1px;background:var(--line-2);border:1px solid var(--line-2);border-radius:14px;overflow:hidden}
+.row{background:var(--srf);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px}
+.row dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.row dd{font-size:15.5px;font-weight:500;text-align:right;word-break:break-word}
+.copy{display:flex;align-items:center;gap:9px}
+.copy button{width:30px;height:30px;border:1px solid var(--line);border-radius:100px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.3s;color:var(--muted)}
+.copy button:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hours{display:grid;gap:10px;margin-top:22px}
+.hours div{display:flex;justify-content:space-between;gap:16px;font-size:15.5px;color:var(--muted)}
+.hours b{color:var(--ink);font-weight:600}
+.note{margin-top:24px;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:14.5px}
+.map{margin-top:24px;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:#E6E7E2;position:relative;aspect-ratio:16/8}
+.map svg{width:100%;height:100%;display:block}
+.map-pin{transform-box:fill-box;transform-origin:center;animation:pin 2.4s ease-in-out infinite}
+@keyframes pin{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.map-wave{transform-box:view-box;transform-origin:300px 128px;animation:wave 3s cubic-bezier(.3,0,.5,1) infinite}
+@keyframes wave{0%{transform:scale(.4);opacity:.6}80%{transform:scale(1.5);opacity:0}100%{opacity:0}}
+
+/* форма */
+.talk{background:var(--ink);color:#fff;border-radius:28px;padding:64px 60px;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);gap:52px;align-items:center}
+.talk-l{min-width:0}
+.talk h2{font-size:clamp(22px,3vw,40px);font-weight:600;letter-spacing:-.04em;line-height:1.5}
+.talk .fl{display:inline-flex;align-items:baseline;position:relative}
+.talk input,.talk select{background:transparent;border:0;border-bottom:2px solid rgba(255,255,255,.28);color:var(--acc-2);font:inherit;font-weight:600;padding:0 6px 4px;outline:none;min-width:110px;transition:border-color .3s}
+.talk input::placeholder{color:rgba(255,255,255,.3);font-weight:400}
+.talk input:focus,.talk select:focus{border-color:var(--acc-2)}
+.talk select{cursor:pointer;appearance:none;border-bottom-style:dashed}
+.talk select option{background:#0C0C0E;color:#fff;font-size:16px}
+.talk .err input,.talk .err select{border-color:#FF6B57}
+.talk-b{display:flex;align-items:center;gap:24px;margin-top:44px;flex-wrap:wrap}
+.talk-b .btn{background:var(--acc-2);border-color:var(--acc-2);color:var(--ink);font-weight:600}
+.talk-b .btn::before{background:#fff}
+.talk-note{color:#8E8E96;font-size:12.5px;max-width:330px;line-height:1.5}
+.talk-note a{border-bottom:1px solid rgba(255,255,255,.3)}
+.talk-r{display:flex;align-items:center;justify-content:center;min-width:0}
+#pz3d{width:100%;max-width:330px;aspect-ratio:1;display:block}
+.thanks{display:none;text-align:center;padding:34px 0}
+.thanks.on{display:block;animation:fup .7s var(--ease) both}
+@keyframes fup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.thanks b{display:block;font-size:clamp(28px,3.6vw,46px);font-weight:600;letter-spacing:-.045em;margin-bottom:12px}
+.thanks span{color:#8E8E96}
+
+/* ============== footer ============== */
+.ftr{border-top:1px solid var(--line);padding:70px 0 40px;overflow:hidden}
+.ftr-top{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;margin-bottom:70px}
+.ftr-nav{list-style:none;display:grid;gap:2px}
+.ftr-nav a{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:clamp(19px,2.3vw,30px);font-weight:600;letter-spacing:-.035em;transition:.35s}
+.ftr-nav a:hover{color:var(--acc);padding-left:12px}
+.ftr-nav a i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.ftr-c{display:grid;gap:8px;align-content:start}
+.ftr-c a{font-size:clamp(19px,2.1vw,26px);font-weight:600;letter-spacing:-.03em;transition:.3s}
+.ftr-c a:hover{color:var(--acc)}
+.ftr-c p{color:var(--muted);font-size:15px;margin-top:16px;max-width:340px}
+.ftr-big{font-weight:700;font-size:clamp(46px,15vw,230px);line-height:.78;letter-spacing:-.06em;white-space:nowrap;margin-bottom:34px;
+  background:linear-gradient(180deg,rgba(12,12,14,.16),rgba(12,12,14,.04));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ftr-big b{-webkit-text-fill-color:var(--acc);opacity:.5}
+.ftr-b{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);padding-top:24px}
+.ftr-b a:hover{color:var(--acc)}
+.up-link,.ftr-b a.up-link:hover{color:#1f3cff}
+
+/* sticky + toast */
+.sticky{position:fixed;right:28px;bottom:28px;z-index:180;opacity:0;transform:translateY(20px) scale(.9);transition:.5s var(--ease);pointer-events:none}
+.sticky.on{opacity:1;transform:none;pointer-events:auto}
+.toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,150%);z-index:450;background:var(--ink);color:var(--bg);border-radius:100px;padding:14px 26px;font-size:14.5px;transition:transform .55s var(--ease)}
+.toast.on{transform:translate(-50%,0)}
+
+/* ============== form popup ============== */
+.fmask{position:fixed;inset:0;z-index:320;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(6,6,10,0);backdrop-filter:blur(0);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s,background .6s,backdrop-filter .6s}
+.fmask.on{opacity:1;visibility:visible;background:rgba(6,6,10,.62);backdrop-filter:blur(14px)}
+.fpanel{position:relative;width:min(780px,100%);border-radius:32px;padding:2px;transform:translateY(46px) scale(.95);opacity:0;transition:transform .85s var(--ease),opacity .5s;box-shadow:0 50px 120px -50px rgba(0,0,0,.9)}
+.fmask.on .fpanel{transform:none;opacity:1}
+.fglow{position:absolute;inset:0;border-radius:32px;overflow:hidden;z-index:0}
+.fglow::before{content:"";position:absolute;left:50%;top:50%;width:150%;padding-bottom:150%;transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,#1F3CFF,#6E8BFF,#E8FF4D,#FFD426,#1F3CFF);animation:fspin 11s linear infinite}
+@keyframes fspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.fbody{position:relative;z-index:2;background:var(--ink);color:#fff;border-radius:30px;padding:52px 54px 44px;max-height:88svh;overflow-y:auto}
+.fx{position:absolute;right:16px;top:16px;z-index:4;width:44px;height:44px;border-radius:100px;border:1px solid rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center;transition:.35s}
+.fx:hover{background:#fff;color:var(--ink);transform:rotate(90deg)}
+.fanim{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--i,0)*.09s + .18s)}
+.fmask.on .fanim{opacity:1;transform:none}
+.fmask .mono{color:#8E8E96;display:block;margin-bottom:22px}
+.fq{font-size:clamp(21px,2.5vw,32px);font-weight:600;letter-spacing:-.035em;line-height:1.55}
+.fq .fl{display:inline-flex;align-items:baseline}
+.fq input,.fq select{background:transparent;border:0;border-bottom:2px solid rgba(255,255,255,.26);color:var(--acc-2);font:inherit;font-weight:600;padding:0 6px 4px;outline:none;min-width:110px;transition:border-color .35s}
+.fq input::placeholder{color:rgba(255,255,255,.3);font-weight:400}
+.fq input:focus,.fq select:focus{border-color:var(--acc-2)}
+.fq select{cursor:pointer;appearance:none;border-bottom-style:dashed}
+.fq select option{background:#0C0C0E;color:#fff;font-size:16px}
+.fq .err input,.fq .err select{border-color:#FF6B57;animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.fbtn{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:44px}
+.fbtn .btn{background:var(--acc-2);border-color:var(--acc-2);color:var(--ink);font-weight:600;padding:18px 34px}
+.fbtn .btn::before{background:#fff}
+.fnote{color:#8E8E96;font-size:12.5px;max-width:330px;line-height:1.5}
+.fnote a{border-bottom:1px solid rgba(255,255,255,.28)}
+.fok{display:none;text-align:center;padding:26px 0 14px}
+.fok.on{display:block}
+.fok svg{margin:0 auto 22px}
+.fok circle,.fok path{stroke-dasharray:200;stroke-dashoffset:200}
+.fok.on circle{animation:dash 1s .1s var(--ease) forwards}
+.fok.on path{animation:dash .5s .7s var(--ease) forwards}
+@keyframes dash{to{stroke-dashoffset:0}}
+.fok b{display:block;font-size:clamp(28px,3.6vw,44px);font-weight:600;letter-spacing:-.045em;margin-bottom:12px;opacity:0;animation:fup .7s .55s var(--ease) forwards}
+.fok span{color:#8E8E96;display:block;opacity:0;animation:fup .7s .68s var(--ease) forwards}
+
+/* ============== adaptive ============== */
+@media(max-width:1180px){
+  .top-grid{grid-template-columns:1fr;gap:40px}
+  .phone-box{max-width:460px}
+  .person{grid-template-columns:1fr}
+  .talk{grid-template-columns:1fr;gap:38px;padding:48px 34px}
+  .talk-r{order:2}
+  #pz3d{max-width:270px}
+}
+@media(max-width:900px){
+  .two{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .nav{position:fixed;top:84px;left:0;right:0;flex-direction:column;gap:0;background:rgba(239,239,235,.98);backdrop-filter:blur(18px);padding:14px 40px 26px;border-bottom:1px solid var(--line);transform:translateY(-150%);transition:transform .5s var(--ease);margin-left:0}
+  .nav.open{transform:none}
+  .nav a{padding:15px 0;font-size:17px;border-bottom:1px solid var(--line-2)}
+  .burger{display:flex;margin-left:auto}
+  .hdr .btn-sm,.msg{display:none}
+  .ftr-top{grid-template-columns:1fr;gap:44px}
+}
+@media(max-width:600px){
+  body{font-size:16px}
+  .wrap{padding:0 20px}
+  section[id]{scroll-margin-top:88px}
+  .sec{padding:72px 0}
+  .top{padding:120px 0 0}
+  .phone-box{max-width:none}
+  h1{font-size:clamp(30px,8.6vw,44px);line-height:1.05;max-width:none}
+  .top-cta .btn{width:100%}
+  .person>div{padding:30px 22px}
+  .card{padding:28px 22px}
+  .row{flex-direction:column;align-items:flex-start;gap:7px}
+  .row dd{text-align:left}
+  .talk{padding:30px 20px;border-radius:20px;gap:26px}
+  .talk h2{font-size:19px;line-height:1.75}
+  .talk input,.talk select{min-width:0;font-size:19px}
+  .talk-b .btn{width:100%}
+  #pz3d{max-width:200px}
+  .fmask{padding:0;align-items:flex-end}
+  .fpanel{border-radius:26px 26px 0 0;padding:2px 2px 0}
+  .fglow{border-radius:26px 26px 0 0}
+  .fbody{border-radius:24px 24px 0 0;padding:34px 22px 30px;max-height:92svh}
+  .fq{font-size:19px;line-height:1.75}
+  .fq input,.fq select{min-width:0;font-size:19px}
+  .fbtn{margin-top:32px;gap:16px}
+  .fbtn .btn{width:100%}
+  .sticky{right:14px;bottom:14px}
+  .ftr{padding:52px 0 32px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .rv,.up{opacity:1;transform:none}.l>i{transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+
+
+<div class="heart" id="heart" aria-hidden="true">
+  <svg width="21" height="19" viewBox="0 0 42 38" fill="none">
+    <path d="M21 36S2 24.5 2 12.8C2 6.3 6.9 2 12.6 2c3.7 0 7 1.9 8.4 4.9C22.4 3.9 25.7 2 29.4 2 35.1 2 40 6.3 40 12.8 40 24.5 21 36 21 36z" fill="#FF2D78"/>
+  </svg>
+</div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a href="index.html" class="logo" aria-label="РУСИнтеграция">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="6" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="18.5" cy="5.5" r="2.4" fill="#1F3CFF"/>
+        <circle cx="18.5" cy="18.5" r="2.4" fill="currentColor"/>
+        <path d="M9 10.8 16.2 6.7M9 13.2 16.2 17.3" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      <b>РУС<span>ИНТЕГРАЦИЯ</span></b>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html#services">Услуги</a>
+      <a href="index.html#works">Проекты</a>
+      <a href="index.html#awards">О нас</a>
+      <a href="contacts.html" class="act">Контакты</a>
+    </nav>
+    <div class="msg">
+      <a href="#" aria-label="Telegram"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1.5 7.2 13 2.5l-2 10-3.4-2.6L6 11.8l-.3-2.7L11.6 4 5.4 8.3 1.5 7.2z" fill="currentColor"/></svg></a>
+      <a href="#" aria-label="WhatsApp"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5a6 6 0 0 0-5.2 9L1.5 13.5l3.1-.8a6 6 0 1 0 2.9-11.2zm0 1.4a4.6 4.6 0 1 1-2.3 8.6l-.3-.2-1.6.4.4-1.6-.2-.3A4.6 4.6 0 0 1 7.5 2.9z" fill="currentColor"/></svg></a>
+    </div>
+    <button class="btn btn-sm" data-go><span>Оставить заявку</span></button>
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ ЗАГОЛОВОК ============ -->
+<section class="top">
+  <div class="top-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
+  <div class="wrap top-grid">
+    <div>
+      <div class="crumbs mono up"><a href="index.html">Главная</a><span>→</span><span>Контакты</span></div>
+      <h1>
+        <span class="l"><i>Свяжитесь так,</i></span>
+        <span class="l"><i>как <em>вам удобно</em></i></span>
+      </h1>
+      <p class="lead up d1">Отвечаем в течение рабочего дня. Если удобнее текстом — пишите в Telegram, созвон не обязателен. Первичная консультация и оценка задачи бесплатны.</p>
+      <div class="top-cta up d2">
+        <button class="btn" data-go><span>Оставить заявку</span></button>
+        <a href="tel:+74951234567" class="btn btn-o"><span>Позвонить</span></a>
+      </div>
+    </div>
+
+    <div class="phone-box up d1">
+      <canvas id="phone" aria-label="Трёхмерная модель ретро-телефона"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ============ РУКОВОДИТЕЛЬ ============ -->
+<section class="sec" id="person" style="padding-top:88px">
+  <div class="wrap">
+    <div class="lbl mono rv">Кто ответит</div>
+    <div class="person rv">
+      <div>
+        <div class="p-av">СШ</div>
+        <div class="p-n">Святослав Швед</div>
+        <div class="p-r">Директор · РУСИнтеграция</div>
+        <div class="p-c">
+          <a href="tel:+74951234567"><span>+7 (495) 123-45-67</span><i>Телефон</i></a>
+          <a href="mailto:shved@rusintegraciya.ru"><span>shved@rusintegraciya.ru</span><i>Почта</i></a>
+          <a href="https://t.me/rusintegraciya"><span>@rusintegraciya</span><i>Telegram</i></a>
+          <a href="index.html"><span>rusintegraciya.ru</span><i>Сайт</i></a>
+        </div>
+        <div class="p-act">
+          <button class="btn btn-sm" id="vcard"><span>Сохранить контакт</span></button>
+          <button class="btn btn-sm btn-o" data-go><span>Написать напрямую</span></button>
+        </div>
+      </div>
+      <div class="p-side">
+        <p class="p-quote">«Я читаю каждую заявку сам. Если задача сложная или нетиповая — отвечу лично и скажу честно, беремся мы за неё или нет».
+          <span>Святослав Швед, директор</span></p>
+        <div class="p-facts">
+          <div><b>8 лет</b><u>руководит компанией</u></div>
+          <div><b>240+</b><u>проектов под контролем</u></div>
+          <div><b>1 день</b><u>максимум на ответ</u></div>
+          <div><b>Лично</b><u>ведёт крупные проекты</u></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ОФИС И РЕКВИЗИТЫ ============ -->
+<section class="sec" id="office" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Офис и реквизиты</div>
+    <div class="two">
+      <div class="card rv">
+        <h3>Офис</h3>
+        <dl class="rows">
+          <div class="row"><dt>Адрес</dt><dd class="copy"><span>Москва, ул. Примерная, 12, офис 305</span><button data-copy="Москва, ул. Примерная, 12, офис 305" aria-label="Скопировать адрес"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>Метро</dt><dd>Электрозаводская, 7 минут пешком</dd></div>
+          <div class="row"><dt>Приём</dt><dd>По предварительной договорённости</dd></div>
+        </dl>
+        <div class="hours">
+          <div><span>Понедельник — пятница</span><b>10:00 — 19:00</b></div>
+          <div><span>Суббота, воскресенье</span><b>Выходной</b></div>
+          <div><span>Инциденты по договору</span><b>SLA 4 часа</b></div>
+        </div>
+        <div class="map" aria-hidden="true">
+          <svg viewBox="0 0 600 256" fill="none">
+            <rect width="600" height="256" fill="#E6E7E2"/>
+            <g stroke="rgba(12,12,14,.09)" stroke-width="1">
+              <path d="M0 60h600M0 120h600M0 190h600M110 0v256M250 0v256M390 0v256M510 0v256"/>
+            </g>
+            <path d="M0 148 C120 140 190 176 300 168 C410 160 470 120 600 128" stroke="rgba(31,60,255,.35)" stroke-width="3" fill="none"/>
+            <rect x="130" y="70" width="80" height="38" rx="6" fill="rgba(12,12,14,.05)"/>
+            <rect x="300" y="196" width="120" height="40" rx="6" fill="rgba(12,12,14,.05)"/>
+            <rect x="430" y="46" width="90" height="52" rx="6" fill="rgba(12,12,14,.05)"/>
+            <circle class="map-wave" cx="300" cy="128" r="34" fill="none" stroke="rgba(31,60,255,.5)" stroke-width="2"/>
+            <g class="map-pin">
+              <path d="M300 108c-9 0-16 7-16 16 0 11 16 26 16 26s16-15 16-26c0-9-7-16-16-16z" fill="#1F3CFF"/>
+              <circle cx="300" cy="124" r="5.5" fill="#fff"/>
+            </g>
+          </svg>
+        </div>
+        <p class="note">Схема условная. Точную точку на карте пришлём в подтверждении встречи.</p>
+      </div>
+
+      <div class="card rv">
+        <h3>Реквизиты</h3>
+        <dl class="rows">
+          <div class="row"><dt>Название</dt><dd class="copy"><span>ООО «РУСИнтеграция»</span><button data-copy="ООО «РУСИнтеграция»" aria-label="Скопировать название"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>ИНН</dt><dd class="copy"><span>7701234567</span><button data-copy="7701234567" aria-label="Скопировать ИНН"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>КПП</dt><dd class="copy"><span>770101001</span><button data-copy="770101001" aria-label="Скопировать КПП"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>ОГРН</dt><dd class="copy"><span>1177746123456</span><button data-copy="1177746123456" aria-label="Скопировать ОГРН"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>Юр. адрес</dt><dd>107023, Москва, ул. Примерная, д. 12, офис 305</dd></div>
+          <div class="row"><dt>Расчётный счёт</dt><dd class="copy"><span>40702810400000012345</span><button data-copy="40702810400000012345" aria-label="Скопировать счёт"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+          <div class="row"><dt>Банк</dt><dd>АО «Пример Банк», г. Москва</dd></div>
+          <div class="row"><dt>БИК</dt><dd class="copy"><span>044525000</span><button data-copy="044525000" aria-label="Скопировать БИК"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        </dl>
+        <p class="note">Карточку предприятия и договор в формате PDF пришлём по запросу на hello@rusintegraciya.ru.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ФОРМА ============ -->
+<section class="sec" id="talk" style="padding-top:0">
+  <div class="wrap">
+    <div class="talk rv">
+      <div class="talk-l">
+        <form id="talkForm">
+          <h2>
+            Привет! Меня зовут <span class="fl"><input type="text" id="q1" placeholder="имя" autocomplete="name"></span>,
+            я представляю <span class="fl"><input type="text" id="q2" placeholder="компанию" autocomplete="organization"></span>.
+            Мой контакт — <span class="fl"><input type="text" id="q3" placeholder="телефон или Telegram"></span>,
+            и меня интересует <span class="fl"><select id="q4">
+              <option value="">направление</option>
+              <option>интеграция систем</option>
+              <option>внедрение Битрикс24</option>
+              <option>внедрение 1С</option>
+              <option>ИИ-автоматизация</option>
+              <option>3D-моделирование</option>
+              <option>ещё не решил</option>
+            </select></span>.
+          </h2>
+          <div class="talk-b">
+            <button type="submit" class="btn"><span>Отправить</span></button>
+            <p class="talk-note">Ответим в течение рабочего дня. Нажимая кнопку, вы соглашаетесь c <a href="#">правилами обработки персональных данных</a>.</p>
+          </div>
+        </form>
+        <div class="thanks" id="thanks">
+          <b>Спасибо!</b>
+          <span>Свяжемся с вами в ближайшее время.</span>
+        </div>
+      </div>
+      <div class="talk-r" aria-hidden="true"><canvas id="pz3d"></canvas></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <ul class="ftr-nav">
+        <li><a href="index.html#works">Кейсы<i>01</i></a></li>
+        <li><a href="index.html#services">Услуги<i>02</i></a></li>
+        <li><a href="index.html#awards">Агентство<i>03</i></a></li>
+        <li><a href="index.html#industries">Отрасли<i>04</i></a></li>
+        <li><a href="contacts.html">Контакты<i>05</i></a></li>
+      </ul>
+      <div class="ftr-c">
+        <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+        <a href="mailto:hello@rusintegraciya.ru">hello@rusintegraciya.ru</a>
+        <a href="https://t.me/rusintegraciya">Telegram: @rusintegraciya</a>
+        <p>Москва, работаем со всей Россией. Первичная консультация и оценка задачи — бесплатно.</p>
+      </div>
+    </div>
+    <div class="ftr-big">IT <b>РОССИЯ</b></div>
+    <div class="ftr-b">
+      <div>© 2017–2026 РУСИнтеграция · Автоматизация и интеграция бизнес-систем</div>
+      <div><a href="#">Политика конфиденциальности</a> · <a href="#top" class="up-link">Наверх ↑</a></div>
+    </div>
+  </div>
+</footer>
+
+<button class="btn sticky" id="sticky" data-go><span>Обсудить проект</span></button>
+<div class="toast" id="toast">Скопировано</div>
+
+<div class="fmask" id="fmask" role="dialog" aria-modal="true" aria-label="Оставить заявку" aria-hidden="true">
+  <div class="fpanel">
+    <span class="fglow" aria-hidden="true"></span>
+    <div class="fbody">
+      <button class="fx" id="fx" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <form id="popForm">
+        <span class="mono fanim" style="--i:0">Заявка · ответим в течение рабочего дня</span>
+        <h3 class="fq fanim" style="--i:1">
+          Привет! Меня зовут <span class="fl"><input type="text" id="p1" placeholder="имя" autocomplete="name"></span>,
+          я представляю <span class="fl"><input type="text" id="p2" placeholder="компанию" autocomplete="organization"></span>.
+          Мой контакт — <span class="fl"><input type="text" id="p3" placeholder="телефон или Telegram"></span>,
+          и меня интересует <span class="fl"><select id="p4">
+            <option value="">направление</option>
+            <option>интеграция систем</option>
+            <option>внедрение Битрикс24</option>
+            <option>внедрение 1С</option>
+            <option>ИИ-автоматизация</option>
+            <option>3D-моделирование</option>
+            <option>ещё не решил</option>
+          </select></span>.
+        </h3>
+        <div class="fbtn fanim" style="--i:2">
+          <button type="submit" class="btn"><span>Отправить</span></button>
+          <p class="fnote">Консультация и оценка задачи бесплатно. Нажимая кнопку, вы соглашаетесь c <a href="#">правилами обработки персональных данных</a>.</p>
+        </div>
+      </form>
+      <div class="fok" id="fok">
+        <svg width="82" height="82" viewBox="0 0 82 82" fill="none">
+          <circle cx="41" cy="41" r="38" stroke="#E8FF4D" stroke-width="2.5"/>
+          <path d="M25 42.5 36 53.5 58 30" stroke="#E8FF4D" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <b>Спасибо!</b>
+        <span>Свяжемся с вами в течение рабочего дня.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
+
+/* ---------- шапка ---------- */
+(function(){
+  var hdr=$('#hdr'),st=$('#sticky');
+  addEventListener('scroll',function(){
+    hdr.classList.toggle('stuck',scrollY>24);
+    st.classList.toggle('on',scrollY>innerHeight*.55);
+  },{passive:true});
+  var b=$('#burger'),nav=$('#nav');
+  b.addEventListener('click',function(){var o=nav.classList.toggle('open');
+    b.classList.toggle('on',o);b.setAttribute('aria-expanded',o)});
+  $$('#nav a').forEach(function(a){a.addEventListener('click',function(){
+    nav.classList.remove('open');b.classList.remove('on')})});
+})();
+
+/* ---------- появление ---------- */
+var io=new IntersectionObserver(function(en){en.forEach(function(e){
+  if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target)})},
+  {threshold:.12,rootMargin:'0px 0px -60px'});
+setTimeout(function(){$$('.rv').forEach(function(el){io.observe(el)})},50);
+
+/* ---------- уведомление ---------- */
+var toastT=null;
+function toast(txt){
+  var t=$('#toast');t.textContent=txt;t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},2600);
+}
+
+/* ---------- копирование реквизитов ---------- */
+$$('[data-copy]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var txt=b.getAttribute('data-copy');
+    function fallback(){
+      var ta=document.createElement('textarea');
+      ta.value=txt;ta.style.cssText='position:fixed;left:-9999px';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');toast('Скопировано')}catch(e){toast('Не удалось скопировать')}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){toast('Скопировано')},fallback);
+    }else fallback();
+  });
+});
+
+/* ---------- визитка ---------- */
+$('#vcard').addEventListener('click',function(){
+  var v=['BEGIN:VCARD','VERSION:3.0','N:Швед;Святослав;;;','FN:Святослав Швед',
+    'ORG:РУСИнтеграция','TITLE:Директор',
+    'TEL;TYPE=WORK,VOICE:+74951234567',
+    'EMAIL;TYPE=WORK:shved@rusintegraciya.ru',
+    'URL:https://rusintegraciya.ru',
+    'ADR;TYPE=WORK:;;ул. Примерная, 12, офис 305;Москва;;107023;Россия',
+    'END:VCARD'].join('\r\n');
+  try{
+    var blob=new Blob([v],{type:'text/vcard;charset=utf-8'});
+    var url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='shved-rusintegraciya.vcf';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url)},1500);
+    toast('Контакт сохранён');
+  }catch(e){toast('Скачивание недоступно в этом браузере')}
+});
+
+/* ---------- сердечко на кнопке отправки внутри формы ---------- */
+(function(){
+  if(!matchMedia('(hover:hover)').matches)return;
+  var h=$('#heart');
+  function put(e){h.style.left=e.clientX+'px';h.style.top=e.clientY+'px'}
+  $$('form button[type=submit]').forEach(function(el){
+    el.classList.add('heart-z');
+    el.addEventListener('pointerenter',function(e){
+      if(e.pointerType==='touch')return;put(e);h.classList.add('on')});
+    el.addEventListener('pointermove',put);
+    el.addEventListener('pointerleave',function(){h.classList.remove('on')});
+  });
+})();
+
+/* ---------- поп-ап заявки ---------- */
+var openForm=function(){};
+(function(){
+  var mask=$('#fmask'),f=$('#popForm'),ok=$('#fok'),last=null,tm=null;
+  var meas=document.createElement('span');
+  meas.style.cssText='position:absolute;left:-9999px;top:0;white-space:pre;visibility:hidden';
+  document.body.appendChild(meas);
+  function fit(inp){
+    var cs=getComputedStyle(inp);
+    meas.style.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+    meas.style.letterSpacing=cs.letterSpacing;
+    meas.textContent=inp.value||inp.placeholder;
+    inp.style.width=Math.max(80,meas.offsetWidth+24)+'px';
+  }
+  $$('#popForm input').forEach(function(i){
+    i.addEventListener('input',function(){fit(i);i.parentElement.classList.remove('err')})});
+  $('#p4').addEventListener('change',function(){this.parentElement.classList.remove('err')});
+  openForm=function(){
+    clearTimeout(tm);f.style.display='';ok.classList.remove('on');
+    $$('#popForm .fl').forEach(function(x){x.classList.remove('err')});
+    last=document.activeElement;
+    mask.classList.add('on');mask.setAttribute('aria-hidden','false');
+    document.body.classList.add('lock');
+    $$('#popForm input').forEach(fit);
+    setTimeout(function(){var i=$('#p1');if(i)i.focus({preventScroll:true})},520);
+  };
+  function close(){mask.classList.remove('on');mask.setAttribute('aria-hidden','true');
+    document.body.classList.remove('lock');if(last&&last.focus)last.focus()}
+  $('#fx').addEventListener('click',close);
+  mask.addEventListener('click',function(e){if(e.target===mask)close()});
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&mask.classList.contains('on'))close()});
+  f.addEventListener('submit',function(e){
+    e.preventDefault();var good=true;
+    ['#p1','#p3'].forEach(function(sel){var el=$(sel);
+      if(!el.value.trim()){el.parentElement.classList.add('err');good=false}});
+    if(!good){$('#p1').focus();return}
+    f.style.display='none';ok.classList.add('on');tm=setTimeout(close,4200);
+  });
+  $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){openForm()})});
+})();
+
+/* ---------- форма в секции ---------- */
+(function(){
+  var f=$('#talkForm'),th=$('#thanks');
+  var meas=document.createElement('span');
+  meas.style.cssText='position:absolute;left:-9999px;top:0;white-space:pre;visibility:hidden';
+  document.body.appendChild(meas);
+  function fit(inp){
+    var cs=getComputedStyle(inp);
+    meas.style.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+    meas.style.letterSpacing=cs.letterSpacing;
+    meas.textContent=inp.value||inp.placeholder;
+    inp.style.width=Math.max(90,meas.offsetWidth+22)+'px';
+  }
+  $$('#talkForm input').forEach(function(i){fit(i);
+    i.addEventListener('input',function(){fit(i);i.parentElement.classList.remove('err')})});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){
+    $$('#talkForm input').forEach(fit)});
+  $('#q4').addEventListener('change',function(){this.parentElement.classList.remove('err')});
+  f.addEventListener('submit',function(e){
+    e.preventDefault();var ok=true;
+    ['#q1','#q3'].forEach(function(s){var el=$(s);
+      if(!el.value.trim()){el.parentElement.classList.add('err');ok=false}});
+    if(!ok){$('#q1').focus();return}
+    f.style.display='none';th.classList.add('on');
+    if(window.__pzDone)window.__pzDone();
+  });
+})();
+
+/* ---------- 3D: телефонная трубка с витым шнуром ---------- */
+(function(){
+  var cv=$('#phone');if(!cv||typeof THREE==='undefined')return;
+  try{
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,60);
+    cam.position.set(0,0,8.6);cam.lookAt(0,0,0);
+
+    var root=new THREE.Group();sc.add(root);
+    root.position.y=.68;root.rotation.set(.04,-.42,0);
+
+    var PLASTIC=new THREE.MeshPhongMaterial({color:0x121318,shininess:220,specular:0xFFFFFF});
+    var DEEP=new THREE.MeshPhongMaterial({color:0x08080B,shininess:70,specular:0x4A5578});
+
+    /* перфорация динамика — текстурой, а не сотней объектов */
+    function grilleTex(){
+      var c=document.createElement('canvas');c.width=c.height=256;
+      var x=c.getContext('2d');
+      x.fillStyle='#15161B';x.fillRect(0,0,256,256);
+      x.fillStyle='#040406';
+      for(var r=0;r<7;r++){
+        var rad=r*17,n=r===0?1:r*6;
+        for(var i=0;i<n;i++){
+          var a=i/n*Math.PI*2+r*.35;
+          x.beginPath();x.arc(128+Math.cos(a)*rad,128+Math.sin(a)*rad,5,0,7);x.fill();
+        }
+      }
+      var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
+    }
+    var GRILLE=new THREE.MeshPhongMaterial({map:grilleTex(),shininess:40,specular:0x3E4A6A});
+
+    var hs=new THREE.Group();root.add(hs);hs.rotation.z=-.34;
+
+    /* ===== дужка: выгнута наружу, сечение сплюснуто ===== */
+    var BAR=[new THREE.Vector3(0,1.00,0),new THREE.Vector3(.24,.56,0),
+             new THREE.Vector3(.32,0,0),new THREE.Vector3(.24,-.56,0),
+             new THREE.Vector3(0,-1.00,0)];
+    var bar=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(BAR),100,.185,22,false),PLASTIC);
+    bar.scale.z=.7;hs.add(bar);
+
+    /* два винта на лицевой стороне дужки */
+    [[.29,.34],[.25,-.30]].forEach(function(q){
+      var sw=new THREE.Mesh(new THREE.CylinderGeometry(.038,.038,.02,16),DEEP);
+      sw.rotation.x=Math.PI/2;sw.position.set(q[0],q[1],.115);hs.add(sw)});
+
+    /* ===== раструбы: развёрнуты поперёк дужки, к лицу ===== */
+    function cupGeo(sc2){
+      var prof=[[.04,-.30],[.21,-.30],[.32,-.20],[.40,-.04],[.46,.12],[.48,.21],
+                [.42,.255],[.35,.235],[.21,.215],[.04,.21]]
+        .map(function(q){return new THREE.Vector2(q[0]*sc2,q[1]*sc2)});
+      return new THREE.LatheGeometry(prof,52);
+    }
+    /* центр считаем от конца дужки, чтобы стык был без щели */
+    function makeCup(end,rot,scale,isEar){
+      var back=new THREE.Vector3(Math.sin(rot),-Math.cos(rot),0).multiplyScalar(.30*scale);
+      var grp=new THREE.Group();
+      grp.position.set(end.x-back.x,end.y-back.y,0);
+      grp.rotation.z=rot;hs.add(grp);
+      grp.add(new THREE.Mesh(cupGeo(scale),PLASTIC));
+      var inner=new THREE.Mesh(new THREE.CylinderGeometry(.31*scale,.31*scale,.03,44),
+        isEar?GRILLE:DEEP);
+      inner.position.y=.185*scale;grp.add(inner);
+      if(!isEar){
+        var mic=new THREE.Mesh(new THREE.CylinderGeometry(.15*scale,.15*scale,.05,28),GRILLE);
+        mic.position.y=.2*scale;grp.add(mic);
+      }
+      return grp;
+    }
+    makeCup(BAR[0],1.22,1.0,true);                 /* динамик сверху */
+    var mouth=makeCup(BAR[4],Math.PI-1.22,.92,false); /* микрофон снизу */
+
+    /* ===== витой шнур: висит строго вертикально ===== */
+    var th=hs.rotation.z,ct=Math.cos(th),st=Math.sin(th);
+    var lx=mouth.position.x,ly=mouth.position.y-.42*.92;
+    var sx=lx*ct-ly*st,sy=lx*st+ly*ct;
+    var cp=[new THREE.Vector3(sx,sy,0)];
+    for(var i=0;i<=200;i++){
+      var t=i/200,a=t*Math.PI*2*9.5,rad=.05+.17*Math.min(1,t*5);
+      cp.push(new THREE.Vector3(sx-.04+Math.cos(a)*rad,sy-.16-t*1.5,Math.sin(a)*rad));
+    }
+    root.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cp),320,.043,10,false),PLASTIC));
+
+    /* ===== свет: жёсткие источники дают глянцевые блики ===== */
+    sc.add(new THREE.HemisphereLight(0xC8D2F0,0x262A3C,.7));
+    var d1=new THREE.DirectionalLight(0xffffff,1.6);d1.position.set(-3,6,7);sc.add(d1);
+    var d2=new THREE.DirectionalLight(0xDCE6FF,.9);d2.position.set(5,1,4);sc.add(d2);
+    var d3=new THREE.PointLight(0x1F3CFF,1.6,26);d3.position.set(-4,-2,3);sc.add(d3);
+    var d4=new THREE.PointLight(0xFFFFFF,1,22);d4.position.set(3,4,-4);sc.add(d4);
+
+    function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
+      rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+    size();addEventListener('resize',size);
+
+    var vis=true,dg=false,vx=0,vy=0,px=0,py=0,touch=false;
+    new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
+    cv.addEventListener('pointerdown',function(e){dg=true;touch=(e.pointerType==='touch');
+      px=e.clientX;py=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(err){}});
+    cv.addEventListener('pointermove',function(e){if(!dg)return;
+      var dx=e.clientX-px,dy=e.clientY-py;
+      if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
+      vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
+      root.rotation.y+=vy;root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx))});
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      cv.addEventListener(ev,function(){dg=false})});
+
+    var cl=new THREE.Clock();
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(!vis)return;
+      var t=cl.getElapsedTime();
+      if(!dg){vx*=.93;vy*=.93;
+        root.rotation.y+=vy+(RM?0:.0036);
+        root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx))}
+      if(!RM)root.rotation.z=Math.sin(t*.7)*.02;
+      rn.render(sc,cam);
+    })();
+  }catch(e){cv.parentElement.style.display='none'}
+})();
+
+/* ---------- 3D-пазл у формы ---------- */
+(function(){
+  var cv=$('#pz3d');if(!cv||typeof THREE==='undefined')return;
+  try{
+    var PZ=[
+      [['M',0,0],['L',100,0],['L',100,35],['C',112,35,118,43,118,50],['C',118,57,112,65,100,65],
+       ['L',100,100],['L',65,100],['C',65,112,57,118,50,118],['C',43,118,35,112,35,100],['L',0,100]],
+      [['M',100,0],['L',200,0],['L',200,100],['L',165,100],['C',165,112,157,118,150,118],
+       ['C',143,118,135,112,135,100],['L',100,100],['L',100,65],['C',112,65,118,57,118,50],['C',118,43,112,35,100,35]],
+      [['M',0,100],['L',35,100],['C',35,112,43,118,50,118],['C',57,118,65,112,65,100],['L',100,100],
+       ['L',100,135],['C',112,135,118,143,118,150],['C',118,157,112,165,100,165],['L',100,200],['L',0,200]],
+      [['M',100,100],['L',200,100],['L',200,200],['L',100,200],['L',100,165],
+       ['C',112,165,118,157,118,150],['C',118,143,112,135,100,135]]
+    ];
+    function shapeOf(a){
+      var sh=new THREE.Shape();
+      a.forEach(function(c){
+        if(c[0]==='M')sh.moveTo(c[1],-c[2]);
+        else if(c[0]==='L')sh.lineTo(c[1],-c[2]);
+        else sh.bezierCurveTo(c[1],-c[2],c[3],-c[4],c[5],-c[6]);
+      });
+      sh.closePath();return sh;
+    }
+    function geoOf(i){return new THREE.ExtrudeGeometry(shapeOf(PZ[i]),
+      {depth:26,bevelEnabled:true,bevelSize:3.2,bevelThickness:3.2,bevelSegments:2,curveSegments:14})}
+
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,1,.1,100);
+    cam.position.set(0,0,6.4);
+    var grp=new THREE.Group();sc.add(grp);
+    grp.scale.setScalar(.0125);grp.rotation.x=-.44;
+
+    var matFix=new THREE.MeshPhongMaterial({color:0x23242E,shininess:90,specular:0xAEB6D6});
+    var matLoose=new THREE.MeshPhongMaterial({color:0xE8FF4D,shininess:80,specular:0xFFFFFF,emissive:0x2E3600});
+    for(var i=0;i<3;i++){var g=geoOf(i);g.translate(-100,100,-13);grp.add(new THREE.Mesh(g,matFix))}
+    var gd=geoOf(3);gd.translate(-150,150,-13);
+    var loose=new THREE.Mesh(gd,matLoose);grp.add(loose);
+    var slot=new THREE.LineSegments(new THREE.EdgesGeometry(geoOf(3),30),
+      new THREE.LineBasicMaterial({color:0xE8FF4D,transparent:true,opacity:.34}));
+    slot.geometry.translate(-100,100,-13);grp.add(slot);
+
+    sc.add(new THREE.AmbientLight(0x3A3F55,.9));
+    var l1=new THREE.DirectionalLight(0xFFFFFF,.95);l1.position.set(4,6,7);sc.add(l1);
+    var l2=new THREE.PointLight(0xE8FF4D,1.5,40);l2.position.set(-4,-3,5);sc.add(l2);
+    var l3=new THREE.PointLight(0x6E8BFF,1.1,40);l3.position.set(6,-2,3);sc.add(l3);
+
+    function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
+      rn.setSize(r.width,r.height,false);cam.aspect=1;cam.updateProjectionMatrix()}
+    size();addEventListener('resize',size);
+
+    var base=new THREE.Vector3(50,-50,0);
+    var off=new THREE.Vector3(60,-54,34),tgt=off.clone(),done=false;
+    window.__pzDone=function(){
+      if(done)return;done=true;tgt.set(0,0,0);slot.material.opacity=0;
+      matLoose.color.set(0x23242E);matLoose.emissive.set(0x000000);matLoose.specular.set(0xAEB6D6);
+    };
+    var mx=0,my=0,rx=-.44,ry=0,vis=true;
+    addEventListener('mousemove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+    new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
+    var cl=new THREE.Clock();
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(!vis)return;
+      var t=cl.getElapsedTime();
+      if(!RM){
+        grp.rotation.y+=.0028;
+        off.lerp(tgt,done?.05:.08);
+        var fl=done?0:1;
+        loose.position.set(base.x+off.x,base.y+off.y+Math.sin(t*.9)*4*fl,off.z+Math.cos(t*.7)*5*fl);
+        loose.rotation.set(Math.sin(t*.6)*.14*fl,Math.cos(t*.5)*.12*fl,Math.sin(t*.45)*.1*fl);
+      }else loose.position.set(base.x+off.x,base.y+off.y,off.z);
+      rx+=((-.44-my*.16)-rx)*.05;ry+=(mx*.22-ry)*.05;
+      grp.rotation.x=rx;grp.rotation.z=ry*.35;
+      rn.render(sc,cam);
+    })();
+  }catch(e){cv.parentElement.style.display='none'}
+})();
+})();
+</script>
+</body>
+</html>
