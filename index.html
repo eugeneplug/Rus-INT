@@ -7,7 +7,7 @@
 <meta name="description" content="Соединяем 1С, Битрикс24, сайт и склад в один контур. Внедрение, ИИ-автоматизация, 3D-моделирование для производства.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ================= tokens ================= */
 :root{
@@ -241,6 +241,8 @@ section[id],main[id]{scroll-margin-top:104px}
 .pj-v{aspect-ratio:.78;border-radius:14px;overflow:hidden;background:var(--ink);position:relative}
 .pj-v::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(circle at 50% 42%,rgba(31,60,255,.28),transparent 62%)}
+.pj-art{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
+.pj-art svg{width:58%;height:58%}
 .pj-3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
 .pj-3d:active{cursor:grabbing}
 .pj-d{color:var(--ink-2);font-size:15.5px;font-weight:500;margin-top:16px;max-width:300px;letter-spacing:-.01em}
@@ -898,6 +900,16 @@ section[id],main[id]{scroll-margin-top:104px}
   .goals{grid-template-columns:1fr}
   .result{padding:32px 26px}
 }
+
+/* ==================== облегчение для мобильных ==================== */
+.lite .hero-bg i,.lite .top-bg i{display:none}
+.lite .grain{display:none}
+.lite .hdr.stuck{backdrop-filter:none;background:rgba(239,239,235,.96)}
+.lite .mq-w{backdrop-filter:none;background:rgba(239,239,235,.9)}
+.lite .eyebrow,.lite .tagline{backdrop-filter:none}
+.lite .mask,.lite .fmask{backdrop-filter:blur(4px)}
+.lite .pcard,.lite .dir,.lite .goal,.lite .price-i,.lite .aw-i,.lite .res-i{box-shadow:none}
+.lite .panel{box-shadow:none}
 </style>
 </head>
 <body>
@@ -1731,6 +1743,12 @@ section[id],main[id]{scroll-margin-top:104px}
 (function(){
 "use strict";
 var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* на телефонах экономим: меньше контекстов WebGL, ниже плотность пикселей, без сглаживания */
+var COARSE=matchMedia('(pointer:coarse)').matches;
+var MOBILE=COARSE||innerWidth<=820;
+var DPRMAX=MOBILE?1.25:2;
+var AA=!MOBILE;
+if(MOBILE)document.documentElement.classList.add('lite');
 var $=function(s,c){return (c||document).querySelector(s)};
 var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
 
@@ -1944,6 +1962,15 @@ var io=new IntersectionObserver(function(en){en.forEach(function(e){
 
 /* ============ мини-3D в карточках проектов ============ */
 var cardViewer=function(){return null};
+/* лёгкие заглушки вместо шести сцен на телефоне */
+var CARD_ART=[
+ '<svg viewBox="0 0 100 100" fill="none"><circle cx="40" cy="50" r="20" stroke="#E9EBF2" stroke-width="3"/><circle cx="60" cy="50" r="20" stroke="#1F3CFF" stroke-width="3"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><rect x="24" y="52" width="24" height="22" rx="3" stroke="#E9EBF2" stroke-width="3"/><rect x="52" y="52" width="24" height="22" rx="3" stroke="#E9EBF2" stroke-width="3"/><rect x="38" y="28" width="24" height="22" rx="3" stroke="#1F3CFF" stroke-width="3"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><rect x="30" y="36" width="40" height="34" rx="8" stroke="#E9EBF2" stroke-width="3"/><circle cx="42" cy="52" r="3.6" fill="#1F3CFF"/><circle cx="58" cy="52" r="3.6" fill="#1F3CFF"/><path d="M50 36V26" stroke="#E9EBF2" stroke-width="3"/><circle cx="50" cy="23" r="4" fill="#E8FF4D"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><path d="M50 24l22 12v28L50 76 28 64V36z" stroke="#E9EBF2" stroke-width="3" stroke-linejoin="round"/><path d="M50 50l22-14M50 50v26M50 50L28 36" stroke="#1F3CFF" stroke-width="2.4"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><text x="50" y="62" text-anchor="middle" font-family="Onest,sans-serif" font-size="34" font-weight="700" fill="#E9EBF2">24</text><rect x="26" y="70" width="48" height="4" rx="2" fill="#1F3CFF"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><rect x="28" y="26" width="38" height="48" rx="4" stroke="#E9EBF2" stroke-width="3"/><path d="M36 40h22M36 50h22M36 60h14" stroke="#1F3CFF" stroke-width="2.6"/><path d="M68 34l8 8-18 18-9 1 1-9z" stroke="#E9EBF2" stroke-width="3" stroke-linejoin="round"/></svg>'
+];
 (function(){
   if(typeof THREE==='undefined')return;
   var LIGHT=0xE7E9F5, ACC=0x1F3CFF, LIME=0xE8FF4D, DARK=0x2A2C3A;
@@ -2030,8 +2057,8 @@ var cardViewer=function(){return null};
   cardViewer=function(cv,i){
     if(!cv||!BUILD[i])return null;
     try{
-      var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-      rn.setPixelRatio(Math.min(devicePixelRatio,1.75));
+      var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+      rn.setPixelRatio(Math.min(devicePixelRatio,MOBILE?1:1.5));
       var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,.78,.1,60);
       cam.position.set(0,.5,5);cam.lookAt(0,0,0);
       var g=new THREE.Group();sc.add(g);
@@ -2103,7 +2130,17 @@ var cardViewer=function(){return null};
     d.innerHTML='<div class="pj-v"><canvas class="pj-3d"></canvas><span class="pj-t">'+p.t+'</span></div>'+
       '<p class="pj-d">'+p.d+'</p>';
     gal.appendChild(d);
-    var vw=cardViewer($('.pj-3d',d),pi);
+    var vw=null;
+    if(MOBILE){
+      var cvs=$('.pj-3d',d);if(cvs)cvs.parentNode.removeChild(cvs);
+      $('.pj-v',d).insertAdjacentHTML('afterbegin','<span class="pj-art">'+(CARD_ART[pi]||'')+'</span>');
+    }else{
+      /* сцену собираем только когда карточка подъезжает к экрану */
+      var lazy=new IntersectionObserver(function(en){
+        if(en[0].isIntersecting&&!vw){vw=cardViewer($('.pj-3d',d),pi);lazy.disconnect()}
+      },{rootMargin:'300px'});
+      lazy.observe(d);
+    }
     d.addEventListener('click',function(e){if(vw&&vw.dragged)e.stopImmediatePropagation()},true);
     var m=document.createElement('span');
     m.innerHTML='<i></i><b>'+p.n+'</b> — '+p.d;
@@ -2357,8 +2394,8 @@ var openForm=function(){};
         {depth:26,bevelEnabled:true,bevelSize:3.2,bevelThickness:3.2,bevelSegments:2,curveSegments:14});
     }
 
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,1,.1,100);
     cam.position.set(0,0,6.4);
     var grp=new THREE.Group();sc.add(grp);
@@ -2546,8 +2583,8 @@ function initAbout(){
 (function(){
   var cv=$('#trophy');if(!cv||typeof THREE==='undefined')return;
   try{
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
     cam.position.set(0,.4,7.4);cam.lookAt(0,-.05,0);
@@ -2684,8 +2721,8 @@ function initContacts(){
 (function(){
   var cv=$('#phone');if(!cv||typeof THREE==='undefined')return;
   try{
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,80);
     cam.position.set(0,1.15,8.4);cam.lookAt(0,.05,0);
@@ -3172,8 +3209,8 @@ function initWrench(){
   var cv=$('#wrench');if(!cv||typeof THREE==='undefined')return;
   if(cv.getAttribute('data-ready'))return;cv.setAttribute('data-ready','1');
   try{
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
     cam.position.set(0,0,7.6);cam.lookAt(0,0,0);
@@ -3360,8 +3397,8 @@ function initPirateMap(){
       var t2=new THREE.CanvasTexture(c);t2.anisotropy=4;return t2;
     }
 
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
     cam.position.set(0,.15,6.1);cam.lookAt(0,0,0);
