@@ -45,17 +45,17 @@ section[id],main[id]{scroll-margin-top:104px}
 .pre-bar{position:absolute;left:0;bottom:0;height:2px;background:var(--acc);width:0}
 
 /* ================= heart cursor (только кнопки заявки) ================= */
-.heart{position:fixed;top:0;left:0;z-index:400;pointer-events:none;display:none;margin:-12px 0 0 -8px}
+.heart{position:fixed;top:0;left:0;z-index:400;pointer-events:none;display:none;margin:-16px 0 0 -11px}
 .heart.on{display:block}
-.heart svg{display:block;animation:bolt 1.5s ease-in-out infinite;
-  filter:drop-shadow(0 0 6px rgba(255,212,38,.55))}
+.heart svg{display:block}
+/* искра проскакивает один раз — в момент наведения */
+.heart.on svg{animation:bolt .62s cubic-bezier(.2,.7,.3,1) both}
 @keyframes bolt{
-  0%,100%{opacity:1;transform:scale(1) rotate(0)}
-  46%{opacity:1;transform:scale(1) rotate(0)}
-  52%{opacity:.55;transform:scale(1.14) rotate(-5deg)}
-  58%{opacity:1;transform:scale(.98) rotate(3deg)}
-  64%{opacity:.7;transform:scale(1.08) rotate(-2deg)}
-  70%{opacity:1;transform:scale(1) rotate(0)}}
+  0%{opacity:0;transform:scale(.55) rotate(-14deg);filter:drop-shadow(0 0 14px rgba(255,212,38,.95))}
+  22%{opacity:1;transform:scale(1.28) rotate(5deg);filter:drop-shadow(0 0 16px rgba(255,212,38,.85))}
+  40%{opacity:.55;transform:scale(.94) rotate(-3deg);filter:drop-shadow(0 0 4px rgba(255,212,38,.4))}
+  56%{opacity:1;transform:scale(1.1) rotate(2deg);filter:drop-shadow(0 0 12px rgba(255,212,38,.7))}
+  100%{opacity:1;transform:scale(1) rotate(0);filter:drop-shadow(0 0 5px rgba(255,212,38,.45))}}
 .heart-z{cursor:none}
 
 /* ================= hero visual ================= */
@@ -546,12 +546,173 @@ section[id],main[id]{scroll-margin-top:104px}
   .rv,.up{opacity:1;transform:none}.claim .l>i{transform:none}
   html{scroll-behavior:auto}
 }
+
+/* ==================== многостраничность ==================== */
+:root{--ease2:cubic-bezier(.16,1,.3,1)}
+.page[hidden]{display:none}
+.page{animation:pageIn .55s var(--ease2) both}
+@keyframes pageIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes rise{to{transform:translateY(0)}}
+
+/* ---- общая шапка внутренних страниц ---- */
+.top{padding:158px 0 0;position:relative}
+.top-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.top-bg::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+  background-size:78px 78px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 30% 30%,#000 8%,transparent 72%);
+  mask-image:radial-gradient(ellipse 70% 60% at 30% 30%,#000 8%,transparent 72%)}
+.top-bg i{position:absolute;display:block;border-radius:50%;filter:blur(90px);opacity:.5}
+.top-bg .b1{width:42vw;height:42vw;background:radial-gradient(circle,rgba(31,60,255,.32),transparent 68%);top:-16vw;right:-8vw;animation:fl 25s ease-in-out infinite}
+.top-bg .b2{width:26vw;height:26vw;background:radial-gradient(circle,rgba(232,255,77,.55),transparent 66%);top:22vw;left:-6vw;animation:fl 31s ease-in-out infinite reverse}
+.top-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center}
+.crumbs{display:flex;align-items:center;gap:10px;color:var(--muted);margin-bottom:26px}
+.crumbs a:hover{color:var(--acc)}
+#page-about h1,#page-contacts h1{font-weight:600;font-size:clamp(32px,5.6vw,80px);line-height:1.02;letter-spacing:-.05em;max-width:17ch}
+#page-about h1 em,#page-contacts h1 em{font-style:normal;color:var(--acc)}
+.rl{display:block;overflow:hidden}
+.rl>i{display:block;font-style:normal;transform:translateY(108%);animation:rise 1.05s var(--ease2) forwards}
+.rl:nth-child(2)>i{animation-delay:.08s}
+.rl:nth-child(3)>i{animation-delay:.16s}
+.lead{color:var(--muted);max-width:520px;font-size:clamp(15.5px,1.3vw,18px);margin-top:28px}
+.top-cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
+.fu{opacity:0;animation:up .9s var(--ease2) forwards}
+.fd1{animation-delay:.3s}.fd2{animation-delay:.42s}.fd3{animation-delay:.54s}
+.kpi2{display:flex;gap:40px;flex-wrap:wrap;margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
+.kpi2 b{display:block;font-size:15px;font-weight:500;color:var(--ink-2);letter-spacing:-.02em;line-height:1;white-space:nowrap}
+.kpi2 b>span{font-size:clamp(30px,3.4vw,44px);font-weight:600;letter-spacing:-.055em;color:var(--ink);margin-right:2px}
+.kpi2 u{display:block;text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.trophy-box,.phone-box{position:relative;aspect-ratio:1/1}
+#trophy,#phone{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+#trophy:active,#phone:active{cursor:grabbing}
+
+/* ---- о нас ---- */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.who p{color:var(--muted);font-size:16.5px;margin-bottom:18px}
+.who p:last-child{margin-bottom:0}
+.who b{color:var(--ink);font-weight:600}
+.pr{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pr-i{background:var(--srf);border:1px solid var(--line);border-radius:20px;padding:34px 32px;position:relative;overflow:hidden;transition:transform .5s var(--ease2),box-shadow .5s,border-color .5s}
+.pr-i::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--acc),transparent);transform:scaleX(0);transform-origin:left;transition:transform .65s var(--ease2)}
+.pr-i:hover{transform:translateY(-5px);border-color:rgba(31,60,255,.3);box-shadow:0 26px 56px -34px rgba(12,12,14,.5)}
+.pr-i:hover::after{transform:scaleX(1)}
+.pr-n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--acc);display:block;margin-bottom:20px}
+.pr-i h3{font-size:20px;font-weight:600;letter-spacing:-.035em;margin-bottom:12px}
+.pr-i p{color:var(--muted);font-size:15.5px}
+.tl{position:relative}
+.tl-line{position:absolute;left:11px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.tl-line i{display:block;width:100%;height:0;background:var(--acc)}
+.tl-i{position:relative;padding:0 0 44px 58px}
+.tl-i:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:4px;top:6px;width:15px;height:15px;border-radius:50%;border:1px solid var(--line);background:var(--bg);transition:.45s}
+.tl-i.in .tl-dot{border-color:var(--acc);box-shadow:0 0 0 4px rgba(31,60,255,.12)}
+.tl-i.in .tl-dot::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--acc)}
+.tl-i .yr{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);display:block;margin-bottom:10px}
+.tl-i h4{font-size:19px;font-weight:600;letter-spacing:-.035em;margin-bottom:8px}
+.tl-i p{color:var(--muted);max-width:640px;font-size:16px}
+.team{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.team div{background:var(--srf);padding:30px 26px;transition:background .4s}
+.team div:hover{background:#FAFAF8}
+.team b{display:block;font-size:clamp(28px,3.4vw,42px);font-weight:600;letter-spacing:-.055em;line-height:1;margin-bottom:12px}
+.team span{color:var(--muted);font-size:14.5px}
+.rail{display:flex;gap:16px;overflow-x:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 4px 28px;margin:0 -4px}
+.rail>*{scroll-snap-align:start;flex:0 0 auto}
+.lt{width:290px;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform .55s var(--ease2)}
+.lt-p{position:relative;aspect-ratio:.74;background:var(--srf);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:box-shadow .55s,border-color .55s}
+.lt-p svg{width:100%;height:100%;display:block}
+.lt-m{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:14px}
+.lt-m b{font-size:16px;font-weight:600;letter-spacing:-.02em}
+.lt-m span{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted)}
+.lt-d{color:var(--muted);font-size:14.5px;margin-top:5px}
+@media(min-width:1280px) and (hover:hover){
+  .lt:hover{transform:scale(1.03)}
+  .lt:hover .lt-p{border-color:rgba(31,60,255,.35);box-shadow:0 26px 56px -32px rgba(12,12,14,.5)}
+}
+.m-sign{margin-top:26px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:15px}
+.m-sign b{display:block;color:var(--ink);font-weight:600;font-size:16px;margin-bottom:4px}
+
+/* ---- контакты ---- */
+.panel{display:grid;grid-template-columns:1fr 1fr;background:var(--srf);border:1px solid var(--line);
+  border-radius:28px;overflow:hidden;box-shadow:0 34px 80px -50px rgba(12,12,14,.45)}
+.pn-a{padding:46px 46px 42px;border-right:1px solid var(--line-2)}
+.pn-b{padding:46px 46px 42px}
+.pn-c{grid-column:1 / -1;padding:38px 46px 44px;border-top:1px solid var(--line-2);
+  background:linear-gradient(180deg,rgba(12,12,14,.018),transparent)}
+.col-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:26px}
+.p-top{display:flex;align-items:center;gap:18px;margin-bottom:30px}
+.p-av{width:62px;height:62px;border-radius:100px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;letter-spacing:-.02em;color:#fff;background:linear-gradient(140deg,var(--acc),#6E82FF);box-shadow:0 0 0 5px rgba(31,60,255,.10)}
+.p-n{font-size:clamp(21px,2.2vw,26px);font-weight:600;letter-spacing:-.04em;line-height:1.15}
+.p-r{color:var(--muted);font-size:15px;margin-top:5px}
+.lnks{display:grid}
+.lnk{display:flex;align-items:center;gap:16px;padding:17px 0;border-bottom:1px solid var(--line-2);transition:color .35s,padding .45s var(--ease2)}
+.lnk:last-child{border-bottom:0}
+.lnk b{font-size:18.5px;font-weight:600;letter-spacing:-.03em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lnk i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .35s}
+.lnk .ar{width:16px;flex-shrink:0;opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .45s var(--ease2)}
+.lnk:hover{color:var(--acc);padding-left:8px}
+.lnk:hover i{color:var(--acc)}
+.lnk:hover .ar{opacity:1;transform:none}
+.p-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.map{border-radius:18px;overflow:hidden;background:#E6E7E2;position:relative;aspect-ratio:16/9;margin-bottom:30px;border:1px solid var(--line-2)}
+.map svg{width:100%;height:100%;display:block}
+.map-pin{transform-box:fill-box;transform-origin:center;animation:pinup 2.4s ease-in-out infinite}
+@keyframes pinup{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.map-wave{transform-box:view-box;transform-origin:300px 128px;animation:pingw 3s cubic-bezier(.3,0,.5,1) infinite}
+@keyframes pingw{0%{transform:scale(.4);opacity:.6}80%{transform:scale(1.5);opacity:0}100%{opacity:0}}
+.addr{font-size:19px;font-weight:600;letter-spacing:-.03em;line-height:1.4}
+.addr span{display:block;color:var(--muted);font-size:15px;font-weight:400;margin-top:9px}
+.hrs{display:grid;gap:13px;margin-top:26px;padding-top:24px;border-top:1px solid var(--line-2)}
+.hrs div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-size:15px;color:var(--muted)}
+.hrs b{color:var(--ink);font-weight:600;white-space:nowrap}
+.req{display:grid;grid-template-columns:repeat(4,1fr);gap:26px 34px}
+.req>div{min-width:0}
+.req dt{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.req dd{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;letter-spacing:-.01em;word-break:break-word;line-height:1.35}
+.req button{width:26px;height:26px;border-radius:100px;border:1px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);opacity:0;transform:scale(.85);transition:.3s}
+.req>div:hover button{opacity:1;transform:none}
+.req button:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.note{margin-top:30px;color:var(--muted);font-size:13.5px;line-height:1.5}
+.toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,150%);z-index:450;background:var(--ink);color:var(--bg);border-radius:100px;padding:14px 26px;font-size:14.5px;transition:transform .55s var(--ease2)}
+.toast.on{transform:translate(-50%,0)}
+.up-link,.ftr-b a.up-link:hover{color:#1f3cff}
+
+/* ---- адаптив внутренних страниц ---- */
+@media(max-width:1180px){
+  .top-grid{grid-template-columns:1fr;gap:40px}
+  .trophy-box,.phone-box{max-width:460px}
+  .team{grid-template-columns:repeat(3,1fr)}
+  .req{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  .who{grid-template-columns:1fr;gap:28px}
+  .pr{grid-template-columns:1fr}
+  .team{grid-template-columns:repeat(2,1fr)}
+  .panel{grid-template-columns:1fr}
+  .pn-a{border-right:0;border-bottom:1px solid var(--line-2)}
+  .req{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .top{padding:120px 0 0}
+  #page-about h1,#page-contacts h1{font-size:clamp(28px,8.2vw,40px);line-height:1.08;max-width:none}
+  .trophy-box,.phone-box{max-width:none}
+  .top-cta .btn{width:100%}
+  .kpi2{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
+  .kpi2 b>span{font-size:28px}
+  .team{grid-template-columns:1fr}
+  .lt{width:min(80vw,290px)}
+  .pn-a,.pn-b{padding:30px 22px}
+  .pn-c{padding:28px 22px 32px}
+  .req{grid-template-columns:1fr;gap:20px}
+  .req button{opacity:1;transform:none}
+  .lnk b{font-size:17px}
+}
 </style>
 </head>
 <body>
 
 <div class="heart" id="heart" aria-hidden="true">
-  <svg width="17" height="24" viewBox="0 0 30 42" fill="none">
+  <svg width="22" height="31" viewBox="0 0 30 42" fill="none">
     <path d="M18.4 1 3 23.6h9.1L10.6 41 27 17.9h-9.4L18.4 1z" fill="#FFD426"/>
   </svg>
 </div>
@@ -564,7 +725,7 @@ section[id],main[id]{scroll-margin-top:104px}
 
 <header class="hdr" id="hdr">
   <div class="wrap hdr-in">
-    <a href="#top" class="logo" aria-label="РУСИнтеграция">
+    <a href="#/" data-route="home" class="logo" aria-label="РУСИнтеграция">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="6" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6"/>
         <circle cx="18.5" cy="5.5" r="2.4" fill="#1F3CFF"/>
@@ -574,11 +735,10 @@ section[id],main[id]{scroll-margin-top:104px}
       <b>РУС<span>ИНТЕГРАЦИЯ</span></b>
     </a>
     <nav class="nav" id="nav">
-      <a href="#works">Кейсы</a>
-      <a href="#services">Услуги</a>
-      <a href="#awards">Агентство</a>
-      <a href="#industries">Отрасли</a>
-      <a href="#talk">Контакты</a>
+      <a href="#services" data-route="home" data-anchor="#services">Услуги</a>
+      <a href="#works" data-route="home" data-anchor="#works">Проекты</a>
+      <a href="#/about" data-route="about">О нас</a>
+      <a href="#/contacts" data-route="contacts">Контакты</a>
     </nav>
     <div class="msg">
       <a href="#" aria-label="Telegram"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1.5 7.2 13 2.5l-2 10-3.4-2.6L6 11.8l-.3-2.7L11.6 4 5.4 8.3 1.5 7.2z" fill="currentColor"/></svg></a>
@@ -590,6 +750,8 @@ section[id],main[id]{scroll-margin-top:104px}
 </header>
 
 <main id="top">
+<div class="page" id="page-home">
+
 
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero">
@@ -788,6 +950,271 @@ section[id],main[id]{scroll-margin-top:104px}
     </div>
   </div>
 </section>
+</div>
+
+<div class="page" id="page-about" hidden>
+
+
+<!-- ============ ЗАГОЛОВОК ============ -->
+<section class="top">
+  <div class="top-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
+  <div class="wrap top-grid">
+    <div>
+      <div class="crumbs mono fu"><a href="#/" data-route="home">Главная</a><span>→</span><span>О нас</span></div>
+      <h1>
+        <span class="rl"><i>Инженеры,</i></span>
+        <span class="rl"><i>которые доводят</i></span>
+        <span class="rl"><i><em>интеграции до конца</em></i></span>
+      </h1>
+      <p class="lead fu fd1">РУСИнтеграция работает с 2017 года. Мы соединяем учётные системы, CRM, сайты и склады в один контур и отвечаем за то, чтобы данные ходили без участия человека.</p>
+      <div class="top-cta fu fd2">
+        <button class="btn" data-go><span>Обсудить задачу</span></button>
+        <a href="#works" data-route="home" data-anchor="#works" class="btn btn-o"><span>Смотреть проекты</span></a>
+      </div>
+      <div class="kpi2 fu fd3">
+        <div><b><span data-c="240">0</span>+</b><u>проектов сдано</u></div>
+        <div><b><span data-c="9">0</span> лет</b><u>на рынке</u></div>
+        <div><b><span data-c="34">0</span></b><u>человек в команде</u></div>
+        <div><b><span data-c="93">0</span>%</b><u>продлевают работу</u></div>
+      </div>
+    </div>
+    <div class="trophy-box fu fd1"><canvas id="trophy" aria-label="Трёхмерная модель награды"></canvas></div>
+  </div>
+</section>
+
+<!-- ============ КТО МЫ ============ -->
+<section class="sec" id="a-who" style="padding-top:96px">
+  <div class="wrap">
+    <div class="lbl mono rv">Кто мы</div>
+    <div class="who rv">
+      <p class="st-h">Интегратор, а не студия и не подрядчик по часам. Мы отвечаем за результат обмена, а не за количество написанных строк.</p>
+      <div>
+        <p>Компания собралась в 2017 году вокруг простой задачи: у производственных компаний были 1С и CRM, которые не разговаривали друг с другом, а между ними сидел человек и переносил цифры руками. Мы научились убирать этого человека из процесса — и с тех пор занимаемся тем же, только на большем масштабе.</p>
+        <p>Сегодня в команде <b>34 человека</b>: инженеры интеграций, 1С-разработчики, аналитики, специалисты по ИИ и 3D-художники. Мы не берём задачи, в которых не разбираемся, и не отдаём проекты на субподряд — всё делается внутри.</p>
+        <p>Работаем с производством, оптовой торговлей, e-commerce, медициной и строительством. За девять лет сдали <b>больше 240 проектов</b>, и 93% клиентов продолжают работать с нами после первого.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ЧЕМ ЗАНИМАЕМСЯ ============ -->
+<section class="sec" id="a-what" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Чем занимаемся</div>
+    <p class="st-h rv"><a href="#services" data-route="home" data-anchor="#services">Интеграция систем</a>, <a href="#services" data-route="home" data-anchor="#services">внедрение 1С и Битрикс24</a>, <a href="#services" data-route="home" data-anchor="#services">ИИ-автоматизация</a> и <a href="#services" data-route="home" data-anchor="#services">3D-моделирование</a> — пять направлений, которые обычно складываются в один проект.</p>
+  </div>
+</section>
+
+<!-- ============ ПРИНЦИПЫ ============ -->
+<section class="sec" id="a-strategy" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Как мы работаем</div>
+    <div class="pr">
+      <div class="pr-i rv"><span class="pr-n">Принцип 01</span><h3>Сначала аудит, потом продажа</h3><p>Мы не предлагаем решение, пока не посмотрели, как процессы устроены сейчас. Иногда по итогам аудита выясняется, что автоматизировать нужно вовсе не то, за чем к нам пришли, — и мы говорим об этом прямо.</p></div>
+      <div class="pr-i rv"><span class="pr-n">Принцип 02</span><h3>Внедряем частями</h3><p>Большой проект разбивается на этапы, каждый из которых приносит пользу сам по себе. Первый рабочий результат — через две недели, а не через полгода. Так виден прогресс и не страшно остановиться.</p></div>
+      <div class="pr-i rv"><span class="pr-n">Принцип 03</span><h3>Отдаём доступы и документацию</h3><p>Домены, серверы, исходный код и учётные записи оформляются на вашу компанию. Мы не удерживаем клиента доступами: если решите работать с другими — уйдёте со всем, включая регламенты.</p></div>
+      <div class="pr-i rv"><span class="pr-n">Принцип 04</span><h3>Отвечаем за цифры</h3><p>Успех проекта измеряется не закрытыми часами, а тем, сколько ручной работы исчезло и насколько сократился цикл. Эти показатели фиксируются до старта и проверяются после запуска.</p></div>
+      <div class="pr-i rv"><span class="pr-n">Принцип 05</span><h3>Говорим о рисках заранее</h3><p>Если сроки поедут или задача окажется сложнее, вы узнаете об этом в тот же день, а не на сдаче. Неприятные новости дешевле в начале, чем в конце.</p></div>
+      <div class="pr-i rv"><span class="pr-n">Принцип 06</span><h3>Остаёмся после запуска</h3><p>Сданный проект переходит на поддержку с открытым мониторингом: логи и метрики доступны вам, а не только нам. Сбой виден сразу, а не через неделю на сверке.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ИСТОРИЯ ============ -->
+<section class="sec" id="a-history" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">История</div>
+    <div class="tl" id="a-tl">
+      <div class="tl-line"><i id="a-tlFill"></i></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2017</span><h4>Начало</h4><p>Три инженера и первый проект: обмен между 1С и самописной CRM на производстве металлоконструкций. Компания зарегистрирована в Москве.</p></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2019</span><h4>Партнёрский статус 1С</h4><p>Получили статус франчайзи, собрали собственный отдел 1С-разработки. Перешли от разовых интеграций к полноценным внедрениям учётных систем.</p></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2021</span><h4>Битрикс24 и e-commerce</h4><p>Добавили направление внедрения корпоративного портала и обмен с маркетплейсами. Команда выросла до 18 человек.</p></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2023</span><h4>Отдел 3D и аналитики</h4><p>Запустили направление 3D-моделирования для производства и каталогов, а также сквозную аналитику. Первый конфигуратор с выгрузкой спецификации в 1С.</p></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2025</span><h4>ИИ в рабочих процессах</h4><p>Начали внедрять языковые модели там, где они реально экономят время: разбор входящих заявок, поиск по базе знаний, расшифровка звонков.</p></div>
+      <div class="tl-i rv"><span class="tl-dot"></span><span class="yr">2026</span><h4>240 проектов</h4><p>В команде 34 человека, четыре направления и постоянная поддержка у большинства клиентов. Работаем со всей Россией.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ КОМАНДА ============ -->
+<section class="sec" id="a-team" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Команда</div>
+    <div class="team rv">
+      <div><b><span data-c="12">0</span></b><span>инженеров интеграций и архитекторов</span></div>
+      <div><b><span data-c="9">0</span></b><span>1С-разработчиков</span></div>
+      <div><b><span data-c="5">0</span></b><span>аналитиков и менеджеров проектов</span></div>
+      <div><b><span data-c="4">0</span></b><span>специалистов по 3D и визуализации</span></div>
+      <div><b><span data-c="4">0</span></b><span>инженеров поддержки</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ НАГРАДЫ ============ -->
+<section class="sec" id="a-awards" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Статусы и награды</div>
+    <div class="aw rv">
+      <article class="aw-i">
+        <span class="mono">Интеграторы Битрикс24</span>
+        <div class="aw-top">
+          <div class="aw-n"><b><span data-c="28">0</span></b><i>место<br>2026</i></div>
+          <svg class="aw-ring" viewBox="0 0 78 78" style="--p:72" aria-hidden="true">
+            <circle class="tr" cx="39" cy="39" r="33" pathLength="100"/>
+            <circle class="pg" cx="39" cy="39" r="33" pathLength="100"/>
+            <text x="39" y="43" text-anchor="middle">+12</text>
+          </svg>
+        </div>
+        <p>Рейтинг партнёров по внедрению корпоративного портала</p>
+        <span class="aw-d">↑ +12 позиций за год</span>
+      </article>
+      <article class="aw-i">
+        <span class="mono">1С:Франчайзи</span>
+        <div class="aw-top">
+          <div class="aw-n"><b><span data-c="16">0</span></b><i>место<br>2026</i></div>
+          <svg class="aw-ring" viewBox="0 0 78 78" style="--p:84" aria-hidden="true">
+            <circle class="tr" cx="39" cy="39" r="33" pathLength="100"/>
+            <circle class="pg" cx="39" cy="39" r="33" pathLength="100"/>
+            <text x="39" y="43" text-anchor="middle">+9</text>
+          </svg>
+        </div>
+        <p>Рейтинг по числу успешно сданных проектов внедрения</p>
+        <span class="aw-d">↑ +9 позиций за год</span>
+      </article>
+      <article class="aw-i">
+        <span class="mono">Проекты автоматизации</span>
+        <div class="aw-top">
+          <div class="aw-n"><b><span data-c="240">0</span>+</b><i>проектов<br>с 2017</i></div>
+          <svg class="aw-ring" viewBox="0 0 78 78" style="--p:93" aria-hidden="true">
+            <circle class="tr" cx="39" cy="39" r="33" pathLength="100"/>
+            <circle class="pg" cx="39" cy="39" r="33" pathLength="100"/>
+            <text x="39" y="43" text-anchor="middle">93%</text>
+          </svg>
+        </div>
+        <p>Производство, оптовая торговля, e-commerce и услуги</p>
+        <span class="aw-d">93% продлевают сотрудничество</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ПИСЬМА ============ -->
+<section class="sec" id="a-letters" style="padding-top:0">
+  <div class="wrap">
+    <div class="lbl mono rv">Благодарственные письма</div>
+    <div class="rv">
+      <div class="rail" id="ltRail"></div>
+      <div class="sl-ctl">
+        <button class="arw" id="ltPrev" data-dir="prev" aria-label="Предыдущее письмо"><span class="ai"><svg class="i1" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 2 4 8l6 6" stroke="currentColor" stroke-width="1.7"/></svg><svg class="i2" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 2 4 8l6 6" stroke="currentColor" stroke-width="1.7"/></svg></span></button>
+        <button class="arw" id="ltNext" data-dir="next" aria-label="Следующее письмо"><span class="ai"><svg class="i1" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2l6 6-6 6" stroke="currentColor" stroke-width="1.7"/></svg><svg class="i2" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2l6 6-6 6" stroke="currentColor" stroke-width="1.7"/></svg></span></button>
+        <div class="bar"><i id="ltBar"></i></div>
+        <span class="sl-n" id="ltNum">01 / 05</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="page" id="page-contacts" hidden>
+
+
+<!-- ============ ЗАГОЛОВОК ============ -->
+<section class="top">
+  <div class="top-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
+  <div class="wrap top-grid">
+    <div>
+      <div class="crumbs mono fu"><a href="#/" data-route="home">Главная</a><span>→</span><span>Контакты</span></div>
+      <h1>
+        <span class="rl"><i>Контакты</i></span>
+        <span class="rl"><i>и <em>реквизиты</em></i></span>
+      </h1>
+      <p class="lead fu fd1">Прямые контакты, адрес офиса и реквизиты компании. Отвечаем в течение рабочего дня, консультация и оценка задачи бесплатны.</p>
+      <div class="top-cta fu fd2">
+        <button class="btn" data-go><span>Оставить заявку</span></button>
+        <a href="tel:+74951234567" class="btn btn-o"><span>Позвонить</span></a>
+      </div>
+    </div>
+
+    <div class="phone-box fu fd1">
+      <canvas id="phone" aria-label="Трёхмерная модель ретро-телефона"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ============ КОНТАКТНАЯ ИНФОРМАЦИЯ ============ -->
+<section class="sec" id="c-person" style="padding-top:88px">
+  <div class="wrap">
+    <div class="lbl mono rv">Контактная информация</div>
+
+    <div class="panel rv" id="c-office">
+      <div class="pn-a">
+        <span class="col-h">Руководитель</span>
+        <div class="p-top">
+          <div class="p-av">СШ</div>
+          <div>
+            <div class="p-n">Святослав Швед</div>
+            <div class="p-r">Директор, ООО «РУСИнтеграция»</div>
+          </div>
+        </div>
+        <div class="lnks">
+          <a class="lnk" href="tel:+74951234567"><b>+7 (495) 123-45-67</b><i>Телефон</i><svg class="ar" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13 13 3M13 3H6M13 3v7" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <a class="lnk" href="mailto:shved@rusintegraciya.ru"><b>shved@rusintegraciya.ru</b><i>Почта</i><svg class="ar" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13 13 3M13 3H6M13 3v7" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <a class="lnk" href="https://t.me/rusintegraciya"><b>@rusintegraciya</b><i>Telegram</i><svg class="ar" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13 13 3M13 3H6M13 3v7" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <a class="lnk" href="#/" data-route="home"><b>rusintegraciya.ru</b><i>Сайт</i><svg class="ar" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13 13 3M13 3H6M13 3v7" stroke="currentColor" stroke-width="1.5"/></svg></a>
+        </div>
+        <div class="p-act">
+          <button class="btn btn-sm" id="vcard"><span>Сохранить контакт</span></button>
+          <button class="btn btn-sm btn-o" data-go><span>Отправить заявку</span></button>
+        </div>
+      </div>
+
+      <div class="pn-b">
+        <span class="col-h">Офис</span>
+        <div class="map" aria-hidden="true">
+          <svg viewBox="0 0 600 256" fill="none">
+            <rect width="600" height="256" fill="#E6E7E2"/>
+            <g stroke="rgba(12,12,14,.08)" stroke-width="1">
+              <path d="M0 60h600M0 120h600M0 190h600M110 0v256M250 0v256M390 0v256M510 0v256"/>
+            </g>
+            <path d="M0 148 C120 140 190 176 300 168 C410 160 470 120 600 128" stroke="rgba(31,60,255,.3)" stroke-width="3" fill="none"/>
+            <rect x="130" y="70" width="80" height="38" rx="6" fill="rgba(12,12,14,.05)"/>
+            <rect x="300" y="196" width="120" height="40" rx="6" fill="rgba(12,12,14,.05)"/>
+            <rect x="430" y="46" width="90" height="52" rx="6" fill="rgba(12,12,14,.05)"/>
+            <circle class="map-wave" cx="300" cy="128" r="34" fill="none" stroke="rgba(31,60,255,.5)" stroke-width="2"/>
+            <g class="map-pin">
+              <path d="M300 108c-9 0-16 7-16 16 0 11 16 26 16 26s16-15 16-26c0-9-7-16-16-16z" fill="#1F3CFF"/>
+              <circle cx="300" cy="124" r="5.5" fill="#fff"/>
+            </g>
+          </svg>
+        </div>
+        <div class="addr">Москва, ул. Примерная, 12, офис 305
+          <span>Метро «Электрозаводская», 7 минут пешком. Приём по предварительной договорённости.</span>
+        </div>
+        <div class="hrs">
+          <div><span>Понедельник — пятница</span><b>10:00 — 19:00</b></div>
+          <div><span>Суббота, воскресенье</span><b>Выходной</b></div>
+          <div><span>Обращения по договору</span><b>SLA 4 часа</b></div>
+        </div>
+      </div>
+
+      <div class="pn-c">
+        <span class="col-h">Реквизиты</span>
+        <div class="req">
+        <div><dt>Название</dt><dd><span>ООО «РУСИнтеграция»</span><button data-copy="ООО «РУСИнтеграция»" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>ИНН</dt><dd><span>7701234567</span><button data-copy="7701234567" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>КПП</dt><dd><span>770101001</span><button data-copy="770101001" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>ОГРН</dt><dd><span>1177746123456</span><button data-copy="1177746123456" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>Расчётный счёт</dt><dd><span>40702810400000012345</span><button data-copy="40702810400000012345" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>Банк</dt><dd><span>АО «Пример Банк», Москва</span></dd></div>
+        <div><dt>БИК</dt><dd><span>044525000</span><button data-copy="044525000" aria-label="Скопировать"><svg width="12" height="12" viewBox="0 0 13 13" fill="none"><rect x="4" y="1" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M9 11.5a1.5 1.5 0 0 1-1.5 1.5H2.5A1.5 1.5 0 0 1 1 11.5V5" stroke="currentColor" stroke-width="1.3"/></svg></button></dd></div>
+        <div><dt>Юр. адрес</dt><dd><span>107023, Москва, ул. Примерная, 12</span></dd></div>
+        </div>
+        <p class="note">Карточка предприятия и шаблон договора — по запросу на hello@rusintegraciya.ru.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
 
 <!-- ================= TALK ================= -->
 <section class="sec" id="talk" style="padding-top:0">
@@ -830,11 +1257,10 @@ section[id],main[id]{scroll-margin-top:104px}
   <div class="wrap">
     <div class="ftr-top">
       <ul class="ftr-nav">
-        <li><a href="#works">Кейсы<i>01</i></a></li>
-        <li><a href="#services">Услуги<i>02</i></a></li>
-        <li><a href="#awards">Агентство<i>03</i></a></li>
-        <li><a href="#industries">Отрасли<i>04</i></a></li>
-        <li><a href="#talk">Контакты<i>05</i></a></li>
+        <li><a href="#services" data-route="home" data-anchor="#services">Услуги<i>01</i></a></li>
+        <li><a href="#works" data-route="home" data-anchor="#works">Проекты<i>02</i></a></li>
+        <li><a href="#/about" data-route="about">О нас<i>03</i></a></li>
+        <li><a href="#/contacts" data-route="contacts">Контакты<i>04</i></a></li>
       </ul>
       <div class="ftr-c">
         <a href="tel:+74951234567">+7 (495) 123-45-67</a>
@@ -846,7 +1272,7 @@ section[id],main[id]{scroll-margin-top:104px}
     <div class="ftr-big">IT <b>РОССИЯ</b></div>
     <div class="ftr-b">
       <div>© 2017–2026 РУСИнтеграция · Автоматизация и интеграция бизнес-систем</div>
-      <div><a href="#">Политика конфиденциальности</a> · <a href="#top">Наверх ↑</a></div>
+      <div><a href="#">Политика конфиденциальности</a> · <a href="#top" class="up-link" id="toTop">Наверх ↑</a></div>
     </div>
   </div>
 </footer>
@@ -897,6 +1323,8 @@ section[id],main[id]{scroll-margin-top:104px}
 </div>
 
 <button class="btn sticky" id="sticky" data-go><span>Обсудить проект</span></button>
+
+<div class="toast" id="toast">Скопировано</div>
 
 <div class="cook" id="cook">
   <b>Файлы cookie</b>
@@ -1102,6 +1530,14 @@ var CLIENTS=['Металлконструкт','ОптТорг','СервисПр
 })();
 
 /* ============ появление ============ */
+function countUpEl(c){
+  var to=+c.getAttribute('data-c'),t0=null;
+  requestAnimationFrame(function st(t){
+    if(!t0)t0=t;var pr=Math.min((t-t0)/1500,1);
+    c.textContent=Math.floor(to*(1-Math.pow(1-pr,3)));
+    if(pr<1)requestAnimationFrame(st);
+  });
+}
 var io=new IntersectionObserver(function(en){en.forEach(function(e){
   if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);
   $$('[data-c]',e.target).forEach(function(c){
@@ -1599,6 +2035,457 @@ var openForm=function(){};
 
 /* запускаем наблюдатель после отрисовки блоков */
 setTimeout(function(){$$('.rv').forEach(function(el){io.observe(el)})},60);
+
+/* ==================== данные писем ==================== */
+var LETTERS=[
+ {co:'Металлконструкт',y:'2026',role:'Производство металлоконструкций',
+  short:'За внедрение обмена между 1С:ERP и Битрикс24',
+  text:['Выражаем благодарность компании «РУСИнтеграция» за проект по объединению системы продаж и производственного учёта.',
+        'Работы выполнены в согласованные сроки. Отдельно отмечаем подход команды к запуску: обмен вводился поэтапно, параллельно со старым порядком работы, что позволило избежать остановки отгрузок.',
+        'После внедрения объём ручного ввода сократился более чем на две трети, а время от подтверждения заказа до постановки в цех — с двух дней до трёх часов. Рекомендуем компанию как ответственного подрядчика.'],
+  sign:'Ковалёв А. И.',pos:'Коммерческий директор'},
+ {co:'ОптТорг',y:'2025',role:'Оптовая торговля и e-commerce',
+  short:'За автоматизацию обмена с маркетплейсами',
+  text:['Благодарим команду «РУСИнтеграция» за работу по автоматизации обмена остатками и ценами с торговыми площадками.',
+        'До начала проекта обновление данных занимало у сотрудников несколько часов ежедневно и сопровождалось ошибками. Специалисты подрядчика провели обследование, предложили решение с очередью и приоритетами и реализовали его за четыре недели.',
+        'Количество отмен заказов снизилось более чем на треть, случаи пересорта практически прекратились. Отдельно благодарим за понятную документацию и обучение сотрудников.'],
+  sign:'Тимофеева М. С.',pos:'Руководитель IT-отдела'},
+ {co:'СервисПро',y:'2025',role:'Обслуживание инженерных систем',
+  short:'За внедрение ИИ-разбора входящих обращений',
+  text:['Компания «РУСИнтеграция» выполнила для нас проект по автоматической обработке входящих заявок с использованием языковых моделей.',
+        'Мы отнеслись к идее с осторожностью, однако подрядчик предложил поэтапный запуск с контролем качества и возможностью в любой момент вернуться к ручному разбору.',
+        'В результате разбор обращений перестал занимать рабочее время трёх сотрудников, а точность классификации превысила 90%. Благодарим за профессиональный подход и честную оценку рисков на старте.'],
+  sign:'Сорокин Д. В.',pos:'Генеральный директор'},
+ {co:'МебельГрад',y:'2025',role:'Мебельное производство',
+  short:'За создание 3D-каталога и конфигуратора',
+  text:['Выражаем признательность компании «РУСИнтеграция» за разработку трёхмерного каталога продукции и конфигуратора для сайта.',
+        'Командой смоделировано 240 позиций с проработкой фурнитуры и материалов. Конфигуратор передаёт спецификацию непосредственно в учётную систему, что избавило менеджеров от ручного расчёта.',
+        'Конверсия карточки товара выросла на 18%, необходимость в фотосъёмке новых моделей отпала. Рекомендуем как подрядчика, внимательного к деталям производства.'],
+  sign:'Белова И. А.',pos:'Директор по маркетингу'},
+ {co:'СтройХолдинг',y:'2024',role:'Строительство',
+  short:'За внедрение корпоративного портала',
+  text:['Благодарим «РУСИнтеграцию» за внедрение корпоративного портала для четырёх юридических лиц холдинга.',
+        'Отдельно отмечаем работу с сопротивлением на местах: для прорабов был разработан отдельный сценарий взаимодействия через мессенджер, что обеспечило реальное наполнение системы данными с объектов.',
+        'Подготовка сводной отчётности сократилась с недели до одного дня. Сотрудничество продолжается в формате поддержки и развития.'],
+  sign:'Гордеев П. Н.',pos:'Финансовый директор'}
+];
+
+/* ==================== уведомление ==================== */
+var toastTimer=null;
+function toast(txt){
+  var t=$('#toast');if(!t)return;
+  t.textContent=txt;t.classList.add('on');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('on')},2600);
+}
+
+/* ==================== страница «О нас» ==================== */
+function initAbout(){
+  /* линия истории */
+  var tl=$('#a-tl'),fill=$('#a-tlFill');
+  if(tl){
+    var upd=function(){
+      if($('#page-about').hidden)return;
+      var r=tl.getBoundingClientRect(),p=(innerHeight*.75-r.top)/r.height;
+      fill.style.height=Math.max(0,Math.min(1,p))*100+'%';
+    };
+    addEventListener('scroll',upd,{passive:true});upd();
+  }
+  /* ==================== галерея писем ==================== */
+(function(){
+  var rail=$('#ltRail');
+  /* лист письма рисуем кодом — без внешних картинок */
+  function sheet(i){
+    var lines='';
+    for(var k=0;k<9;k++){
+      var w=k===8?120:(k%3===0?200:230)-((k*13)%40);
+      lines+='<rect x="34" y="'+(126+k*17)+'" width="'+w+'" height="5" rx="2.5" fill="rgba(12,12,14,.13)"/>';
+    }
+    return '<svg viewBox="0 0 290 392" xmlns="http://www.w3.org/2000/svg">'+
+      '<rect width="290" height="392" fill="#fff"/>'+
+      '<rect x="34" y="34" width="54" height="14" rx="3" fill="#1F3CFF"/>'+
+      '<rect x="94" y="36" width="72" height="10" rx="3" fill="rgba(12,12,14,.16)"/>'+
+      '<rect x="34" y="72" width="176" height="9" rx="3" fill="rgba(12,12,14,.55)"/>'+
+      '<rect x="34" y="90" width="120" height="9" rx="3" fill="rgba(12,12,14,.3)"/>'+
+      lines+
+      '<circle cx="228" cy="322" r="30" fill="none" stroke="rgba(31,60,255,.4)" stroke-width="2"/>'+
+      '<circle cx="228" cy="322" r="22" fill="none" stroke="rgba(31,60,255,.25)" stroke-width="1.4"/>'+
+      '<path d="M212 322h32M228 306v32" stroke="rgba(31,60,255,.22)" stroke-width="1.4"/>'+
+      '<path d="M40 330c14-16 22 10 34-4s16 12 30-6" stroke="rgba(12,12,14,.42)" stroke-width="2.4" fill="none" stroke-linecap="round"/>'+
+      '<rect x="34" y="352" width="96" height="6" rx="3" fill="rgba(12,12,14,.16)"/>'+
+      '</svg>';
+  }
+  LETTERS.forEach(function(L,i){
+    var b=document.createElement('button');b.className='lt';b.type='button';
+    b.innerHTML='<div class="lt-p">'+sheet(i)+'</div>'+
+      '<div class="lt-m"><b>'+L.co+'</b><span>'+L.y+'</span></div>'+
+      '<p class="lt-d">'+L.short+'</p>';
+    b.addEventListener('click',function(){
+      openM('<div class="mono">Благодарственное письмо · '+L.y+'</div>'+
+        '<h3>'+L.co+'</h3>'+
+        '<p style="color:var(--muted);font-size:14.5px;margin-bottom:22px">'+L.role+'</p>'+
+        L.text.map(function(t){return '<p>'+t+'</p>'}).join('')+
+        '<div class="m-sign"><b>'+L.sign+'</b>'+L.pos+', '+L.co+'</div>'+
+        '<div class="m-c"><button class="btn" data-go><span>Обсудить задачу</span></button>'+
+        '<button class="btn btn-o" data-mclose><span>Закрыть</span></button></div>');
+    });
+    rail.appendChild(b);
+  });
+
+  var prev=$('#ltPrev'),next=$('#ltNext'),bar=$('#ltBar'),num=$('#ltNum');
+  function step(){var c=$('.lt',rail);return c?c.getBoundingClientRect().width+16:306}
+  function upd(){
+    var max=rail.scrollWidth-rail.clientWidth,pr=max>0?rail.scrollLeft/max:0;
+    var per=Math.max(1,Math.round(rail.clientWidth/step())),pages=Math.max(1,LETTERS.length-per+1);
+    var idx=Math.min(pages-1,Math.round(pr*(pages-1)));
+    bar.style.width=(100/pages)+'%';bar.style.transform='translateX('+(idx*100)+'%)';
+    num.textContent=('0'+(idx+1)).slice(-2)+' / '+('0'+LETTERS.length).slice(-2);
+    prev.disabled=rail.scrollLeft<6;next.disabled=rail.scrollLeft>=max-6;
+  }
+  prev.addEventListener('click',function(){rail.scrollBy({left:-step(),behavior:RM?'auto':'smooth'})});
+  next.addEventListener('click',function(){rail.scrollBy({left:step(),behavior:RM?'auto':'smooth'})});
+  rail.addEventListener('scroll',upd,{passive:true});
+  addEventListener('resize',upd);
+  setTimeout(upd,80);
+})();
+  /* ==================== 3D: награда ==================== */
+(function(){
+  var cv=$('#trophy');if(!cv||typeof THREE==='undefined')return;
+  try{
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
+    cam.position.set(0,.4,7.4);cam.lookAt(0,-.05,0);
+    var g=new THREE.Group();sc.add(g);g.rotation.set(.08,-.4,0);g.position.y=-.35;
+
+    function M(c,sh,sp){return new THREE.MeshPhongMaterial({color:c,shininess:sh||150,specular:sp||0xFFF3CF})}
+    var GOLD=M(0xD8A93C,190),GOLD2=M(0xB98C2C,150),BASE=M(0x1D1F26,90,0x99A2C0),ACC=M(0x1F3CFF,120,0xFFFFFF);
+
+    /* чаша построена вращением профиля — стенка с толщиной и ободком */
+    var prof=[[.06,0],[.34,.03],[.5,.16],[.6,.42],[.64,.66],[.66,.78],
+              [.58,.79],[.56,.66],[.52,.42],[.42,.18],[.06,.08]]
+      .map(function(q){return new THREE.Vector2(q[0],q[1])});
+    var bowl=new THREE.Mesh(new THREE.LatheGeometry(prof,52),GOLD);
+    bowl.position.y=.62;g.add(bowl);
+
+    /* ручки */
+    [-1,1].forEach(function(sgn){
+      var h=new THREE.Mesh(new THREE.TorusGeometry(.23,.055,14,34,Math.PI*1.35),GOLD);
+      h.position.set(sgn*.6,1.06,0);
+      h.rotation.z=sgn>0?-.5:Math.PI+.5;
+      g.add(h);
+    });
+
+    /* ножка и основание */
+    var stem=new THREE.Mesh(new THREE.CylinderGeometry(.12,.2,.42,24),GOLD2);
+    stem.position.y=.42;g.add(stem);
+    var knob=new THREE.Mesh(new THREE.SphereGeometry(.16,22,16),GOLD);
+    knob.position.y=.58;g.add(knob);
+    var plate=new THREE.Mesh(new THREE.CylinderGeometry(.54,.6,.14,28),GOLD2);
+    plate.position.y=.16;g.add(plate);
+    var base=new THREE.Mesh(new THREE.CylinderGeometry(.72,.78,.28,28),BASE);
+    base.position.y=-.05;g.add(base);
+    var tag=new THREE.Mesh(new THREE.BoxGeometry(.62,.15,.03),ACC);
+    tag.position.set(0,-.02,.76);g.add(tag);
+
+    /* звезда на чаше */
+    (function(){
+      var sh=new THREE.Shape(),R=.21,r=.095;
+      for(var i=0;i<10;i++){
+        var a=-Math.PI/2+i*Math.PI/5,rad=i%2?r:R;
+        var x=Math.cos(a)*rad,y=Math.sin(a)*rad;
+        if(i===0)sh.moveTo(x,y);else sh.lineTo(x,y);
+      }
+      sh.closePath();
+      var st=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.05,bevelEnabled:true,
+        bevelSize:.015,bevelThickness:.015,bevelSegments:1}),ACC);
+      st.position.set(0,1.16,.5);g.add(st);
+    })();
+
+    /* мягкая тень */
+    (function(){
+      var c=document.createElement('canvas');c.width=c.height=256;
+      var x=c.getContext('2d'),gr=x.createRadialGradient(128,128,10,128,128,124);
+      gr.addColorStop(0,'rgba(14,16,26,.34)');gr.addColorStop(.6,'rgba(14,16,26,.12)');
+      gr.addColorStop(1,'rgba(14,16,26,0)');
+      x.fillStyle=gr;x.fillRect(0,0,256,256);
+      var pl=new THREE.Mesh(new THREE.PlaneGeometry(4.2,4.2),
+        new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+      pl.rotation.x=-Math.PI/2;pl.position.y=-.19;g.add(pl);
+    })();
+
+    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8A93B5,.85));
+    var d1=new THREE.DirectionalLight(0xFFFFFF,1.35);d1.position.set(3,6,6);sc.add(d1);
+    var d2=new THREE.DirectionalLight(0xFFE9B8,.7);d2.position.set(-5,2,3);sc.add(d2);
+    var d3=new THREE.PointLight(0x1F3CFF,1,26);d3.position.set(-3,-1,4);sc.add(d3);
+
+    function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
+      rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+    size();addEventListener('resize',size);
+
+    var vis=true,dg=false,vx=0,vy=0,px=0,py=0,touch=false;
+    new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
+    cv.addEventListener('pointerdown',function(e){dg=true;touch=(e.pointerType==='touch');
+      px=e.clientX;py=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(err){}});
+    cv.addEventListener('pointermove',function(e){if(!dg)return;
+      var dx=e.clientX-px,dy=e.clientY-py;
+      if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
+      vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
+      g.rotation.y+=vy;g.rotation.x=Math.max(-.15,Math.min(.5,g.rotation.x+vx))});
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      cv.addEventListener(ev,function(){dg=false})});
+
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(!vis)return;
+      if(!dg){vx*=.93;vy*=.93;
+        g.rotation.y+=vy+(RM?0:.0042);
+        g.rotation.x=Math.max(-.15,Math.min(.5,g.rotation.x+vx))}
+      rn.render(sc,cam);
+    })();
+  }catch(e){cv.parentElement.style.display='none'}
+})();
+  $$('#page-about .top [data-c]').forEach(countUpEl);
+}
+
+/* ==================== страница «Контакты» ==================== */
+function initContacts(){
+  /* копирование реквизитов */
+  $$('#page-contacts [data-copy]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var txt=b.getAttribute('data-copy');
+      function fallback(){
+        var ta=document.createElement('textarea');
+        ta.value=txt;ta.style.cssText='position:fixed;left:-9999px';
+        document.body.appendChild(ta);ta.select();
+        try{document.execCommand('copy');toast('Скопировано')}catch(e){toast('Не удалось скопировать')}
+        document.body.removeChild(ta);
+      }
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){toast('Скопировано')},fallback);
+      }else fallback();
+    });
+  });
+  /* визитка */
+  var vc=$('#vcard');
+  if(vc)vc.addEventListener('click',function(){
+    var v=['BEGIN:VCARD','VERSION:3.0','N:Швед;Святослав;;;','FN:Святослав Швед',
+      'ORG:РУСИнтеграция','TITLE:Директор',
+      'TEL;TYPE=WORK,VOICE:+74951234567',
+      'EMAIL;TYPE=WORK:shved@rusintegraciya.ru',
+      'URL:https://rusintegraciya.ru',
+      'ADR;TYPE=WORK:;;ул. Примерная, 12, офис 305;Москва;;107023;Россия',
+      'END:VCARD'].join('\r\n');
+    try{
+      var blob=new Blob([v],{type:'text/vcard;charset=utf-8'});
+      var url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download='shved-rusintegraciya.vcf';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(url)},1500);
+      toast('Контакт сохранён');
+    }catch(e){toast('Скачивание недоступно в этом браузере')}
+  });
+  /* ---------- 3D: островок с домиком и указателем ---------- */
+(function(){
+  var cv=$('#phone');if(!cv||typeof THREE==='undefined')return;
+  try{
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+    rn.setPixelRatio(Math.min(devicePixelRatio,2));
+    if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,80);
+    cam.position.set(0,1.15,8.4);cam.lookAt(0,.05,0);
+
+    var root=new THREE.Group();sc.add(root);root.rotation.set(.06,-.5,0);
+
+    /* низкополигональный материал: плоские грани держат стиль */
+    function M(c,sh){return new THREE.MeshPhongMaterial({color:c,shininess:sh||18,
+      specular:0x6E7590,flatShading:true})}
+    var GRASS=M(0x74C96A),GRASS2=M(0x5FB457),SOIL=M(0xB98A5E),SOIL2=M(0x8E6A47),
+        CREAM=M(0xF2EFE4,30),BLUE=M(0x1F3CFF,60),NAVY=M(0x16308F,60),
+        LIME=M(0xE8FF4D,50),WOOD=M(0x8E6A47),TREE=M(0x3E9E58),TREE2=M(0x2F8449),
+        PIPE=M(0x2FA84F,45),WHITE=M(0xFFFFFF,10),DARK=M(0x2A2C34);
+
+    function add(g,mesh,x,y,z){mesh.position.set(x||0,y||0,z||0);g.add(mesh);return mesh}
+
+    /* ===== парящий остров ===== */
+    var isle=new THREE.Group();root.add(isle);
+    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(1.58,1.5,.42,14),GRASS),0,-.21,0);
+    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(1.5,.62,1.15,14),SOIL),0,-1,0);
+    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(.62,.08,.55,10),SOIL2),0,-1.85,0);
+    add(isle,new THREE.Mesh(new THREE.IcosahedronGeometry(.2,0),GRASS2),-1.05,-.02,.55);
+    add(isle,new THREE.Mesh(new THREE.IcosahedronGeometry(.15,0),SOIL2),1.15,-.06,-.3);
+    add(isle,new THREE.Mesh(new THREE.SphereGeometry(.5,10,6),GRASS),-.2,-.24,-.15).scale.y=.5;
+
+    /* ===== домик ===== */
+    var house=new THREE.Group();root.add(house);house.position.set(-.22,0,-.12);
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.86,.64,.78),CREAM),0,.32,0);
+    var roof=add(house,new THREE.Mesh(new THREE.ConeGeometry(.78,.52,4),BLUE),0,.9,0);
+    roof.rotation.y=Math.PI/4;
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.15,.32,.15),CREAM),.24,.92,-.18);
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.19,.06,.19),DARK),.24,1.1,-.18);
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.24,.34,.04),WOOD),-.16,.17,.4);
+    add(house,new THREE.Mesh(new THREE.SphereGeometry(.03,8,6),LIME),-.07,.19,.42);
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.04),NAVY),.22,.42,.4);
+    add(house,new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.04),NAVY),-.42,.42,0).rotation.y=Math.PI/2;
+
+    /* дымок из трубы */
+    var smoke=[];
+    for(var i=0;i<3;i++){
+      var pf=add(house,new THREE.Mesh(new THREE.IcosahedronGeometry(.09+i*.03,0),WHITE),.24,1.24+i*.24,-.18);
+      pf.material=WHITE.clone();pf.material.transparent=true;pf.material.opacity=.9-i*.22;
+      smoke.push(pf);
+    }
+
+    /* ===== указатель со стрелкой ===== */
+    function arrowGeo(d){
+      var sh=new THREE.Shape();
+      sh.moveTo(-.38,-.11);sh.lineTo(.08,-.11);sh.lineTo(.08,-.25);sh.lineTo(.42,0);
+      sh.lineTo(.08,.25);sh.lineTo(.08,.11);sh.lineTo(-.38,.11);sh.closePath();
+      var g=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:true,bevelSize:.02,
+        bevelThickness:.02,bevelSegments:1});
+      g.translate(0,0,-d/2);return g;
+    }
+    var sign=new THREE.Group();root.add(sign);sign.position.set(.72,0,.52);
+    add(sign,new THREE.Mesh(new THREE.CylinderGeometry(.05,.06,.92,8),WOOD),0,.46,0);
+    var board=add(sign,new THREE.Mesh(arrowGeo(.1),LIME),0,.88,0);
+    board.rotation.y=-.5;
+
+    /* большая парящая стрелка над домом */
+    var big=add(root,new THREE.Mesh(arrowGeo(.16),BLUE),-.22,2.05,-.12);
+    big.rotation.z=-Math.PI/2;big.scale.setScalar(1.15);
+
+    /* ===== деревья, труба, монетка ===== */
+    function tree(x,z,s){
+      var t=new THREE.Group();root.add(t);t.position.set(x,0,z);t.scale.setScalar(s);
+      add(t,new THREE.Mesh(new THREE.CylinderGeometry(.07,.1,.34,7),WOOD),0,.17,0);
+      add(t,new THREE.Mesh(new THREE.ConeGeometry(.34,.5,7),TREE),0,.55,0);
+      add(t,new THREE.Mesh(new THREE.ConeGeometry(.26,.42,7),TREE2),0,.86,0);
+      return t;
+    }
+    tree(-1.02,.42,1);tree(1.05,-.5,.8);tree(-.95,-.62,.62);
+    var pipe=new THREE.Group();root.add(pipe);pipe.position.set(.85,0,-.05);
+    add(pipe,new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.42,12),PIPE),0,.21,0);
+    add(pipe,new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.14,12),PIPE),0,.48,0);
+    var coin=add(root,new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.045,18),LIME),.85,1.05,-.05);
+    coin.rotation.x=Math.PI/2;
+
+    /* ===== облака ===== */
+    function cloud(x,y,z,s){
+      var c=new THREE.Group();root.add(c);c.position.set(x,y,z);c.scale.setScalar(s);
+      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.3,0),WHITE),0,0,0);
+      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.22,0),WHITE),.3,-.05,.05);
+      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.18,0),WHITE),-.28,-.06,-.04);
+      return c;
+    }
+    var clouds=[cloud(-1.8,1.35,-.5,1),cloud(1.75,1.75,.4,.8),cloud(.2,2.55,-1.1,.62)];
+
+    /* ===== свет ===== */
+    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8A93B5,.95));
+    var d1=new THREE.DirectionalLight(0xFFFFFF,1.15);d1.position.set(4,7,6);sc.add(d1);
+    var d2=new THREE.DirectionalLight(0xCFDCFF,.5);d2.position.set(-5,2,-3);sc.add(d2);
+    var d3=new THREE.PointLight(0x1F3CFF,.9,26);d3.position.set(-4,-1,4);sc.add(d3);
+
+    function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
+      rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+    size();addEventListener('resize',size);
+
+    var vis=true,dg=false,vx=0,vy=0,px=0,py=0,touch=false;
+    new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
+    cv.addEventListener('pointerdown',function(e){dg=true;touch=(e.pointerType==='touch');
+      px=e.clientX;py=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(err){}});
+    cv.addEventListener('pointermove',function(e){if(!dg)return;
+      var dx=e.clientX-px,dy=e.clientY-py;
+      if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
+      vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
+      root.rotation.y+=vy;root.rotation.x=Math.max(-.15,Math.min(.6,root.rotation.x+vx))});
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      cv.addEventListener(ev,function(){dg=false})});
+
+    var cl=new THREE.Clock();
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(!vis)return;
+      var t=cl.getElapsedTime();
+      if(!dg){vx*=.93;vy*=.93;
+        root.rotation.y+=vy+(RM?0:.0042);
+        root.rotation.x=Math.max(-.15,Math.min(.6,root.rotation.x+vx))}
+      if(!RM){
+        root.position.y=Math.sin(t*.8)*.07;
+        big.position.y=2.05+Math.sin(t*1.9)*.13;
+        big.rotation.z=-Math.PI/2+Math.sin(t*1.9)*.05;
+        coin.rotation.y+=.045;
+        coin.position.y=1.05+Math.sin(t*1.6)*.06;
+        clouds.forEach(function(c,i){
+          c.position.y+=Math.sin(t*.6+i*1.7)*.0012;
+          c.rotation.y=Math.sin(t*.25+i)*.15;
+        });
+        smoke.forEach(function(pf,i){
+          var k=(t*.45+i*.34)%1;
+          pf.position.y=1.24+k*.75;
+          pf.position.x=.24+Math.sin(k*4+i)*.09;
+          pf.material.opacity=(1-k)*.85;
+          pf.scale.setScalar(.7+k*.8);
+        });
+      }
+      rn.render(sc,cam);
+    })();
+  }catch(e){cv.parentElement.style.display='none'}
+})();
+}
+
+/* ==================== кнопка «Наверх» ==================== */
+(function(){
+  var t=$('#toTop');if(!t)return;
+  t.addEventListener('click',function(e){
+    e.preventDefault();
+    window.scrollTo({top:0,behavior:RM?'auto':'smooth'});
+  });
+})();
+
+/* ==================== маршрутизация ==================== */
+var goTo;
+(function(){
+  var pages={home:$('#page-home'),about:$('#page-about'),contacts:$('#page-contacts')};
+  var started={},current='';
+  function boot(name){
+    if(started[name])return;started[name]=true;
+    try{ if(name==='about')initAbout(); if(name==='contacts')initContacts(); }catch(e){}
+  }
+  function show(name,anchor){
+    if(!pages[name])name='home';
+    if(current!==name){
+      Object.keys(pages).forEach(function(k){pages[k].hidden=(k!==name)});
+      current=name;boot(name);
+      /* холсты внутри скрытых блоков имели нулевой размер — пересчитываем */
+      dispatchEvent(new Event('resize'));
+      $$('[data-route]').forEach(function(a){
+        a.classList.toggle('act',a.getAttribute('data-route')===name&&!a.getAttribute('data-anchor'));
+      });
+    }
+    if(anchor){
+      var el=document.querySelector(anchor);
+      if(el)setTimeout(function(){el.scrollIntoView({behavior:RM?'auto':'smooth'})},RM?0:80);
+    }else window.scrollTo(0,0);
+  }
+  function fromHash(){
+    var h=location.hash;
+    if(h.indexOf('#/')===0)show(h.slice(2)||'home',null);
+    else if(h&&h.length>1)show('home',h);
+    else show('home',null);
+  }
+  goTo=show;
+  addEventListener('hashchange',fromHash);
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('[data-route]');if(!a)return;
+    e.preventDefault();
+    var nav=$('#nav'),bg=$('#burger');
+    if(nav)nav.classList.remove('open');if(bg)bg.classList.remove('on');
+    var target=a.getAttribute('data-anchor')||(a.getAttribute('data-route')==='home'?'#/':'#/'+a.getAttribute('data-route'));
+    if(location.hash===target)fromHash();else location.hash=target;
+  });
+  fromHash();
+})();
+
 })();
 </script>
 </body>
