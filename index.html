@@ -25,7 +25,6 @@
   --wrap:1400px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body.lock{overflow:hidden}
 a{color:inherit;text-decoration:none}
@@ -544,7 +543,6 @@ section[id],main[id]{scroll-margin-top:104px}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
   .rv,.up{opacity:1;transform:none}.claim .l>i{transform:none}
-  html{scroll-behavior:auto}
 }
 
 /* ==================== многостраничность ==================== */
