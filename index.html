@@ -1403,7 +1403,7 @@ section[id],main[id]{scroll-margin-top:104px}
         <div><b><span data-c="93">0</span>%</b><u>продлевают работу</u></div>
       </div>
     </div>
-    <div class="trophy-box fu fd1"><canvas id="trophy" aria-label="Трёхмерная модель награды"></canvas></div>
+    <div class="trophy-box fu fd1"><canvas id="trophy" aria-label="Трёхмерный фирменный знак компании"></canvas></div>
   </div>
 </section>
 
@@ -1758,8 +1758,6 @@ section[id],main[id]{scroll-margin-top:104px}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2600,77 +2598,84 @@ function initAbout(){
   addEventListener('resize',upd);
   setTimeout(upd,80);
 })();
-  /* ==================== 3D: награда ==================== */
+  /* ==================== 3D: фирменный знак ==================== */
 (function(){
   var cv=$('#trophy');if(!cv||typeof THREE==='undefined')return;
   try{
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:'low-power'});
     rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
     var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
-    cam.position.set(0,.4,7.4);cam.lookAt(0,-.05,0);
-    var g=new THREE.Group();sc.add(g);g.rotation.set(.08,-.4,0);g.position.y=-.35;
+    cam.position.set(0,0,6.6);cam.lookAt(0,0,0);
+    var root=new THREE.Group();sc.add(root);root.rotation.set(.14,-.42,0);
 
-    function M(c,sh,sp){return new THREE.MeshPhongMaterial({color:c,shininess:sh||150,specular:sp||0xFFF3CF})}
-    var GOLD=M(0xD8A93C,190),GOLD2=M(0xB98C2C,150),BASE=M(0x1D1F26,90,0x99A2C0),ACC=M(0x1F3CFF,120,0xFFFFFF);
+    /* цвета переводим в линейное пространство — вывод идёт в sRGB */
+    function M(hex){
+      var m=new THREE.MeshPhongMaterial({color:hex,shininess:22,specular:0x3A4A80});
+      if(m.color.convertSRGBToLinear)m.color.convertSRGBToLinear();
+      if(m.specular.convertSRGBToLinear)m.specular.convertSRGBToLinear();
+      return m;
+    }
+    var INK=M(0x0C0C0E), ACC=M(0x1F3CFF);
 
-    /* чаша построена вращением профиля — стенка с толщиной и ободком */
-    var prof=[[.06,0],[.34,.03],[.5,.16],[.6,.42],[.64,.66],[.66,.78],
-              [.58,.79],[.56,.66],[.52,.42],[.42,.18],[.06,.08]]
-      .map(function(q){return new THREE.Vector2(q[0],q[1])});
-    var bowl=new THREE.Mesh(new THREE.LatheGeometry(prof,52),GOLD);
-    bowl.position.y=.62;g.add(bowl);
+    var DEPTH=1.1, BEV=.22, SEG=MOBILE?48:128, BSEG=MOBILE?6:16;
+    /* перемычки делаем тоньше узлов: так их грани не совпадают с гранями
+       кольца и точек, и в местах пересечения нет дрожания пикселей */
+    var BAR_DEPTH=.86, BAR_BEV=.17;
+    function solid(shape,mat,dep,bev){
+      dep=dep||DEPTH;bev=bev||BEV;
+      var g=new THREE.ExtrudeGeometry(shape,{depth:dep,bevelEnabled:true,bevelSize:bev,
+        bevelThickness:bev,bevelSegments:BSEG,curveSegments:SEG});
+      g.translate(0,0,-dep/2);
+      return new THREE.Mesh(g,mat);
+    }
+    function disc(x,y,r,mat){
+      var s=new THREE.Shape();s.absarc(0,0,r,0,Math.PI*2,false);
+      var m=solid(s,mat);m.position.set(x,y,0);root.add(m);return m;
+    }
+    function ring(x,y,ro,ri,mat){
+      var s=new THREE.Shape();s.absarc(0,0,ro,0,Math.PI*2,false);
+      var h=new THREE.Path();h.absarc(0,0,ri,0,Math.PI*2,true);s.holes.push(h);
+      var m=solid(s,mat);m.position.set(x,y,0);root.add(m);return m;
+    }
+    /* перемычка со скруглёнными концами */
+    function bar(x1,y1,x2,y2,w,mat){
+      var len=Math.hypot(x2-x1,y2-y1),r=w/2;
+      var s=new THREE.Shape();
+      s.moveTo(0,-r);s.lineTo(len,-r);
+      s.absarc(len,0,r,-Math.PI/2,Math.PI/2,false);
+      s.lineTo(0,r);
+      s.absarc(0,0,r,Math.PI/2,Math.PI*1.5,false);
+      var m=solid(s,mat,BAR_DEPTH,BAR_BEV);
+      m.position.set(x1,y1,0);
+      m.rotation.z=Math.atan2(y2-y1,x2-x1);
+      root.add(m);return m;
+    }
 
-    /* ручки */
-    [-1,1].forEach(function(sgn){
-      var h=new THREE.Mesh(new THREE.TorusGeometry(.23,.055,14,34,Math.PI*1.35),GOLD);
-      h.position.set(sgn*.6,1.06,0);
-      h.rotation.z=sgn>0?-.5:Math.PI+.5;
-      g.add(h);
+    /* ---- узлы знака ---- */
+    var RC=[-6,0], RO=4, RI=2.4, DR=2.4, BW=1.5;
+    var DOTS=[[6.5,6.5,ACC],[6.5,-6.5,INK]];
+
+    /* Концы перемычек считаем, а не подбираем: торец со скруглением и фаской
+       не должен заходить внутрь отверстия кольца и вылезать за край точки. */
+    var CAP=BW/2+BAR_BEV;
+    DOTS.forEach(function(d){
+      var L=Math.hypot(d[0]-RC[0],d[1]-RC[1]);
+      var ux=(d[0]-RC[0])/L, uy=(d[1]-RC[1])/L;
+      var a=RI+CAP+.18;              /* отступ от центра кольца */
+      var b=DR-CAP-.18;              /* отступ от центра точки  */
+      bar(RC[0]+ux*a, RC[1]+uy*a, d[0]-ux*b, d[1]-uy*b, BW, INK);
     });
+    ring(RC[0],RC[1],RO,RI,INK);
+    DOTS.forEach(function(d){disc(d[0],d[1],DR,d[2])});
 
-    /* ножка и основание */
-    var stem=new THREE.Mesh(new THREE.CylinderGeometry(.12,.2,.42,24),GOLD2);
-    stem.position.y=.42;g.add(stem);
-    var knob=new THREE.Mesh(new THREE.SphereGeometry(.16,22,16),GOLD);
-    knob.position.y=.58;g.add(knob);
-    var plate=new THREE.Mesh(new THREE.CylinderGeometry(.54,.6,.14,28),GOLD2);
-    plate.position.y=.16;g.add(plate);
-    var base=new THREE.Mesh(new THREE.CylinderGeometry(.72,.78,.28,28),BASE);
-    base.position.y=-.05;g.add(base);
-    var tag=new THREE.Mesh(new THREE.BoxGeometry(.62,.15,.03),ACC);
-    tag.position.set(0,-.02,.76);g.add(tag);
+    root.scale.setScalar(.167);
 
-    /* звезда на чаше */
-    (function(){
-      var sh=new THREE.Shape(),R=.21,r=.095;
-      for(var i=0;i<10;i++){
-        var a=-Math.PI/2+i*Math.PI/5,rad=i%2?r:R;
-        var x=Math.cos(a)*rad,y=Math.sin(a)*rad;
-        if(i===0)sh.moveTo(x,y);else sh.lineTo(x,y);
-      }
-      sh.closePath();
-      var st=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.05,bevelEnabled:true,
-        bevelSize:.015,bevelThickness:.015,bevelSegments:1}),ACC);
-      st.position.set(0,1.16,.5);g.add(st);
-    })();
-
-    /* мягкая тень */
-    (function(){
-      var c=document.createElement('canvas');c.width=c.height=256;
-      var x=c.getContext('2d'),gr=x.createRadialGradient(128,128,10,128,128,124);
-      gr.addColorStop(0,'rgba(14,16,26,.34)');gr.addColorStop(.6,'rgba(14,16,26,.12)');
-      gr.addColorStop(1,'rgba(14,16,26,0)');
-      x.fillStyle=gr;x.fillRect(0,0,256,256);
-      var pl=new THREE.Mesh(new THREE.PlaneGeometry(4.2,4.2),
-        new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
-      pl.rotation.x=-Math.PI/2;pl.position.y=-.19;g.add(pl);
-    })();
-
-    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8A93B5,.85));
-    var d1=new THREE.DirectionalLight(0xFFFFFF,1.35);d1.position.set(3,6,6);sc.add(d1);
-    var d2=new THREE.DirectionalLight(0xFFE9B8,.7);d2.position.set(-5,2,3);sc.add(d2);
-    var d3=new THREE.PointLight(0x1F3CFF,1,26);d3.position.set(-3,-1,4);sc.add(d3);
+    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8E96B4,.95));
+    var l1=new THREE.DirectionalLight(0xFFFFFF,1.25);l1.position.set(-3,5,6);sc.add(l1);
+    var l2=new THREE.DirectionalLight(0xD8E2FF,.65);l2.position.set(5,0,4);sc.add(l2);
+    var l3=new THREE.PointLight(0x6E8BFF,.9,26);l3.position.set(-4,-3,3);sc.add(l3);
+    var l4=new THREE.PointLight(0xFFFFFF,.5,24);l4.position.set(3,4,-4);sc.add(l4);
 
     function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
       rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
@@ -2684,16 +2689,19 @@ function initAbout(){
       var dx=e.clientX-px,dy=e.clientY-py;
       if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
       vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
-      g.rotation.y+=vy;g.rotation.x=Math.max(-.15,Math.min(.5,g.rotation.x+vx))});
+      root.rotation.y+=vy;root.rotation.x=Math.max(-.45,Math.min(.45,root.rotation.x+vx))});
     ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
       cv.addEventListener(ev,function(){dg=false})});
 
+    var cl=new THREE.Clock();
     (function loop(){
       requestAnimationFrame(loop);
       if(!vis)return;
+      var t=cl.getElapsedTime();
       if(!dg){vx*=.93;vy*=.93;
-        g.rotation.y+=vy+(RM?0:.0042);
-        g.rotation.x=Math.max(-.15,Math.min(.5,g.rotation.x+vx))}
+        root.rotation.y+=vy+(RM?0:.0075);
+        root.rotation.x=Math.max(-.45,Math.min(.45,root.rotation.x+vx))}
+      if(!RM)root.position.y=Math.sin(t*.9)*.07;
       rn.render(sc,cam);
     })();
   }catch(e){cv.parentElement.style.display='none'}
@@ -2739,189 +2747,53 @@ function initContacts(){
     }catch(e){toast('Скачивание недоступно в этом браузере')}
   });
   /* ---------- 3D: конверт из модели; островок — запасной вариант ---------- */
-  envelopeOrIsland();
+  initPin();
 }
 
 
-/* ==================== 3D: конверт (модель .glb) ==================== */
-function envelopeOrIsland(){
-  var cv=$('#phone');
-  if(!cv||typeof THREE==='undefined'){return}
-  if(!THREE.GLTFLoader){initIsland();return}      /* загрузчик не подключился */
-
-  var rn,sc,cam,root,vis=true,dg=false,vx=0,vy=0,px=0,py=0,touch=false,alive=false;
-  try{
-    rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:'low-power'});
-    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
-    if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
-    sc=new THREE.Scene();
-    cam=new THREE.PerspectiveCamera(34,1,.1,60);cam.position.set(0,.2,6.2);cam.lookAt(0,0,0);
-    root=new THREE.Group();sc.add(root);root.rotation.set(.16,-.5,0);
-
-    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x9098B4,1.05));
-    var d1=new THREE.DirectionalLight(0xFFFFFF,1.5);d1.position.set(-3,5,6);sc.add(d1);
-    var d2=new THREE.DirectionalLight(0xE4EBFF,.75);d2.position.set(5,1,3);sc.add(d2);
-    var d3=new THREE.PointLight(0x1F3CFF,.9,26);d3.position.set(-4,-2,3);sc.add(d3);
-    var d4=new THREE.PointLight(0xFFFFFF,.5,22);d4.position.set(2,3,-4);sc.add(d4);
-  }catch(e){initIsland();return}
-
-  var loader=new THREE.GLTFLoader();
-  try{
-    if(THREE.DRACOLoader){
-      var dr=new THREE.DRACOLoader();
-      dr.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/');
-      loader.setDRACOLoader(dr);
-    }
-  }catch(e){}
-
-  var failed=false;
-  function fail(){
-    if(failed)return;failed=true;
-    try{rn.dispose()}catch(e){}
-    initIsland();                                  /* показываем запасную сцену */
-  }
-  /* если модель не пришла за 8 секунд — не держим пустой блок */
-  var guard=setTimeout(function(){if(!alive)fail()},8000);
-
-  loader.load('models/envelope-min.glb',function(g){
-    clearTimeout(guard);
-    if(failed)return;
-    var obj=g.scene;
-    /* вписываем модель в кадр по её габаритам */
-    var box=new THREE.Box3().setFromObject(obj),size=new THREE.Vector3(),mid=new THREE.Vector3();
-    box.getSize(size);box.getCenter(mid);
-    var k=2.9/Math.max(size.x,size.y,size.z);
-    obj.position.sub(mid);obj.scale.setScalar(k);
-    var hold=new THREE.Group();hold.add(obj);root.add(hold);
-    alive=true;
-    (function loop(){
-      requestAnimationFrame(loop);
-      if(!vis)return;
-      if(!dg){
-        vx*=.93;vy*=.93;
-        root.rotation.y+=vy+(RM?0:.0045);
-        root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx));
-      }
-      if(!RM)hold.position.y=Math.sin(performance.now()/1000*.8)*.06;
-      rn.render(sc,cam);
-    })();
-  },undefined,function(){clearTimeout(guard);fail()});
-
-  function size2(){var r=cv.getBoundingClientRect();if(!r.width)return;
-    rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
-  size2();addEventListener('resize',size2);
-  new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
-  cv.addEventListener('pointerdown',function(e){if(!alive)return;dg=true;touch=(e.pointerType==='touch');
-    px=e.clientX;py=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(err){}});
-  cv.addEventListener('pointermove',function(e){if(!dg)return;
-    var dx=e.clientX-px,dy=e.clientY-py;
-    if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
-    vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
-    root.rotation.y+=vy;root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx))});
-  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
-    cv.addEventListener(ev,function(){dg=false})});
-}
-
-/* островок рисуется, только если модель недоступна */
-function initIsland(){
-(function(){
+/* ==================== 3D: метка на карте ==================== */
+function initPin(){
   var cv=$('#phone');if(!cv||typeof THREE==='undefined')return;
   try{
-    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:"low-power"});
+    var rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:'low-power'});
     rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
     if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
-    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,80);
-    cam.position.set(0,1.15,8.4);cam.lookAt(0,.05,0);
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,60);
+    cam.position.set(0,0,6.4);cam.lookAt(0,0,0);
+    var root=new THREE.Group();sc.add(root);root.rotation.set(.12,-.35,0);
 
-    var root=new THREE.Group();sc.add(root);root.rotation.set(.06,-.5,0);
+    /* ---- контур капли строится по касательным к окружности головки ---- */
+    var R=.62, CY=.35, TIPY=-1.10;
+    var d=CY-TIPY, a=Math.acos(R/d);                 /* угол до точки касания */
+    var t1=Math.atan2(-Math.cos(a)*R,Math.sin(a)*R); /* угол первой касательной */
+    var sh=new THREE.Shape();
+    var p1x=Math.sin(a)*R, p1y=CY-Math.cos(a)*R;
+    sh.moveTo(0,TIPY);
+    sh.quadraticCurveTo(p1x*.45,TIPY+(p1y-TIPY)*.42,p1x,p1y);   /* правый бок */
+    sh.absarc(0,CY,R,t1,Math.PI-t1,false);                       /* головка */
+    sh.quadraticCurveTo(-p1x*.45,TIPY+(p1y-TIPY)*.42,0,TIPY);    /* левый бок */
+    var hole=new THREE.Path();
+    hole.absarc(0,CY,R*.45,0,Math.PI*2,true);
+    sh.holes.push(hole);
 
-    /* низкополигональный материал: плоские грани держат стиль */
-    function M(c,sh){return new THREE.MeshPhongMaterial({color:c,shininess:sh||18,
-      specular:0x6E7590,flatShading:true})}
-    var GRASS=M(0x74C96A),GRASS2=M(0x5FB457),SOIL=M(0xB98A5E),SOIL2=M(0x8E6A47),
-        CREAM=M(0xF2EFE4,30),BLUE=M(0x1F3CFF,60),NAVY=M(0x16308F,60),
-        LIME=M(0xE8FF4D,50),WOOD=M(0x8E6A47),TREE=M(0x3E9E58),TREE2=M(0x2F8449),
-        PIPE=M(0x2FA84F,45),WHITE=M(0xFFFFFF,10),DARK=M(0x2A2C34);
+    var geo=new THREE.ExtrudeGeometry(sh,{depth:.18,bevelEnabled:true,bevelSize:.055,
+      bevelThickness:.05,bevelSegments:MOBILE?6:14,curveSegments:MOBILE?44:96});
+    geo.center();
+    /* лёгкий блик: широкий и приглушённый, без резких пятен на скруглениях */
+    var mat=new THREE.MeshPhongMaterial({color:0x1F3CFF,shininess:22,specular:0x3A4A80});
+    /* вывод идёт в sRGB, поэтому цвет переводим в линейное пространство —
+       иначе на экране он окажется светлее заданного */
+    if(mat.color.convertSRGBToLinear)mat.color.convertSRGBToLinear();
+    if(mat.specular&&mat.specular.convertSRGBToLinear)mat.specular.convertSRGBToLinear();
+    var pin=new THREE.Mesh(geo,mat);
+    pin.scale.setScalar(1.3);
+    root.add(pin);
 
-    function add(g,mesh,x,y,z){mesh.position.set(x||0,y||0,z||0);g.add(mesh);return mesh}
-
-    /* ===== парящий остров ===== */
-    var isle=new THREE.Group();root.add(isle);
-    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(1.58,1.5,.42,14),GRASS),0,-.21,0);
-    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(1.5,.62,1.15,14),SOIL),0,-1,0);
-    add(isle,new THREE.Mesh(new THREE.CylinderGeometry(.62,.08,.55,10),SOIL2),0,-1.85,0);
-    add(isle,new THREE.Mesh(new THREE.IcosahedronGeometry(.2,0),GRASS2),-1.05,-.02,.55);
-    add(isle,new THREE.Mesh(new THREE.IcosahedronGeometry(.15,0),SOIL2),1.15,-.06,-.3);
-    add(isle,new THREE.Mesh(new THREE.SphereGeometry(.5,10,6),GRASS),-.2,-.24,-.15).scale.y=.5;
-
-    /* ===== домик ===== */
-    var house=new THREE.Group();root.add(house);house.position.set(-.22,0,-.12);
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.86,.64,.78),CREAM),0,.32,0);
-    var roof=add(house,new THREE.Mesh(new THREE.ConeGeometry(.78,.52,4),BLUE),0,.9,0);
-    roof.rotation.y=Math.PI/4;
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.15,.32,.15),CREAM),.24,.92,-.18);
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.19,.06,.19),DARK),.24,1.1,-.18);
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.24,.34,.04),WOOD),-.16,.17,.4);
-    add(house,new THREE.Mesh(new THREE.SphereGeometry(.03,8,6),LIME),-.07,.19,.42);
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.04),NAVY),.22,.42,.4);
-    add(house,new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.04),NAVY),-.42,.42,0).rotation.y=Math.PI/2;
-
-    /* дымок из трубы */
-    var smoke=[];
-    for(var i=0;i<3;i++){
-      var pf=add(house,new THREE.Mesh(new THREE.IcosahedronGeometry(.09+i*.03,0),WHITE),.24,1.24+i*.24,-.18);
-      pf.material=WHITE.clone();pf.material.transparent=true;pf.material.opacity=.9-i*.22;
-      smoke.push(pf);
-    }
-
-    /* ===== указатель со стрелкой ===== */
-    function arrowGeo(d){
-      var sh=new THREE.Shape();
-      sh.moveTo(-.38,-.11);sh.lineTo(.08,-.11);sh.lineTo(.08,-.25);sh.lineTo(.42,0);
-      sh.lineTo(.08,.25);sh.lineTo(.08,.11);sh.lineTo(-.38,.11);sh.closePath();
-      var g=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:true,bevelSize:.02,
-        bevelThickness:.02,bevelSegments:1});
-      g.translate(0,0,-d/2);return g;
-    }
-    var sign=new THREE.Group();root.add(sign);sign.position.set(.72,0,.52);
-    add(sign,new THREE.Mesh(new THREE.CylinderGeometry(.05,.06,.92,8),WOOD),0,.46,0);
-    var board=add(sign,new THREE.Mesh(arrowGeo(.1),LIME),0,.88,0);
-    board.rotation.y=-.5;
-
-    /* большая парящая стрелка над домом */
-    var big=add(root,new THREE.Mesh(arrowGeo(.16),BLUE),-.22,2.05,-.12);
-    big.rotation.z=-Math.PI/2;big.scale.setScalar(1.15);
-
-    /* ===== деревья, труба, монетка ===== */
-    function tree(x,z,s){
-      var t=new THREE.Group();root.add(t);t.position.set(x,0,z);t.scale.setScalar(s);
-      add(t,new THREE.Mesh(new THREE.CylinderGeometry(.07,.1,.34,7),WOOD),0,.17,0);
-      add(t,new THREE.Mesh(new THREE.ConeGeometry(.34,.5,7),TREE),0,.55,0);
-      add(t,new THREE.Mesh(new THREE.ConeGeometry(.26,.42,7),TREE2),0,.86,0);
-      return t;
-    }
-    tree(-1.02,.42,1);tree(1.05,-.5,.8);tree(-.95,-.62,.62);
-    var pipe=new THREE.Group();root.add(pipe);pipe.position.set(.85,0,-.05);
-    add(pipe,new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.42,12),PIPE),0,.21,0);
-    add(pipe,new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.14,12),PIPE),0,.48,0);
-    var coin=add(root,new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.045,18),LIME),.85,1.05,-.05);
-    coin.rotation.x=Math.PI/2;
-
-    /* ===== облака ===== */
-    function cloud(x,y,z,s){
-      var c=new THREE.Group();root.add(c);c.position.set(x,y,z);c.scale.setScalar(s);
-      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.3,0),WHITE),0,0,0);
-      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.22,0),WHITE),.3,-.05,.05);
-      add(c,new THREE.Mesh(new THREE.IcosahedronGeometry(.18,0),WHITE),-.28,-.06,-.04);
-      return c;
-    }
-    var clouds=[cloud(-1.8,1.35,-.5,1),cloud(1.75,1.75,.4,.8),cloud(.2,2.55,-1.1,.62)];
-
-    /* ===== свет ===== */
-    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8A93B5,.95));
-    var d1=new THREE.DirectionalLight(0xFFFFFF,1.15);d1.position.set(4,7,6);sc.add(d1);
-    var d2=new THREE.DirectionalLight(0xCFDCFF,.5);d2.position.set(-5,2,-3);sc.add(d2);
-    var d3=new THREE.PointLight(0x1F3CFF,.9,26);d3.position.set(-4,-1,4);sc.add(d3);
+    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x8E96B4,.95));
+    var l1=new THREE.DirectionalLight(0xFFFFFF,1.35);l1.position.set(-3,5,6);sc.add(l1);
+    var l2=new THREE.DirectionalLight(0xD8E2FF,.7);l2.position.set(5,0,4);sc.add(l2);
+    var l3=new THREE.PointLight(0x6E8BFF,1,26);l3.position.set(-4,-3,3);sc.add(l3);
+    var l4=new THREE.PointLight(0xFFFFFF,.55,24);l4.position.set(3,4,-4);sc.add(l4);
 
     function size(){var r=cv.getBoundingClientRect();if(!r.width)return;
       rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
@@ -2935,7 +2807,7 @@ function initIsland(){
       var dx=e.clientX-px,dy=e.clientY-py;
       if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
       vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
-      root.rotation.y+=vy;root.rotation.x=Math.max(-.15,Math.min(.6,root.rotation.x+vx))});
+      root.rotation.y+=vy;root.rotation.x=Math.max(-.45,Math.min(.45,root.rotation.x+vx))});
     ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
       cv.addEventListener(ev,function(){dg=false})});
 
@@ -2945,30 +2817,12 @@ function initIsland(){
       if(!vis)return;
       var t=cl.getElapsedTime();
       if(!dg){vx*=.93;vy*=.93;
-        root.rotation.y+=vy+(RM?0:.0042);
-        root.rotation.x=Math.max(-.15,Math.min(.6,root.rotation.x+vx))}
-      if(!RM){
-        root.position.y=Math.sin(t*.8)*.07;
-        big.position.y=2.05+Math.sin(t*1.9)*.13;
-        big.rotation.z=-Math.PI/2+Math.sin(t*1.9)*.05;
-        coin.rotation.y+=.045;
-        coin.position.y=1.05+Math.sin(t*1.6)*.06;
-        clouds.forEach(function(c,i){
-          c.position.y+=Math.sin(t*.6+i*1.7)*.0012;
-          c.rotation.y=Math.sin(t*.25+i)*.15;
-        });
-        smoke.forEach(function(pf,i){
-          var k=(t*.45+i*.34)%1;
-          pf.position.y=1.24+k*.75;
-          pf.position.x=.24+Math.sin(k*4+i)*.09;
-          pf.material.opacity=(1-k)*.85;
-          pf.scale.setScalar(.7+k*.8);
-        });
-      }
+        root.rotation.y+=vy+(RM?0:.0075);
+        root.rotation.x=Math.max(-.45,Math.min(.45,root.rotation.x+vx))}
+      if(!RM)root.position.y=Math.sin(t*.9)*.07;
       rn.render(sc,cam);
     })();
   }catch(e){cv.parentElement.style.display='none'}
-})();
 }
 
 /* ==================== кнопка «Наверх» ==================== */
