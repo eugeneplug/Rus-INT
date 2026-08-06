@@ -227,7 +227,8 @@ section[id],main[id]{scroll-margin-top:104px}
 
 /* project gallery */
 .gal{margin-top:50px;display:flex;gap:16px;overflow-x:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;cursor:default;
-  padding:16px 40px 40px max(40px,calc((100vw - var(--wrap))/2 + 40px))}
+  padding:16px 40px 40px max(40px,calc((100vw - var(--wrap))/2 + 40px));
+  scroll-padding-left:max(40px,calc((100vw - var(--wrap))/2 + 40px))}
 .gal::-webkit-scrollbar{display:none}
 .gal.drag{scroll-snap-type:none}
 .pj{text-align:left;font:inherit;color:inherit;cursor:pointer;flex:0 0 auto;width:340px;scroll-snap-align:start;position:relative;
@@ -268,11 +269,11 @@ section[id],main[id]{scroll-margin-top:104px}
 .arw[data-dir="next"]:hover:not(:disabled) .i1{transform:translateX(150%)}
 .arw[data-dir="prev"]:hover:not(:disabled) .i1{transform:translateX(-150%)}
 .arw:hover:not(:disabled) .i2{transform:translateX(0)}
-.bar{flex:1;max-width:260px;height:3px;border-radius:100px;background:var(--line-2);overflow:hidden}
+.bar{flex:1;max-width:none;height:3px;border-radius:100px;background:var(--line-2);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:100px;width:20%;
   background:linear-gradient(90deg,var(--acc),#8FA0FF);
   transition:width .5s cubic-bezier(.2,.7,.3,1),transform .5s cubic-bezier(.2,.7,.3,1)}
-.sl-n{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);margin-left:auto}
+.sl-n{display:none}
 .pj-t{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-radius:100px;padding:6px 13px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
 
 /* names marquee */
@@ -483,7 +484,7 @@ section[id],main[id]{scroll-margin-top:104px}
   .hero-bg::before{background-size:52px 52px}
 
   /* галерея и лента */
-  .gal{padding:14px 20px 26px;gap:12px}
+  .gal{padding:14px 20px 26px;gap:12px;scroll-padding-left:20px}
   .gal-ctl{margin:2px 0 30px;gap:12px}
   .arw{width:48px;height:48px}
   .bar{max-width:none}
@@ -495,7 +496,8 @@ section[id],main[id]{scroll-margin-top:104px}
   /* блоки */
   .st-h{font-size:clamp(21px,6vw,28px);max-width:none}
   .lbl{margin-bottom:24px}
-  .wk-r{grid-template-columns:34px 1fr;gap:10px;padding:22px 0}
+  .wk-r{grid-template-columns:34px 1fr;gap:10px;
+    margin:0 -14px;padding:22px 14px;width:calc(100% + 28px)}
   .wk-t{font-size:17.5px}
   .wk-y{grid-column:2;text-align:left;margin-top:7px}
   .srv-r{grid-template-columns:34px 1fr 36px;gap:12px;padding:24px 0}
@@ -908,6 +910,25 @@ section[id],main[id]{scroll-margin-top:104px}
 .lite .mask,.lite .fmask{backdrop-filter:blur(4px)}
 .lite .pcard,.lite .dir,.lite .goal,.lite .price-i,.lite .aw-i,.lite .res-i{box-shadow:none}
 .lite .panel{box-shadow:none}
+
+/* ==================== мобильная прокрутка блоков ==================== */
+@media(max-width:820px){
+  .gal{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+    padding-left:20px;scroll-padding-left:20px}
+  .gal::-webkit-scrollbar{display:none}
+  .ind{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;
+    scroll-padding-left:20px;scrollbar-width:none;padding:2px 20px 8px;margin:0 -20px;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 93%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 5%,#000 93%,transparent)}
+  .ind::-webkit-scrollbar{display:none}
+  .ind a,.ind span{flex:0 0 auto;scroll-snap-align:start}
+  .cl-g{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-padding-inline:14px;
+    scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -14px;padding:0 14px 4px}
+  .cl-g::-webkit-scrollbar{display:none}
+  .cl-t{flex:0 0 calc(100% - 28px);scroll-snap-align:center;aspect-ratio:2.4;font-size:15px}
+  .cl-t:hover{background:var(--srf);color:var(--ink-2);border-color:var(--line-2)}
+  .cl-w{padding:52px 18px 22px}
+}
 </style>
 </head>
 <body>
@@ -1737,6 +1758,8 @@ section[id],main[id]{scroll-margin-top:104px}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2264,7 +2287,7 @@ document.addEventListener('click',function(e){if(e.target.closest('[data-mclose]
   var g=$('#cl');
   CLIENTS.forEach(function(c){
     var d=document.createElement('div');d.className='cl-t';d.textContent=c;g.appendChild(d)});
-  if(RM)return;
+  if(RM||MOBILE)return;
   var tiles=$$('.cl-t',g),raf=null,mx=-9999,my=-9999;
   g.addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY;if(!raf)raf=requestAnimationFrame(step)});
   g.addEventListener('pointerleave',function(){mx=-9999;my=-9999;if(!raf)raf=requestAnimationFrame(step)});
@@ -2715,7 +2738,92 @@ function initContacts(){
       toast('Контакт сохранён');
     }catch(e){toast('Скачивание недоступно в этом браузере')}
   });
-  /* ---------- 3D: островок с домиком и указателем ---------- */
+  /* ---------- 3D: конверт из модели; островок — запасной вариант ---------- */
+  envelopeOrIsland();
+}
+
+
+/* ==================== 3D: конверт (модель .glb) ==================== */
+function envelopeOrIsland(){
+  var cv=$('#phone');
+  if(!cv||typeof THREE==='undefined'){return}
+  if(!THREE.GLTFLoader){initIsland();return}      /* загрузчик не подключился */
+
+  var rn,sc,cam,root,vis=true,dg=false,vx=0,vy=0,px=0,py=0,touch=false,alive=false;
+  try{
+    rn=new THREE.WebGLRenderer({canvas:cv,antialias:AA,alpha:true,powerPreference:'low-power'});
+    rn.setPixelRatio(Math.min(devicePixelRatio,DPRMAX));
+    if(THREE.sRGBEncoding)rn.outputEncoding=THREE.sRGBEncoding;
+    sc=new THREE.Scene();
+    cam=new THREE.PerspectiveCamera(34,1,.1,60);cam.position.set(0,.2,6.2);cam.lookAt(0,0,0);
+    root=new THREE.Group();sc.add(root);root.rotation.set(.16,-.5,0);
+
+    sc.add(new THREE.HemisphereLight(0xFFFFFF,0x9098B4,1.05));
+    var d1=new THREE.DirectionalLight(0xFFFFFF,1.5);d1.position.set(-3,5,6);sc.add(d1);
+    var d2=new THREE.DirectionalLight(0xE4EBFF,.75);d2.position.set(5,1,3);sc.add(d2);
+    var d3=new THREE.PointLight(0x1F3CFF,.9,26);d3.position.set(-4,-2,3);sc.add(d3);
+    var d4=new THREE.PointLight(0xFFFFFF,.5,22);d4.position.set(2,3,-4);sc.add(d4);
+  }catch(e){initIsland();return}
+
+  var loader=new THREE.GLTFLoader();
+  try{
+    if(THREE.DRACOLoader){
+      var dr=new THREE.DRACOLoader();
+      dr.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/');
+      loader.setDRACOLoader(dr);
+    }
+  }catch(e){}
+
+  var failed=false;
+  function fail(){
+    if(failed)return;failed=true;
+    try{rn.dispose()}catch(e){}
+    initIsland();                                  /* показываем запасную сцену */
+  }
+  /* если модель не пришла за 8 секунд — не держим пустой блок */
+  var guard=setTimeout(function(){if(!alive)fail()},8000);
+
+  loader.load('models/envelope-min.glb',function(g){
+    clearTimeout(guard);
+    if(failed)return;
+    var obj=g.scene;
+    /* вписываем модель в кадр по её габаритам */
+    var box=new THREE.Box3().setFromObject(obj),size=new THREE.Vector3(),mid=new THREE.Vector3();
+    box.getSize(size);box.getCenter(mid);
+    var k=2.9/Math.max(size.x,size.y,size.z);
+    obj.position.sub(mid);obj.scale.setScalar(k);
+    var hold=new THREE.Group();hold.add(obj);root.add(hold);
+    alive=true;
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(!vis)return;
+      if(!dg){
+        vx*=.93;vy*=.93;
+        root.rotation.y+=vy+(RM?0:.0045);
+        root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx));
+      }
+      if(!RM)hold.position.y=Math.sin(performance.now()/1000*.8)*.06;
+      rn.render(sc,cam);
+    })();
+  },undefined,function(){clearTimeout(guard);fail()});
+
+  function size2(){var r=cv.getBoundingClientRect();if(!r.width)return;
+    rn.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+  size2();addEventListener('resize',size2);
+  new IntersectionObserver(function(en){vis=en[0].isIntersecting},{threshold:.05}).observe(cv);
+  cv.addEventListener('pointerdown',function(e){if(!alive)return;dg=true;touch=(e.pointerType==='touch');
+    px=e.clientX;py=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(err){}});
+  cv.addEventListener('pointermove',function(e){if(!dg)return;
+    var dx=e.clientX-px,dy=e.clientY-py;
+    if(touch&&Math.abs(dx)>4&&e.cancelable)e.preventDefault();
+    vy=dx*.008;vx=dy*.008;px=e.clientX;py=e.clientY;
+    root.rotation.y+=vy;root.rotation.x=Math.max(-.5,Math.min(.5,root.rotation.x+vx))});
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    cv.addEventListener(ev,function(){dg=false})});
+}
+
+/* островок рисуется, только если модель недоступна */
+function initIsland(){
 (function(){
   var cv=$('#phone');if(!cv||typeof THREE==='undefined')return;
   try{
