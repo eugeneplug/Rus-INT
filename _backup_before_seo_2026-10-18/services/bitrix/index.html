@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  /* старые адреса вида /#/services/ai ведут на новые /services/ai/ */
+  var h=location.hash;
+  if(h.indexOf('#/')===0){var p=h.slice(2).replace(/^\/+|\/+$/g,'');location.replace('/'+(p?p+'/':''));return}
+  /* прелоадер показываем только при первом заходе за сессию */
+  try{if(sessionStorage.getItem('ri_pre'))document.documentElement.classList.add('nopre');sessionStorage.setItem('ri_pre','1')}catch(e){}
+})();
+</script>
+
+<title>Внедрение Битрикс24 под ключ — РУСИНТЕГРАЦИЯ</title>
+<meta name="description" content="Внедряем Битрикс24: воронки продаж, проекты и задачи сотрудников. Менеджеры не теряют клиентов, а вы видите реальную маржинальность каждой сделки.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Crect%20width='24'%20height='24'%20rx='5'%20fill='%23EFEFEB'/%3E%3Ccircle%20cx='7'%20cy='12'%20r='3.1'%20fill='none'%20stroke='%230C0C0E'%20stroke-width='2'/%3E%3Ccircle%20cx='17.6'%20cy='6.2'%20r='2.5'%20fill='%231F3CFF'/%3E%3Ccircle%20cx='17.6'%20cy='17.8'%20r='2.5'%20fill='%230C0C0E'/%3E%3Cpath%20d='M9.8%2010.7%2015.4%207.6M9.8%2013.3%2015.4%2016.4'%20stroke='%230C0C0E'%20stroke-width='2'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Crect%20width='24'%20height='24'%20rx='5'%20fill='%23EFEFEB'/%3E%3Ccircle%20cx='7'%20cy='12'%20r='3.1'%20fill='none'%20stroke='%230C0C0E'%20stroke-width='2'/%3E%3Ccircle%20cx='17.6'%20cy='6.2'%20r='2.5'%20fill='%231F3CFF'/%3E%3Ccircle%20cx='17.6'%20cy='17.8'%20r='2.5'%20fill='%230C0C0E'/%3E%3Cpath%20d='M9.8%2010.7%2015.4%207.6M9.8%2013.3%2015.4%2016.4'%20stroke='%230C0C0E'%20stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=1164505a">
+
+<link rel="canonical" href="https://rus-integration.ru/services/bitrix/">
+<meta name="robots" content="index, follow">
+
+<!-- карточка при отправке ссылки в мессенджеры и соцсети -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="РУСИНТЕГРАЦИЯ">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://rus-integration.ru/services/bitrix/">
+<meta property="og:title" content="Внедрение Битрикс24 под ключ — РУСИНТЕГРАЦИЯ">
+<meta property="og:description" content="Внедряем Битрикс24: воронки продаж, проекты и задачи сотрудников. Менеджеры не теряют клиентов, а вы видите реальную маржинальность каждой сделки.">
+<meta property="og:image" content="https://rus-integration.ru/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="РУСИНТЕГРАЦИЯ — соединяем 1С, Битрикс24, сайт и склад в один механизм">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Внедрение Битрикс24 под ключ — РУСИНТЕГРАЦИЯ">
+<meta name="twitter:description" content="Внедряем Битрикс24: воронки продаж, проекты и задачи сотрудников. Менеджеры не теряют клиентов, а вы видите реальную маржинальность каждой сделки.">
+<meta name="twitter:image" content="https://rus-integration.ru/og.png">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113597278', 'ym');
+
+    ym(113597278, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<noscript><div><img src="https://mc.yandex.ru/watch/113597278" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+
+
+<div class="pre" id="pre">
+  <div class="pre-n" id="preN">0</div>
+  <div class="pre-r"><b>РУСИНТЕГРАЦИЯ</b>Автоматизация и интеграция бизнес-систем: 1С, Битрикс24, ИИ и 3D</div>
+  <span class="pre-bar" id="preB"></span>
+</div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a href="/" data-route="home" class="logo" aria-label="РУСИНТЕГРАЦИЯ">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="6" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6"></circle>
+        <circle cx="18.5" cy="5.5" r="2.4" fill="#1F3CFF"></circle>
+        <circle cx="18.5" cy="18.5" r="2.4" fill="currentColor"></circle>
+        <path d="M9 10.8 16.2 6.7M9 13.2 16.2 17.3" stroke="currentColor" stroke-width="1.6"></path>
+      </svg>
+      <b>РУС<span>ИНТЕГРАЦИЯ</span></b>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="/services/" data-route="services" class="">Направления</a>
+      <a href="/projects/" data-route="projects" class="">Проекты</a>
+      <a href="/about/" data-route="about" class="">О нас</a>
+      <a href="/contacts/" data-route="contacts" class="">Контакты</a>
+      <div class="nav-foot">
+        <a class="nav-tel" href="tel:88002011132">
+          <svg width="17" height="17" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M4.2 1.8 5.6 4.4 4.3 5.9c.7 1.5 1.9 2.7 3.4 3.4l1.5-1.3 2.6 1.4-.4 2.3c-.1.5-.6.9-1.1.8C5.9 12 3 9.1 2.3 4.3c-.1-.5.3-1 .8-1.1l1.1-.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+          </svg>
+          <span>8 (800) 201-11-32</span>
+        </a>
+        <a class="nav-mail" href="mailto:rus-integration@yandex.ru">
+          <svg width="17" height="17" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.4" y="3" width="12.2" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"></rect><path d="m2.4 4.4 5.1 3.9 5.1-3.9" stroke="currentColor" stroke-width="1.4"></path></svg>
+          <span>rus-integration@yandex.ru</span>
+        </a>
+        <div class="nav-soc">
+          <a href="https://wa.me/78002011132" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5a6 6 0 0 0-5.2 9L1.5 13.5l3.1-.8a6 6 0 1 0 2.9-11.2zm0 1.4a4.6 4.6 0 1 1-2.3 8.6l-.3-.2-1.6.4.4-1.6-.2-.3A4.6 4.6 0 0 1 7.5 2.9z" fill="currentColor"></path></svg></a>
+          <a href="mailto:rus-integration@yandex.ru" aria-label="Почта"><svg width="16" height="16" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3" width="12" height="9" rx="1.6" stroke="currentColor" stroke-width="1.3"></rect><path d="m2.4 4.2 5.1 4 5.1-4" stroke="currentColor" stroke-width="1.3"></path></svg></a>
+        </div>
+        <button class="btn nav-cta" data-go=""><span>Обсудить проект</span></button>
+      </div>
+    </nav>
+    <a class="hdr-mail" href="mailto:rus-integration@yandex.ru">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.4" y="3" width="12.2" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"></rect><path d="m2.4 4.4 5.1 3.9 5.1-3.9" stroke="currentColor" stroke-width="1.4"></path></svg>
+      <span>rus-integration@yandex.ru</span>
+    </a>
+    <a class="hdr-tel" href="tel:88002011132">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <path d="M4.2 1.8 5.6 4.4 4.3 5.9c.7 1.5 1.9 2.7 3.4 3.4l1.5-1.3 2.6 1.4-.4 2.3c-.1.5-.6.9-1.1.8C5.9 12 3 9.1 2.3 4.3c-.1-.5.3-1 .8-1.1l1.1-.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+      </svg>
+      <span>8 (800) 201-11-32</span>
+    </a>
+    
+    <button class="btn btn-sm" data-go=""><span>Обсудить проект</span></button>
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <h1 class="sr-only">Внедрение Битрикс24</h1>
+
+
+
+
+
+<div class="page" id="page-service"><section class="top"><div class="top-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div><div class="wrap"><div class="crumbs mono fu"><a href="/" data-route="home">Главная</a><span>/</span><a href="/services/" data-route="services">Направления</a><span>/</span><span>Внедрение Битрикс24</span></div><h2 class="srv-h"><span class="rl"><i>Внедрение Битрикс24</i></span></h2><p class="lead fu fd1">Полный контроль над продажами, проектами и задачами сотрудников. Оцифровываем воронки продаж и циклы исполнения обязательств, чтобы менеджеры не теряли клиентов, а вы видели реальную маржинальность каждой сделки.</p><div class="sv-tags fu fd1"><span>Воронки продаж</span><span>Роботы и бизнес-процессы</span><span>Телефония и мессенджеры</span><span>Обмен с 1С</span><span>Права и юрлица</span><span>Смарт-процессы</span><span>Обучение команды</span><span>Коробочная версия</span></div><div class="top-cta fu fd2"><button class="btn" data-go><span>Обсудить задачу</span></button><a href="/projects/" data-route="projects" class="btn btn-o"><span>Смотреть проекты</span></a></div></div></section><section class="sec" style="padding-top:88px"><div class="wrap"><div class="sv-why rv"><div class="sv-why-l"><span class="lbl mono" style="margin:0">Зачем это нужно</span><p class="st-h">Портал считается внедрённым не когда он настроен, а когда в него заходят добровольно</p></div><div class="sv-why-r"><div class="sv-why-i"><span class="sv-why-n mono">01</span><p>Коробка «как у всех» не работает. Мы разбираем, как реально продаёт ваш отдел, и настраиваем портал под этот процесс, убирая всё, чем никто не будет пользоваться. Чем меньше обязательных полей на старте, тем выше шанс, что их станут заполнять.</p></div><div class="sv-why-i"><span class="sv-why-n mono">02</span><p>Главная ценность появляется на связке с учётом: из 1С приходят себестоимость, оплаты и остатки, обратно уходят контрагенты и заказы. Только после этого маржинальность сделки становится фактом, а не оценкой менеджера.</p></div><div class="sv-why-i"><span class="sv-why-n mono">03</span><p>Сопротивление команды — ожидаемая часть проекта, а не сбой. Мы уменьшаем его тем, что на старте даём выгоду самому менеджеру: история клиента под рукой, счёт в один клик, не нужно ходить к бухгалтеру за статусом оплаты.</p></div></div></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><div class="lbl mono rv">Что мы делаем</div><div class="goals rv"><div class="goal"><span>Задача 01</span><h3 style="font-size:19px;font-weight:600;letter-spacing:-.035em;margin-bottom:12px">Оцифровать воронку</h3><p>Описать реальные стадии сделки и довести их до системы, в которой видно, где именно теряются заявки.</p></div><div class="goal"><span>Задача 02</span><h3 style="font-size:19px;font-weight:600;letter-spacing:-.035em;margin-bottom:12px">Связать продажи с учётом</h3><p>Подтянуть себестоимость, оплаты и остатки из 1С, чтобы решения принимались по фактическим цифрам.</p></div><div class="goal"><span>Задача 03</span><h3 style="font-size:19px;font-weight:600;letter-spacing:-.035em;margin-bottom:12px">Довести до ежедневного использования</h3><p>Обучить по ролям, снять первые вопросы и убедиться, что менеджеры работают в портале, а не в мессенджерах.</p></div></div><div class="result rv"><div class="result-t"><b>Портал, в котором работают, а не отчитываются</b><span>Настроенные воронки, телефония, права, обмен с 1С и обученные сотрудники.</span></div><span class="result-ic" aria-hidden="true"><svg viewBox="0 0 132 72" fill="none"><path class="pl-base" d="M6 40h20l9-26 13 50 10-34 8 14h60"/><path class="pl-run" d="M6 40h20l9-26 13 50 10-34 8 14h60"/></svg></span></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><div class="lbl mono rv">Сколько стоит</div><div class="prices rv"><div class="price-i"><h4>Базовое внедрение</h4><div class="sub">Отдел продаж до 50 человек</div><ul><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Разбор процесса продаж и проектирование воронки</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Настройка карточек, полей, стадий и прав доступа</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Телефония, почта, мессенджеры и формы с сайта</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Перенос базы клиентов и истории</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Обучение менеджеров и руководителя</span></li></ul><div class="price-amt">от 120 000 ₽<small>Срок — 2–4 недели</small></div><button class="btn btn-o" data-calc data-svc="Внедрение Битрикс24 · Базовое внедрение" data-price="от 120 000 ₽" style="margin-top:22px"><span>Рассчитать</span></button></div><div class="price-i"><h4>Внедрение со связкой с 1С</h4><div class="sub">Когда нужна реальная маржа по сделке</div><ul><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Всё из базового внедрения</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Двусторонний обмен: контрагенты, счета, оплаты, остатки</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Роботы и бизнес-процессы под цикл исполнения</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Отчёты по марже, менеджерам и направлениям</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Дашборд руководителя</span></li></ul><div class="price-amt">от 260 000 ₽<small>Срок — от 6 недель</small></div><button class="btn btn-o" data-calc data-svc="Внедрение Битрикс24 · Внедрение со связкой с 1С" data-price="от 260 000 ₽" style="margin-top:22px"><span>Рассчитать</span></button></div><div class="price-i"><h4>Коробочная версия</h4><div class="sub">Холдинг или требование держать данные у себя</div><ul><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Разворачивание коробки на вашем сервере</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Права по юрлицам и подразделениям</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Смарт-процессы под производство и сервис</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Доработки под нетиповые сценарии</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Сопровождение обновлений</span></li></ul><div class="price-amt">от 550 000 ₽<small>Срок — от 2 месяцев</small></div><button class="btn btn-o" data-calc data-svc="Внедрение Битрикс24 · Коробочная версия" data-price="от 550 000 ₽" style="margin-top:22px"><span>Рассчитать</span></button></div><div class="price-i"><h4>Сопровождение</h4><div class="sub">После запуска</div><ul><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Доработки по мере роста компании</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Разбор обращений менеджеров</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Обучение новых сотрудников</span></li><li><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.4 5.4 11 12 3.6" stroke="#1F3CFF" stroke-width="1.7"/></svg><span>Контроль обмена с 1С</span></li></ul><div class="price-amt">от 35 000 ₽ / мес<small>Отвечаем на обращения в течение 4 часов</small></div><button class="btn btn-o" data-calc data-svc="Внедрение Битрикс24 · Сопровождение" data-price="от 35 000 ₽ / мес" style="margin-top:22px"><span>Рассчитать</span></button></div></div><p class="price-note rv">Лицензии Битрикс24 оплачиваются отдельно и напрямую вендору — мы не зарабатываем на перепродаже и помогаем подобрать минимально достаточный тариф. Облако дешевле на старте и подходит большинству компаний, коробка нужна при требованиях к хранению данных или глубоких доработках. Считаем оба варианта на ваших цифрах.</p></div></section><section class="sec" style="padding-top:0"><div class="wrap"><p class="st-h rv" style="margin-bottom:30px">Этапы работы</p><div class="flow rv"><span class="flow-line" aria-hidden="true"><i></i></span><article class="flow-i"><span class="flow-ic" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><circle class="fl-lens" cx="20" cy="20" r="11"/><path class="fl-stick" d="M28 28l7 7"/><path class="fl-cross" d="M15 20h10M20 15v10"/></svg></span><span class="flow-n mono">01</span><h3>Разбор процесса продаж</h3><p>Проходим путь сделки вместе с менеджером: где теряется время, где выпадает клиент, что заполняется впустую.</p></article><article class="flow-i"><span class="flow-ic" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path class="fl-l1" d="M6 14 22 6l16 8-16 8z"/><path class="fl-l2" d="M6 22l16 8 16-8"/><path class="fl-l3" d="M6 30l16 8 16-8"/></svg></span><span class="flow-n mono">02</span><h3>Базовая настройка</h3><p>Воронка, карточки, права, перенос базы. Отдел продаж работает в системе с первой недели, а не после сдачи проекта.</p></article><article class="flow-i"><span class="flow-ic" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><circle class="fl-ring" cx="22" cy="22" r="14"/><path class="fl-check" d="M15 22l5 5 11-11"/></svg></span><span class="flow-n mono">03</span><h3>Связка с 1С</h3><p>Счета, оплаты и остатки приходят из учёта. Менеджер перестаёт бегать за статусом оплаты.</p></article><article class="flow-i"><span class="flow-ic" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path class="fl-rocket" d="M22 6c6 5 9 11 9 18l-9 6-9-6c0-7 3-13 9-18z"/><path class="fl-fire" d="M18 32l4 6 4-6"/></svg></span><span class="flow-n mono">04</span><h3>Автоматизация</h3><p>Роботы, напоминания и бизнес-процессы: сделка не зависает без следующего шага и ответственного.</p></article><article class="flow-i"><span class="flow-ic" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path class="fl-shield" d="M22 6l13 5v11c0 8-5.5 13-13 16-7.5-3-13-8-13-16V11z"/><path class="fl-pulse" d="M14 23h4l2.5-5 3 9 2.5-4h4"/></svg></span><span class="flow-n mono">05</span><h3>Обучение и приёмка</h3><p>Инструкции по ролям, разбор ошибок первых недель, отчётность для руководителя.</p></article></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><div class="lbl mono rv">Частые вопросы</div><div class="faq rv" id="svFaq"><div class="q-i"><button class="q-b"><h4>У нас уже есть Битрикс24, но им не пользуются</h4><span class="q-ic"></span></button><div class="q-a"><p>Частый случай. Обычно причина в том, что портал настраивали без разбора реального процесса. Начинаем с аудита текущей настройки — иногда достаточно перенастроить, а не внедрять заново.</p></div></div><div class="q-i"><button class="q-b"><h4>Сколько занимает внедрение</h4><span class="q-ic"></span></button><div class="q-a"><p>От пяти недель. Основная задержка обычно не в настройке, а в согласованиях и в том, как быстро сотрудники переходят на новый порядок.</p></div></div><div class="q-i"><button class="q-b"><h4>Обучаете ли вы сотрудников</h4><span class="q-ic"></span></button><div class="q-a"><p>Да, это часть работы. Проводим занятия по ролям и оставляем короткие видеоинструкции, чтобы новичка не пришлось учить с нуля.</p></div></div></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><div class="lbl mono rv">Другие направления</div><div class="sv-next rv"><a href="/services/it/" data-route="services" data-sub="it">IT-решения</a><a href="/services/integration/" data-route="services" data-sub="integration">Автоматизация и интеграция</a><a href="/services/ai/" data-route="services" data-sub="ai">ИИ-автоматизация</a><a href="/services/onec/" data-route="services" data-sub="onec">Внедрение 1С</a><a href="/services/dev/" data-route="services" data-sub="dev">Разработка программ, приложений и веб-сайтов</a><a href="/services/scan3d/" data-route="services" data-sub="scan3d">3D-моделирование и сканирование</a></div></div></section></div>
+
+
+
+
+
+
+
+
+
+<!-- ================= TALK ================= -->
+<section class="sec" id="talk" style="padding-top:0">
+  <div class="wrap">
+    <div class="talk rv">
+      <div class="talk-l">
+      <form id="talkForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Форма на главной">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <h2>
+          Привет! Меня зовут <span class="fl"><input type="text" id="q1" name="name" placeholder="имя" size="6" autocomplete="name"></span>,
+          я представляю <span class="fl"><input type="text" id="q2" name="company" placeholder="компанию" size="10" autocomplete="organization"></span>.
+          Мой контакт — <span class="fl"><input type="tel" id="q3" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18" size="18"></span>,
+          и меня интересует <span class="fl"><select id="q4" name="topic">
+            <option value="">направление</option>
+            <option>интеграция систем</option>
+            <option>внедрение Битрикс24</option>
+            <option>внедрение 1С</option>
+            <option>ИИ-автоматизация</option>
+            <option>3D-моделирование</option>
+            <option>ещё не решил</option>
+          </select></span>.
+        </h2>
+        <div class="talk-b">
+          <button type="submit" class="btn"><span>Отправить</span></button>
+          <p class="talk-note">Заполните форму — бесплатно проконсультируем в течение рабочего дня. Нажимая кнопку, вы соглашаетесь c <a href="#" data-policy>правилами обработки персональных данных</a>.</p>
+        </div>
+      </form>
+      <div class="thanks" id="thanks">
+        <b>Спасибо!</b>
+        <span>Свяжемся с вами в ближайшее время.</span>
+      </div>
+      </div>
+
+      <div class="talk-r" aria-hidden="true"><canvas id="pz3d"></canvas></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <ul class="ftr-nav">
+        <li><a href="/services/" data-route="services">Направления<i>01</i></a></li>
+        <li><a href="/projects/" data-route="projects">Проекты<i>02</i></a></li>
+        <li><a href="/about/" data-route="about">О нас<i>03</i></a></li>
+        <li><a href="/contacts/" data-route="contacts">Контакты<i>04</i></a></li>
+      </ul>
+      <div class="ftr-c">
+        <a href="tel:88002011132">8 (800) 201-11-32</a>
+        <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a>
+        <p>Красноярск, но работаем по всей России. Первичная консультация и оценка задачи — бесплатно.</p>
+      </div>
+    </div>
+    <div class="ftr-big">IT <b>РОССИЯ</b></div>
+    <div class="ftr-b">
+      <div>2026 РУСИНТЕГРАЦИЯ · Автоматизация и интеграция бизнес-систем</div>
+      <div><a href="#" data-policy>Политика конфиденциальности</a> · <a href="#top" class="up-link" id="toTop">Наверх ↑</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="cmask" id="cmask" role="dialog" aria-modal="true" aria-label="Расчёт стоимости" aria-hidden="true">
+  <div class="cpanel">
+    <button class="cx" id="cx" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <form id="calcForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Расчёт стоимости">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="service" id="calcSvc" value="">
+        <input type="hidden" name="price" id="calcPrice" value="">
+      <span class="cmono canim" style="--i:0">Расчёт стоимости</span>
+      <h3 class="canim" style="--i:1">Посчитаем точную смету<br>под вашу задачу</h3>
+      <div class="csum canim" style="--i:2">
+        <div><span>Вид услуги</span><b id="cSvc">—</b></div>
+        <div><span>Ориентир по цене</span><b id="cPrice" class="cprice">—</b></div>
+      </div>
+      <div class="cfields canim" style="--i:3">
+        <label class="cf"><span>Как вас зовут</span><input type="text" id="c1" name="name" placeholder="Имя" autocomplete="name"></label>
+        <label class="cf"><span>Телефон</span><input type="tel" id="c2" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18"></label>
+        <label class="cf cf-w"><span>Коротко о задаче<i>необязательно</i></span><input type="text" id="c3" name="comment" placeholder="Например: два завода, обмен с 1С"></label>
+      </div>
+      <div class="cbtns canim" style="--i:4">
+        <button type="submit" class="btn cbtn"><span>Получить смету</span></button>
+        <p class="cnote">Пришлём расчёт в течение рабочего дня. Оценка задачи бесплатна и ни к чему не обязывает.</p>
+      </div>
+    </form>
+    <div class="cok" id="cok">
+      <svg width="76" height="76" viewBox="0 0 82 82" fill="none">
+        <circle cx="41" cy="41" r="38" stroke="#1F3CFF" stroke-width="2.5"/>
+        <path d="M25 42.5 36 53.5 58 30" stroke="#1F3CFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <b>Заявка принята</b>
+      <span>Подготовим смету и вернёмся с расчётом.</span>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="fmask" id="pdMask" role="dialog" aria-modal="true" aria-label="Согласие на обработку персональных данных" aria-hidden="true">
+  <div class="fpanel pol-panel">
+    <button class="fx" data-pd-close aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <div class="fbody pol-body">
+      <h3>Согласие на обработку персональных данных</h3>
+
+      <p class="pd-lead">Отправляя форму, вы даёте ООО «РУСИНТЕГРАЦИЯ» согласие на обработку
+        указанных вами данных. Ниже — коротко о том, что это означает.</p>
+
+      <ul class="pd-l">
+        <li><b>Что мы получаем.</b> Только то, что вы вписали сами: имя, телефон или почту,
+          название компании и описание задачи.</li>
+        <li><b>Зачем.</b> Чтобы связаться с вами по обращению: ответить на вопрос, обсудить
+          задачу, подготовить расчёт. Ни для чего другого.</li>
+        <li><b>Кому передаём.</b> Никому. Доступ есть только у сотрудников, которые ведут
+          работу с клиентами.</li>
+        <li><b>Сколько храним.</b> Три года с последнего контакта. Если работа переросла
+          в договор — по срокам бухгалтерского учёта.</li>
+        <li><b>Рассылок не будет.</b> Мы не подписываем вас ни на что и не передаём контакты
+          рекламодателям.</li>
+        <li><b>Можно передумать.</b> Напишите на
+          <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a> — удалим
+          данные и прекратим обработку.</li>
+      </ul>
+
+      <p class="pd-note">Согласие даётся добровольно и действует до отзыва. Обработка ведётся
+        по требованиям Федерального закона № 152-ФЗ «О персональных данных».
+        Полный текст — в <a href="#" data-policy data-pd-close>политике конфиденциальности</a>.</p>
+
+      <div class="m-c">
+        <button class="btn" data-pd-close><span>Понятно</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fmask" id="polMask" role="dialog" aria-modal="true" aria-label="Политика конфиденциальности" aria-hidden="true">
+  <div class="fpanel pol-panel">
+    <button class="fx" data-pol-close aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <div class="fbody pol-body">
+      <h3>Политика обработки персональных данных</h3>
+
+      <h4>1. Кто обрабатывает данные</h4>
+      <p>Оператором персональных данных выступает ООО «РУСИНТЕГРАЦИЯ», адрес: 660017, Красноярск,
+        улица Карла Маркса, 75а, кабинет 219. Связаться по вопросам обработки данных можно
+        по адресу <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a>
+        или по телефону <a href="tel:88002011132">8 (800) 201-11-32</a>.</p>
+
+      <h4>2. Какие данные мы собираем</h4>
+      <p>Через формы на сайте мы получаем только то, что вы указываете сами: имя, телефон
+        или адрес почты, название компании и описание задачи. Дополнительно сохраняются
+        технические сведения, которые браузер передаёт автоматически: адрес страницы,
+        с которой отправлена заявка, дата и время обращения.</p>
+      <p>Мы не собираем паспортные данные, сведения о здоровье, о взглядах и убеждениях,
+        а также любые другие сведения особых категорий.</p>
+
+      <h4>3. Зачем эти данные нужны</h4>
+      <p>Единственная цель — связаться с вами по вашему обращению: ответить на вопрос,
+        обсудить задачу, подготовить расчёт или коммерческое предложение. Мы не используем
+        контакты для рассылок, на которые вы не подписывались, и не передаём их третьим лицам
+        для рекламных целей.</p>
+
+      <h4>4. На каком основании</h4>
+      <p>Основанием служит ваше согласие, которое вы даёте, отправляя форму. Согласие
+        добровольное: без него мы не сможем ответить, но пользоваться сайтом это не мешает.
+        Обработка ведётся по требованиям Федерального закона № 152-ФЗ «О персональных данных».</p>
+
+      <h4>5. Сколько данные хранятся</h4>
+      <p>Обращения храним три года с момента последнего контакта — этот срок нужен, чтобы
+        вернуться к переписке, если вы обратитесь повторно. Если работа переросла в договор,
+        срок хранения определяется требованиями бухгалтерского и налогового учёта.</p>
+
+      <h4>6. Кому мы их передаём</h4>
+      <p>Доступ к обращениям есть только у сотрудников, которые ведут работу с клиентами.
+        Данные могут обрабатываться в системах, которые мы используем для работы: учётной
+        системе и корпоративном портале, размещённых на наших серверах. Передача данных
+        государственным органам возможна только по официальному запросу в рамках закона.</p>
+
+      <h4>7. Как мы их защищаем</h4>
+      <p>Мы ограничиваем доступ по ролям, ведём журнал действий и храним резервные копии.
+        Передача данных с сайта идёт по защищённому соединению. Полной гарантии
+        безопасности в интернете не существует, но мы принимаем разумные меры и не храним
+        больше, чем нужно для ответа.</p>
+
+      <h4>8. Ваши права</h4>
+      <p>Вы можете запросить, какие ваши данные у нас есть, потребовать их исправить,
+        удалить или отозвать согласие на обработку. Для этого напишите на
+        <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a> — ответим
+        в течение десяти рабочих дней. Отзыв согласия не влияет на законность обработки,
+        которая велась до отзыва.</p>
+
+      <h4>9. Файлы cookie</h4>
+      <p>Сайт использует только технические файлы cookie, необходимые для его работы.
+        Рекламных и следящих систем сторонних сервисов мы не подключаем, за исключением
+        карты на странице контактов — она загружается сервисом Яндекс.Карты
+        и работает по его правилам.</p>
+
+      <h4>10. Изменения политики</h4>
+      <p>Мы можем обновлять этот документ. Действующая редакция всегда доступна на сайте,
+        дата указана в начале. Существенные изменения мы отражаем в дате редакции,
+        чтобы вы могли увидеть, что документ обновлялся.</p>
+    </div>
+  </div>
+</div>
+
+<div class="fmask" id="fmask" role="dialog" aria-modal="true" aria-label="Обсудить проект" aria-hidden="true">
+  <div class="fpanel">
+    <span class="fglow" aria-hidden="true"></span>
+    <div class="fbody">
+      <button class="fx" id="fx" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <form id="popForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Поп-ап заявки">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <span class="mono fanim" style="--i:0">Ответим в течение рабочего дня</span>
+        <h3 class="fq fanim" style="--i:1">
+          Привет! Меня зовут <span class="fl"><input type="text" id="p1" name="name" placeholder="имя" autocomplete="name"></span>,
+          я представляю <span class="fl"><input type="text" id="p2" name="company" placeholder="компанию" autocomplete="organization"></span>.
+          Мой контакт — <span class="fl"><input type="tel" id="p3" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18"></span>,
+          и меня интересует <span class="fl"><select id="p4" name="topic">
+            <option value="">направление</option>
+            <option>интеграция систем</option>
+            <option>внедрение Битрикс24</option>
+            <option>внедрение 1С</option>
+            <option>ИИ-автоматизация</option>
+            <option>3D-моделирование</option>
+            <option>ещё не решил</option>
+          </select></span>.
+        </h3>
+        <div class="fbtn fanim" style="--i:2">
+          <button type="submit" class="btn"><span>Отправить</span></button>
+          <p class="fnote">Консультация и оценка задачи бесплатно. Нажимая кнопку, вы соглашаетесь c <a href="#" data-policy>правилами обработки персональных данных</a>.</p>
+        </div>
+      </form>
+      <div class="fok" id="fok">
+        <svg width="82" height="82" viewBox="0 0 82 82" fill="none">
+          <circle cx="41" cy="41" r="38" stroke="#E8FF4D" stroke-width="2.5"/>
+          <path d="M25 42.5 36 53.5 58 30" stroke="#E8FF4D" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <b>Спасибо!</b>
+        <span>Свяжемся с вами в течение рабочего дня.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="mask" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="m-x" id="mX" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <div class="m-in" id="mIn"></div>
+  </div>
+</div>
+
+<button class="btn sticky" id="sticky" data-go><span>Обсудить проект</span></button>
+
+<div class="toast" id="toast">Скопировано</div>
+
+<div class="cook" id="cook">
+  <b>Файлы cookie</b>
+  <p>Этот сайт использует cookie для аналитики и функциональности. Продолжая просмотр, вы даёте согласие на обработку данных.</p>
+  <button class="btn btn-sm" id="cookOk"><span>Принять</span></button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="/assets/site.js?v=1164505a"></script>
+</body>
+</html>
