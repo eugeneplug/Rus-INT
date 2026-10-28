@@ -1,0 +1,63 @@
+/* Схема направлений на первом экране. Цвета и шрифты — из темы сайта. */
+#hero .hero-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.integration-board{
+  position:relative;isolation:isolate;container-type:inline-size;width:100%;
+  aspect-ratio:15/14;border:1px solid rgba(255,255,255,.1);border-radius:24px;
+  background:var(--ink);color:var(--bg);overflow:hidden;
+  box-shadow:0 32px 60px -36px rgba(12,12,14,.6);
+}
+.integration-board::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(31,60,255,.2),transparent 63%),
+    linear-gradient(135deg,rgba(255,255,255,.045),transparent 55%);
+}
+.board-diagram{display:block;width:100%;height:100%}
+.board-corners,.board-brackets{fill:none;stroke:rgba(239,239,235,.22);stroke-width:1.2}
+.board-orbit{fill:none;stroke:rgba(239,239,235,.08);stroke-dasharray:3 8}
+.board-wires{fill:none;stroke:rgba(239,239,235,.24);stroke-width:1.2}
+.board-signals{
+  fill:none;stroke:var(--acc);stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:1 76;animation:board-flow 10s linear infinite;
+}
+.board-signals--lime{stroke:var(--acc-2);stroke-width:3;animation-duration:14s;animation-direction:reverse}
+@keyframes board-flow{to{stroke-dashoffset:-308}}
+.board-frame{fill:#18191e;stroke:rgba(239,239,235,.09)}
+.board-rim{fill:none;stroke:rgba(239,239,235,.09)}
+.board-face{fill:#1d1e24;stroke:rgba(239,239,235,.12);transition:fill .3s,stroke .3s}
+.board-edge{fill:none;stroke:rgba(31,60,255,.4);stroke-width:1.3}
+.board-status{fill:var(--acc)}
+.board-node--lime .board-status{fill:var(--acc-2)}
+.board-screw{fill:rgba(239,239,235,.18)}
+.board-node:hover .board-face{fill:#252737;stroke:rgba(110,139,255,.65)}
+.board-label{font-family:var(--body);font-size:15px;font-weight:500;fill:var(--bg);letter-spacing:-.025em}
+.board-icon{fill:none;stroke:var(--bg);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.board-icon .board-accent{stroke:#7086ff}
+.board-icon .board-accent-fill{fill:#7086ff;stroke:#7086ff}
+.board-brand path{fill:rgba(239,239,235,.68);stroke:none}
+.board-brand--bitrix .bx-b{fill:#7086ff}
+.board-brand--bitrix .bx-s{fill:none;stroke:#7086ff}
+.board-cta{
+  position:absolute;left:32%;top:39.2857%;width:36%;height:21.4286%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqi;
+  border-radius:clamp(12px,3cqi,20px);background:var(--acc);color:#fff;
+  box-shadow:0 12px 38px -12px rgba(31,60,255,.55);
+  transition:background .3s,box-shadow .3s,transform .3s;
+}
+.board-cta-note{font-family:var(--mono);font-size:clamp(7px,1.85cqi,11px);font-weight:500;letter-spacing:.035em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.board-cta-title{font-size:clamp(11px,3.6cqi,22px);font-weight:600;letter-spacing:-.035em;line-height:1.15;white-space:nowrap}
+.board-cta svg{width:5.5cqi;height:3.4cqi;flex-shrink:0;stroke:currentColor;stroke-width:1.6;transition:transform .3s}
+.board-cta:hover{background:#314bff;box-shadow:0 14px 44px -10px rgba(31,60,255,.7);transform:translateY(-2px)}
+.board-cta:hover svg{transform:translateX(3px)}
+.board-cta:focus-visible{outline:2px solid var(--acc-2);outline-offset:5px}
+.hero .reg-t b{font-weight:500}
+@media(max-width:944px){
+  #hero .hero-grid{grid-template-columns:1fr;gap:36px}
+  .integration-board{max-width:560px;justify-self:center}
+}
+@media(max-width:600px){
+  .integration-board{border-radius:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .board-signals{animation:none}
+  .board-cta,.board-cta svg,.board-face{transition:none}
+}
