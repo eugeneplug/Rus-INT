@@ -1,0 +1,35 @@
+# ===== РУСИНТЕГРАЦИЯ: настройки сервера (Apache) =====
+# Если на хостинге уже есть свой .htaccess — не заменяйте его,
+# а допишите эти блоки в конец существующего файла.
+
+# Своя страница «не найдено» с правильным кодом 404
+ErrorDocument 404 /404.html
+
+# Не показывать список файлов в папках
+Options -Indexes
+
+# Сжатие текстовых файлов (HTML, CSS, JS, SVG, XML)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# Кэш в браузере. CSS и JS подключаются с ?v=…, поэтому после обновления
+# посетители сразу получат новую версию — меняйте ?v= при правках.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+  ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+</IfModule>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  /* старые адреса вида /#/services/ai ведут на новые /services/ai/ */
+  var h=location.hash;
+  if(h.indexOf('#/')===0){var p=h.slice(2).replace(/^\/+|\/+$/g,'');location.replace('/'+(p?p+'/':''));return}
+  /* прелоадер показываем только при первом заходе за сессию */
+  try{if(sessionStorage.getItem('ri_pre'))document.documentElement.classList.add('nopre');sessionStorage.setItem('ri_pre','1')}catch(e){}
+})();
+</script>
+
+<title>Кейс: Битрикс24 и ИИ для разбора отчётов сотрудников — РУСИНТЕГРАЦИЯ</title>
+<meta name="description" content="Подключили ИИ к Битрикс24 для разбора отчётов 90 выездных инженеров: сигнал о повторном выезде в тот же день, 6 часов в день освобождено.">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-120.png" sizes="120x120" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/onest-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.min.css?v=20261018c">
+
+<link rel="canonical" href="https://rus-integration.ru/projects/bitrix-otchety/">
+<meta name="robots" content="index, follow">
+
+<!-- карточка при отправке ссылки в мессенджеры и соцсети -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="РУСИНТЕГРАЦИЯ">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://rus-integration.ru/projects/bitrix-otchety/">
+<meta property="og:title" content="Кейс: Битрикс24 и ИИ для разбора отчётов сотрудников — РУСИНТЕГРАЦИЯ">
+<meta property="og:description" content="Подключили ИИ к Битрикс24 для разбора отчётов 90 выездных инженеров: сигнал о повторном выезде в тот же день, 6 часов в день освобождено.">
+<meta property="og:image" content="https://rus-integration.ru/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="РУСИНТЕГРАЦИЯ — соединяем 1С, Битрикс24, сайт и склад в один механизм">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Кейс: Битрикс24 и ИИ для разбора отчётов сотрудников — РУСИНТЕГРАЦИЯ">
+<meta name="twitter:description" content="Подключили ИИ к Битрикс24 для разбора отчётов 90 выездных инженеров: сигнал о повторном выезде в тот же день, 6 часов в день освобождено.">
+<meta name="twitter:image" content="https://rus-integration.ru/og.png">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "ProfessionalService",
+   "@id": "https://rus-integration.ru/#org",
+   "name": "РУСИНТЕГРАЦИЯ",
+   "legalName": "ООО «РУСИНТЕГРАЦИЯ»",
+   "url": "https://rus-integration.ru/",
+   "logo": "https://rus-integration.ru/apple-touch-icon.png",
+   "image": "https://rus-integration.ru/og.png",
+   "telephone": "+7-800-201-11-32",
+   "email": "rus-integration@yandex.ru",
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ул. Карла Маркса, 75а, каб. 219",
+    "addressLocality": "Красноярск",
+    "postalCode": "660017",
+    "addressCountry": "RU"
+   },
+   "areaServed": {
+    "@type": "Country",
+    "name": "Россия"
+   },
+   "knowsAbout": [
+    "Интеграция 1С",
+    "Внедрение Битрикс24",
+    "Внедрение ИИ",
+    "Автоматизация бизнес-процессов",
+    "Разработка программного обеспечения",
+    "3D-сканирование",
+    "3D-моделирование"
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Главная",
+     "item": "https://rus-integration.ru/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Проекты",
+     "item": "https://rus-integration.ru/projects/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Битрикс24: разбор отчётов сотрудников",
+     "item": "https://rus-integration.ru/projects/bitrix-otchety/"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113597278', 'ym');
+
+    ym(113597278, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<noscript><div><img src="https://mc.yandex.ru/watch/113597278" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+
+
+<div class="pre" id="pre">
+  <div class="pre-n" id="preN">0</div>
+  <div class="pre-r"><b>РУСИНТЕГРАЦИЯ</b>Автоматизация и интеграция бизнес-систем: 1С, Битрикс24, ИИ и 3D</div>
+  <span class="pre-bar" id="preB"></span>
+</div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a href="/" data-route="home" class="logo" aria-label="РУСИНТЕГРАЦИЯ">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="6" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6"></circle>
+        <circle cx="18.5" cy="5.5" r="2.4" fill="#1F3CFF"></circle>
+        <circle cx="18.5" cy="18.5" r="2.4" fill="currentColor"></circle>
+        <path d="M9 10.8 16.2 6.7M9 13.2 16.2 17.3" stroke="currentColor" stroke-width="1.6"></path>
+      </svg>
+      <b>РУС<span>ИНТЕГРАЦИЯ</span></b>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="/services/" data-route="services" class="">Направления</a>
+      <a href="/projects/" data-route="projects" class="">Проекты</a>
+      <a href="/about/" data-route="about" class="">О нас</a>
+      <a href="/contacts/" data-route="contacts" class="">Контакты</a>
+      <div class="nav-foot">
+        <a class="nav-tel" href="tel:88002011132">
+          <svg width="17" height="17" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M4.2 1.8 5.6 4.4 4.3 5.9c.7 1.5 1.9 2.7 3.4 3.4l1.5-1.3 2.6 1.4-.4 2.3c-.1.5-.6.9-1.1.8C5.9 12 3 9.1 2.3 4.3c-.1-.5.3-1 .8-1.1l1.1-.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+          </svg>
+          <span>8 (800) 201-11-32</span>
+        </a>
+        <a class="nav-mail" href="mailto:rus-integration@yandex.ru">
+          <svg width="17" height="17" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.4" y="3" width="12.2" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"></rect><path d="m2.4 4.4 5.1 3.9 5.1-3.9" stroke="currentColor" stroke-width="1.4"></path></svg>
+          <span>rus-integration@yandex.ru</span>
+        </a>
+        <div class="nav-soc">
+          <a href="https://wa.me/78002011132" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5a6 6 0 0 0-5.2 9L1.5 13.5l3.1-.8a6 6 0 1 0 2.9-11.2zm0 1.4a4.6 4.6 0 1 1-2.3 8.6l-.3-.2-1.6.4.4-1.6-.2-.3A4.6 4.6 0 0 1 7.5 2.9z" fill="currentColor"></path></svg></a>
+          <a href="mailto:rus-integration@yandex.ru" aria-label="Почта"><svg width="16" height="16" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3" width="12" height="9" rx="1.6" stroke="currentColor" stroke-width="1.3"></rect><path d="m2.4 4.2 5.1 4 5.1-4" stroke="currentColor" stroke-width="1.3"></path></svg></a>
+        </div>
+        <button class="btn nav-cta" data-go=""><span>Обсудить проект</span></button>
+      </div>
+    </nav>
+    <a class="hdr-mail" href="mailto:rus-integration@yandex.ru">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.4" y="3" width="12.2" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"></rect><path d="m2.4 4.4 5.1 3.9 5.1-3.9" stroke="currentColor" stroke-width="1.4"></path></svg>
+      <span>rus-integration@yandex.ru</span>
+    </a>
+    <a class="hdr-tel" href="tel:88002011132">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <path d="M4.2 1.8 5.6 4.4 4.3 5.9c.7 1.5 1.9 2.7 3.4 3.4l1.5-1.3 2.6 1.4-.4 2.3c-.1.5-.6.9-1.1.8C5.9 12 3 9.1 2.3 4.3c-.1-.5.3-1 .8-1.1l1.1-.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+      </svg>
+      <span>8 (800) 201-11-32</span>
+    </a>
+    
+    <button class="btn btn-sm" data-go=""><span>Обсудить проект</span></button>
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<main id="top">
+
+  
+
+
+
+
+
+
+<div class="page" id="page-case"><section class="top"><div class="top-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div><div class="wrap"><div class="crumbs mono fu"><a href="/" data-route="home">Главная</a><span>/</span><a href="/projects/" data-route="projects">Проекты</a><span>/</span><span>Автоматизация</span></div><div class="cs-client fu fd1"><i></i>СервисПро · обслуживание инженерных систем</div><h1 class="srv-h"><span class="rl"><i>Битрикс24: разбор отчётов сотрудников</i></span></h1><p class="lead fu fd1">Девяносто выездных инженеров ежедневно сдавали отчёты о работах. Их читали три человека, сводили в таблицу и к пятнице получали картину прошлой недели — когда влиять уже поздно.</p><dl class="cs-meta fu fd2"><div><dt>Отрасль</dt><dd>сервис и обслуживание</dd></div><div><dt>Срок</dt><dd>8 недель</dd></div><div><dt>Стек</dt><dd>Битрикс24, REST, LLM</dd></div><div><dt>Команда</dt><dd>4 человека</dd></div></dl></div></section><section class="sec" style="padding-top:88px"><div class="wrap"><h2 class="lbl mono rv">Что было не так</h2><div class="cs-probs rv"><div class="cs-p"><b>Отчёты писали свободным текстом</b><p>Один инженер писал три строки, другой — страницу. Сравнить их между собой было невозможно.</p></div><div class="cs-p"><b>Сводку делали руками</b><p>Три сотрудника тратили по два часа в день на перенос данных в таблицу.</p></div><div class="cs-p"><b>Проблемы всплывали поздно</b><p>Повторный выезд на один и тот же объект замечали, когда клиент уже жаловался.</p></div><div class="cs-p"><b>Руководитель не видел динамику</b><p>Были цифры за месяц, но не было ответа на вопрос «стало лучше или хуже, чем в прошлом квартале».</p></div></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><h2 class="lbl mono rv">Что сделали</h2><div class="cs-steps rv"><div class="cs-s"><span>01</span><div><b>Структурировали отчёт</b><p>Оставили свободное поле, но добавили обязательные: объект, оборудование, тип работ, затраченное время, результат.</p></div></div><div class="cs-s"><span>02</span><div><b>Разбор текста моделью</b><p>Свободную часть разбирает языковая модель: вытаскивает упомянутое оборудование, выполненные операции и признаки повторной проблемы.</p></div></div><div class="cs-s"><span>03</span><div><b>Проверка человеком</b><p>Модель не решает сама: спорные случаи уходят диспетчеру с пометкой, почему она засомневалась.</p></div></div><div class="cs-s"><span>04</span><div><b>Дашборд по сотрудникам</b><p>Загрузка, среднее время выезда, доля повторных обращений, сравнение с прошлым периодом.</p></div></div><div class="cs-s"><span>05</span><div><b>Сигналы вместо отчётов</b><p>Если по объекту третий выезд за месяц или время работ вдвое выше обычного — руководитель получает уведомление в тот же день.</p></div></div></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><h2 class="lbl mono rv">Где споткнулись</h2><div class="cs-hard rv"><span>Честно о сложностях</span><p>Первая версия слишком уверенно ставила метки, и когда модель ошибалась, диспетчеры переставали доверять всей системе. Ввели порог уверенности: при сомнении заявка идёт человеку без метки, а на панели качества видно, где именно модель ошибается. Доверие вернулось, а точность выросла за счёт правок.</p></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><h2 class="lbl mono rv">Результат</h2><div class="cs-res rv"><div><b>6 часов</b><u>в день освободилось у трёх сотрудников</u></div><div><b>в тот же день</b><u>сигнал о повторном выезде вместо недели</u></div><div><b>91%</b><u>меток подтверждаются диспетчером</u></div></div><div class="cs-q rv"><p>«Мы перестали обсуждать прошлую неделю. Разговор идёт про сегодняшний день, потому что данные приходят сегодня.»</p><span>Директор по сервису</span></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><h2 class="lbl mono rv">Направления по теме</h2><div class="cs-next rv"><a href="/services/ai/" data-route="services" data-sub="ai">ИИ-автоматизация</a><a href="/services/bitrix/" data-route="services" data-sub="bitrix">Внедрение Битрикс24</a></div></div></section><section class="sec" style="padding-top:0"><div class="wrap"><h2 class="lbl mono rv">Другие проекты</h2><div class="cs-next rv"><a href="/projects/3d-detali/" data-route="projects" data-sub="3d-detali">3D-модели деталей по чертежам и обмерам</a><a href="/projects/chpu-avtomatizaciya/" data-route="projects" data-sub="chpu-avtomatizaciya">Автоматизация станков с ЧПУ</a><a href="/projects/akvalis-brand/" data-route="projects" data-sub="akvalis-brand">Логотип и фирменный стиль бренда воды</a><a href="/projects/1c-wms/" data-route="projects" data-sub="1c-wms">Интеграция 1С:УТ со складской системой WMS</a></div></div></section></div>
+
+
+
+
+
+
+
+<!-- ================= TALK ================= -->
+<section class="sec" id="talk" style="padding-top:0">
+  <div class="wrap">
+    <div class="talk rv">
+      <div class="talk-l">
+      <form id="talkForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Форма на главной">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="talk-h">
+          Привет! Меня зовут <span class="fl"><input type="text" id="q1" name="name" placeholder="имя" size="6" autocomplete="name"></span>,
+          я представляю <span class="fl"><input type="text" id="q2" name="company" placeholder="компанию" size="10" autocomplete="organization"></span>.
+          Мой контакт — <span class="fl"><input type="tel" id="q3" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18" size="18"></span>,
+          и меня интересует <span class="fl"><select id="q4" name="topic">
+            <option value="">направление</option>
+            <option>интеграция систем</option>
+            <option>внедрение Битрикс24</option>
+            <option>внедрение 1С</option>
+            <option>ИИ-автоматизация</option>
+            <option>3D-моделирование</option>
+            <option>ещё не решил</option>
+          </select></span>.
+        </p>
+        <div class="talk-b">
+          <button type="submit" class="btn"><span>Отправить</span></button>
+          <p class="talk-note">Заполните форму — бесплатно проконсультируем в течение рабочего дня. Нажимая кнопку, вы соглашаетесь c <a href="#" data-policy>правилами обработки персональных данных</a>.</p>
+        </div>
+      </form>
+      <div class="thanks" id="thanks">
+        <b>Спасибо!</b>
+        <span>Свяжемся с вами в ближайшее время.</span>
+      </div>
+      </div>
+
+      <div class="talk-r" aria-hidden="true"><canvas id="pz3d"></canvas></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <ul class="ftr-nav">
+        <li><a href="/services/" data-route="services">Направления<i>01</i></a></li>
+        <li><a href="/projects/" data-route="projects">Проекты<i>02</i></a></li>
+        <li><a href="/about/" data-route="about">О нас<i>03</i></a></li>
+        <li><a href="/contacts/" data-route="contacts">Контакты<i>04</i></a></li>
+      </ul>
+      <div class="ftr-c">
+        <a href="tel:88002011132">8 (800) 201-11-32</a>
+        <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a>
+        <p>Красноярск, но работаем по всей России. Первичная консультация и оценка задачи — бесплатно.</p>
+      </div>
+    </div>
+    <div class="ftr-big">IT <b>РОССИЯ</b></div>
+    <div class="ftr-b">
+      <div>2026 РУСИНТЕГРАЦИЯ · Автоматизация и интеграция бизнес-систем</div>
+      <div><a href="#" data-policy>Политика конфиденциальности</a> · <a href="#top" class="up-link" id="toTop">Наверх ↑</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="cmask" id="cmask" role="dialog" aria-modal="true" aria-label="Расчёт стоимости" aria-hidden="true">
+  <div class="cpanel">
+    <button class="cx" id="cx" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <form id="calcForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Расчёт стоимости">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="service" id="calcSvc" value="">
+        <input type="hidden" name="price" id="calcPrice" value="">
+      <span class="cmono canim" style="--i:0">Расчёт стоимости</span>
+      <h3 class="canim" style="--i:1">Посчитаем точную смету<br>под вашу задачу</h3>
+      <div class="csum canim" style="--i:2">
+        <div><span>Вид услуги</span><b id="cSvc">—</b></div>
+        <div><span>Ориентир по цене</span><b id="cPrice" class="cprice">—</b></div>
+      </div>
+      <div class="cfields canim" style="--i:3">
+        <label class="cf"><span>Как вас зовут</span><input type="text" id="c1" name="name" placeholder="Имя" autocomplete="name"></label>
+        <label class="cf"><span>Телефон</span><input type="tel" id="c2" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18"></label>
+        <label class="cf cf-w"><span>Коротко о задаче<i>необязательно</i></span><input type="text" id="c3" name="comment" placeholder="Например: два завода, обмен с 1С"></label>
+      </div>
+      <div class="cbtns canim" style="--i:4">
+        <button type="submit" class="btn cbtn"><span>Получить смету</span></button>
+        <p class="cnote">Пришлём расчёт в течение рабочего дня. Оценка задачи бесплатна и ни к чему не обязывает.</p>
+      </div>
+    </form>
+    <div class="cok" id="cok">
+      <svg width="76" height="76" viewBox="0 0 82 82" fill="none">
+        <circle cx="41" cy="41" r="38" stroke="#1F3CFF" stroke-width="2.5"/>
+        <path d="M25 42.5 36 53.5 58 30" stroke="#1F3CFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <b>Заявка принята</b>
+      <span>Подготовим смету и вернёмся с расчётом.</span>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="fmask" id="pdMask" role="dialog" aria-modal="true" aria-label="Согласие на обработку персональных данных" aria-hidden="true">
+  <div class="fpanel pol-panel">
+    <button class="fx" data-pd-close aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <div class="fbody pol-body">
+      <h3>Согласие на обработку персональных данных</h3>
+
+      <p class="pd-lead">Отправляя форму, вы даёте ООО «РУСИНТЕГРАЦИЯ» согласие на обработку
+        указанных вами данных. Ниже — коротко о том, что это означает.</p>
+
+      <ul class="pd-l">
+        <li><b>Что мы получаем.</b> Только то, что вы вписали сами: имя, телефон или почту,
+          название компании и описание задачи.</li>
+        <li><b>Зачем.</b> Чтобы связаться с вами по обращению: ответить на вопрос, обсудить
+          задачу, подготовить расчёт. Ни для чего другого.</li>
+        <li><b>Кому передаём.</b> Доступ к заявкам есть только у сотрудников, которые ведут
+          работу с клиентами. Третьим лицам для рекламы не передаём.</li>
+        <li><b>Сколько храним.</b> Три года с последнего контакта. Если работа переросла
+          в договор — по срокам бухгалтерского учёта.</li>
+        <li><b>Рассылок не будет.</b> Мы не подписываем вас ни на что и не передаём контакты
+          рекламодателям.</li>
+        <li><b>Можно передумать.</b> Напишите на
+          <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a> — удалим
+          данные и прекратим обработку.</li>
+      </ul>
+
+      <p class="pd-note">Согласие даётся добровольно и действует до отзыва. Обработка ведётся
+        по требованиям Федерального закона № 152-ФЗ «О персональных данных».
+        Полный текст — в <a href="#" data-policy data-pd-close>политике конфиденциальности</a>.</p>
+
+      <div class="m-c">
+        <button class="btn" data-pd-close><span>Понятно</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fmask" id="polMask" role="dialog" aria-modal="true" aria-label="Политика конфиденциальности" aria-hidden="true">
+  <div class="fpanel pol-panel">
+    <button class="fx" data-pol-close aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.7"/></svg></button>
+    <div class="fbody pol-body">
+      <h3>Политика обработки персональных данных</h3>
+      <p class="pol-ed">Редакция от 18 октября 2026 года</p>
+
+      <h4>1. Кто обрабатывает данные</h4>
+      <p>Оператором персональных данных выступает ООО «РУСИНТЕГРАЦИЯ», адрес: 660017, Красноярск,
+        улица Карла Маркса, 75а, кабинет 219. Связаться по вопросам обработки данных можно
+        по адресу <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a>
+        или по телефону <a href="tel:88002011132">8 (800) 201-11-32</a>.</p>
+
+      <h4>2. Какие данные мы собираем</h4>
+      <p><b>Данные из форм.</b> Только то, что вы указываете сами: имя, телефон или адрес почты,
+        название компании и описание задачи. Вместе с заявкой сохраняются адрес страницы,
+        с которой она отправлена, дата и время обращения. IP-адрес отправителя используется
+        кратковременно и в обезличенном виде — только чтобы защитить форму от массовых отправок;
+        вместе с заявкой он не хранится.</p>
+      <p><b>Данные о посещении сайта.</b> На сайте работает сервис веб-аналитики Яндекс Метрика.
+        Он собирает обезличенные сведения: идентификатор в файлах cookie, IP-адрес, тип устройства,
+        операционную систему и браузер, разрешение экрана, источник перехода и рекламную кампанию,
+        просмотренные страницы, время на сайте, а также действия на странице — клики, прокрутку
+        и движения курсора. Технология Вебвизор воспроизводит такие действия в виде записи сеанса.</p>
+      <p>Мы не собираем паспортные данные, сведения о здоровье, о взглядах и убеждениях,
+        а также любые другие сведения особых категорий.</p>
+
+      <h4>3. Зачем эти данные нужны</h4>
+      <p>Данные из форм нужны только для того, чтобы связаться с вами по обращению: ответить
+        на вопрос, обсудить задачу, подготовить расчёт или коммерческое предложение. Мы не используем
+        контакты для рассылок, на которые вы не подписывались.</p>
+      <p>Данные Яндекс Метрики нужны, чтобы понимать, как посетители пользуются сайтом, находить
+        неудобные места и исправлять их, оценивать эффективность рекламы, в том числе в Яндекс Директе.
+        По этим данным мы не устанавливаем личность посетителя.</p>
+
+      <h4>4. На каком основании</h4>
+      <p>Данные из форм обрабатываются на основании вашего согласия, которое вы даёте, отправляя форму.
+        Согласие на использование cookie и Яндекс Метрики вы даёте, нажимая «Принять» в уведомлении
+        о cookie или продолжая пользоваться сайтом после его показа. Согласие добровольное и может быть
+        отозвано в любой момент. Обработка ведётся по требованиям Федерального закона № 152-ФЗ
+        «О персональных данных».</p>
+
+      <h4>5. Сколько данные хранятся</h4>
+      <p>Обращения храним три года с момента последнего контакта — этот срок нужен, чтобы
+        вернуться к переписке, если вы обратитесь повторно. Если работа переросла в договор,
+        срок хранения определяется требованиями бухгалтерского и налогового учёта.</p>
+      <p>Файлы cookie Яндекс Метрики хранятся в вашем браузере до одного года, если вы не удалите
+        их раньше. Статистика посещений хранится в Яндекс Метрике по правилам этого сервиса.</p>
+
+      <h4>6. Кому мы их передаём</h4>
+      <p>Доступ к заявкам с сайта есть только у сотрудников, которые ведут работу с клиентами.</p>
+      <p>Данные о посещениях обрабатывает ООО «Яндекс» (119021, Москва, ул. Льва Толстого, 16) —
+        по условиям использования сервиса Яндекс Метрика. Карта на странице контактов загружается
+        сервисом Яндекс Карты и работает по его правилам.</p>
+      <p>Мы не продаём данные и не передаём их третьим лицам для рекламы. Передача данных
+        государственным органам возможна только по официальному запросу в рамках закона.</p>
+
+      <h4>7. Как мы их защищаем</h4>
+      <p>Мы ограничиваем доступ по ролям и храним только то, что нужно для работы с обращением.
+        Передача данных с сайта идёт по защищённому соединению. Полной гарантии
+        безопасности в интернете не существует, но мы принимаем разумные меры защиты.</p>
+
+      <h4>8. Ваши права</h4>
+      <p>Вы можете запросить, какие ваши данные у нас есть, потребовать их исправить,
+        удалить или отозвать согласие на обработку. Для этого напишите на
+        <a href="mailto:rus-integration@yandex.ru">rus-integration@yandex.ru</a> — ответим
+        в течение десяти рабочих дней. Отзыв согласия не влияет на законность обработки,
+        которая велась до отзыва.</p>
+      <p>Чтобы Яндекс Метрика не собирала данные о ваших посещениях, отключите cookie в настройках
+        браузера или установите <a href="https://yandex.ru/support/metrica/general/opt-out.html" target="_blank" rel="noopener">блокировщик Яндекс Метрики</a>.</p>
+
+      <h4>9. Файлы cookie</h4>
+      <p>Cookie — небольшие файлы, которые сайт сохраняет в браузере. Мы используем два вида:</p>
+      <ul class="pd-l">
+        <li><b>Технические.</b> Запоминают, что вы уже видели уведомление о cookie. Без них сайт
+          будет показывать уведомление при каждом визите.</li>
+        <li><b>Аналитические.</b> Устанавливает Яндекс Метрика, чтобы отличать новые визиты
+          от повторных и собирать статистику, описанную в разделе 2.</li>
+      </ul>
+      <p>Удалить cookie или запретить их сохранение можно в настройках браузера. Сайт продолжит
+        работать, но статистика по вашим визитам собираться не будет.</p>
+
+      <h4>10. Изменения политики</h4>
+      <p>Мы можем обновлять этот документ. Действующая редакция всегда доступна на сайте,
+        дата редакции указана в начале. При существенных изменениях мы обновляем эту дату,
+        чтобы вы могли увидеть, что документ менялся.</p>
+    </div>
+  </div>
+</div>
+
+<div class="fmask" id="fmask" role="dialog" aria-modal="true" aria-label="Обсудить проект" aria-hidden="true">
+  <div class="fpanel">
+    <span class="fglow" aria-hidden="true"></span>
+    <div class="fbody">
+      <button class="fx" id="fx" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <form id="popForm" method="post" action="/send.php" novalidate>
+        <input type="hidden" name="form" value="Поп-ап заявки">
+        <input type="hidden" name="page" class="js-page" value="">
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <span class="mono fanim" style="--i:0">Ответим в течение рабочего дня</span>
+        <p class="fq fanim" style="--i:1">
+          Привет! Меня зовут <span class="fl"><input type="text" id="p1" name="name" placeholder="имя" autocomplete="name"></span>,
+          я представляю <span class="fl"><input type="text" id="p2" name="company" placeholder="компанию" autocomplete="organization"></span>.
+          Мой контакт — <span class="fl"><input type="tel" id="p3" name="contact" data-phone placeholder="+7" inputmode="tel" autocomplete="tel" maxlength="18"></span>,
+          и меня интересует <span class="fl"><select id="p4" name="topic">
+            <option value="">направление</option>
+            <option>интеграция систем</option>
+            <option>внедрение Битрикс24</option>
+            <option>внедрение 1С</option>
+            <option>ИИ-автоматизация</option>
+            <option>3D-моделирование</option>
+            <option>ещё не решил</option>
+          </select></span>.
+        </p>
+        <div class="fbtn fanim" style="--i:2">
+          <button type="submit" class="btn"><span>Отправить</span></button>
+          <p class="fnote">Консультация и оценка задачи бесплатно. Нажимая кнопку, вы соглашаетесь c <a href="#" data-policy>правилами обработки персональных данных</a>.</p>
+        </div>
+      </form>
+      <div class="fok" id="fok">
+        <svg width="82" height="82" viewBox="0 0 82 82" fill="none">
+          <circle cx="41" cy="41" r="38" stroke="#E8FF4D" stroke-width="2.5"/>
+          <path d="M25 42.5 36 53.5 58 30" stroke="#E8FF4D" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <b>Спасибо!</b>
+        <span>Свяжемся с вами в течение рабочего дня.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="mask" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="m-x" id="mX" aria-label="Закрыть"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <div class="m-in" id="mIn"></div>
+  </div>
+</div>
+
+<button class="btn sticky" id="sticky" data-go><span>Обсудить проект</span></button>
+
+<div class="toast" id="toast">Скопировано</div>
+
+<div class="cook" id="cook">
+  <b>Файлы cookie</b>
+  <p>Мы используем cookie и Яндекс Метрику, чтобы понимать, как работает сайт. Продолжая просмотр, вы соглашаетесь с <a href="#" data-policy>политикой обработки данных</a>.</p>
+  <button class="btn btn-sm" id="cookOk"><span>Принять</span></button>
+</div>
+
+<script src="/assets/three.min.js?v=r128"></script>
+<script src="/assets/site.min.js?v=20261018b"></script>
+</body>
+</html>
