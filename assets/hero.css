@@ -37,6 +37,16 @@
 .board-node:hover .board-brand--1c path{fill:#D91920;filter:drop-shadow(0 0 4px rgba(217,25,32,.3))}
 .board-brand--bitrix .bx-b{fill:#7086ff}
 .board-brand--bitrix .bx-s{fill:none;stroke:#7086ff}
+/* Интеграция: встречные пакеты данных и отклик узлов. */
+.board-integration-links{stroke:rgba(239,239,235,.4)}
+.board-integration-packet{fill:#8294ff;stroke:none;offset-path:path('M-18-15h36L0 16z');animation:board-integration-transfer 4.5s linear infinite}
+.board-integration-packet--return{fill:var(--acc-2);animation-direction:reverse;animation-delay:-1.5s}
+.board-integration-node{fill:#1d1e24;animation:board-integration-node 4.5s ease-in-out infinite;animation-delay:var(--node-delay,0s)}
+.board-integration-node--core{fill:#8294ff;stroke:#8294ff}
+.board-integration-pulse{fill:none;stroke:#8294ff;stroke-width:1;animation:board-integration-pulse 3s ease-out infinite}
+@keyframes board-integration-transfer{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes board-integration-node{0%,40%,100%{stroke:var(--bg)}15%,25%{stroke:#8294ff;fill:#8294ff}}
+@keyframes board-integration-pulse{0%{r:4px;opacity:.7}75%,100%{r:10px;opacity:0}}
 /* Мини-редактор: строки набираются по очереди, курсор следует за кодом. */
 .board-code-window{fill:rgba(255,255,255,.025)}
 .board-code-text{fill:#8294ff;stroke:none;font-family:var(--mono);font-size:7px;white-space:pre}
@@ -108,5 +118,6 @@
   .board-code-reveal{width:50px}
   .board-code-cursor{display:none}
   .board-motion-dot{offset-distance:50%}
+  .board-integration-packet,.board-integration-pulse{display:none}
   .board-cta,.board-cta svg,.board-face,.board-brand path{transition:none}
 }
