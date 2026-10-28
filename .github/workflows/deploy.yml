@@ -1,6 +1,5 @@
 name: 🚀 Deploy to Reg.ru FTP
 
-# Этот workflow запускается при каждом пуше в ветку main
 on:
   push:
     branches: ["main"]
@@ -10,15 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Скачиваем последнюю версию кода из репозитория
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      # 2. Загружаем файлы на хостинг через FTP
       - name: 📂 Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ./www/rus-integration.ru/ # ПУТЬ К ПАПКЕ ВАШЕГО САЙТА!
+          server-dir: ./www/rus-integration.ru/
+          # не заливаем мусор и то, что генерируется на сервере
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/node_modules/**
+            **/README.md
+            **/og.png
+          # подробный лог — чтобы видеть, на чём именно падает
+          log-level: verbose
+          timeout: 60000
