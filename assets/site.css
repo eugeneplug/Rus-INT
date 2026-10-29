@@ -1976,6 +1976,10 @@ section[id],main[id]{scroll-margin-top:104px}
 /* единственный отклик при наведении — картинка становится ярче,
    без движения: карточки идут лентой, и сдвиг сбивал бы её ритм */
 .cl-logo:hover img{opacity:1}
+/* У загруженных логотипов уже есть поля и фон: заполняем карточку
+   изображением, сохраняя пропорции и одинаковую ширину элементов ленты. */
+.cl-upload{width:212px;min-width:212px}
+.cl-upload img{object-fit:cover;opacity:1}
 /* карточка «в работе» — место под будущий логотип */
 /* карточка с нарисованным знаком */
 .cl-mark{padding:0 22px}
@@ -1992,6 +1996,7 @@ section[id],main[id]{scroll-margin-top:104px}
   .cl-i img{max-height:38px;max-width:120px}
   .cl-big{padding:0}
   .cl-big img{max-height:none;max-width:none}
+  .cl-upload{width:170px;min-width:170px}
 }
 
 /* окно согласия: короткая выжимка для форм, без полного текста политики */

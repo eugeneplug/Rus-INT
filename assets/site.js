@@ -1396,11 +1396,10 @@ document.addEventListener('click',function(e){if(e.target.closest('[data-mclose]
 /* ============ клиенты: бегущая лента ============ */
 (function(){
   var row=document.getElementById('clRow');if(!row)return;
-  /* Первым идёт настоящий логотип. Остальные — заглушки под будущие
-     логотипы: как только появится файл, строка меняется на {logo:'…'}. */
+  /* Логотипы из файлов проекта и встроенных SVG. */
   var CLIENTS=[
-    {name:'Kiborto',logo:'https://kib-orto.com/wp-content/uploads/2026/05/logo-kiborto-beloe.svg',bg:'#624BE9'},
-    {name:'РЦ Ортос',logo:'https://rc-ortos.ru/wp-content/uploads/2026/06/handled_3_1080_1920_80-photoroom-3-1.png',bg:'#F0EDE9'},
+    {name:'Kiborto',logo:'/img/clients/kiborto.png',bg:'#292059',big:true,upload:true},
+    {name:'РЦ Ортос',logo:'/img/clients/ortos.png',bg:'#F0EDE9',big:true,upload:true},
     {name:'Клиент 3',logo:'/img/1.jpg',bg:'#FFFFFF',big:true},
     {name:'Клиент 4',logo:'/img/2.jpg',bg:'#000000',big:true,scale:.68},
     {name:'Аквалис',bg:'#062B3A',mark:
@@ -1438,7 +1437,7 @@ document.addEventListener('click',function(e){if(e.target.closest('[data-mclose]
       }
       d.innerHTML=c.mark;
     }else if(c.logo){
-      d.className='cl-i cl-logo'+(c.big?' cl-big':'');
+      d.className='cl-i cl-logo'+(c.big?' cl-big':'')+(c.upload?' cl-upload':'');
       /* у некоторых картинок своё поле вокруг знака: задаём долю карточки */
       if(c.scale)d.style.setProperty('--sc',c.scale);
       /* Фон задаётся у каждого клиента отдельно: логотипы приходят под
