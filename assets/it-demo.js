@@ -87,7 +87,7 @@
   function ease(n){return n*n*(3-2*n)}
   function point(p){return p.x.toFixed(2)+' '+p.y.toFixed(2)}
   function offset(p,u,n,length,width){return {x:p.x+u.x*length+n.x*width,y:p.y+u.y*length+n.y*width}}
-  function arm(reach,rub){
+  function arm(reach,rub,blend){
     var t=reach,k=1-t;
     var shoulder={x:773,y:468};
     var wrist={x:k*k*k*861+3*k*k*t*886+3*k*t*t*840+t*t*t*803,y:k*k*k*540+3*k*k*t*510+3*k*t*t*398+t*t*t*378};
@@ -118,7 +118,7 @@
     $('#itCuff').setAttribute('transform','translate('+point(wrist)+') rotate('+angle.toFixed(2)+')');
     $('#itSleeveGradient').setAttribute('x1',elbow.x-20);$('#itSleeveGradient').setAttribute('y1',elbow.y+12);
     $('#itSleeveGradient').setAttribute('x2',elbow.x+17);$('#itSleeveGradient').setAttribute('y2',elbow.y-15);
-    var blend=ease(Math.min(1,t/.12));
+    $('#itArmCleanFrame').setAttribute('opacity',blend.toFixed(3));
     $('#itRestArm').setAttribute('opacity',(1-blend).toFixed(3));
     $('#itMovingArm').setAttribute('opacity',blend.toFixed(3));
   }
@@ -128,7 +128,9 @@
     else if(phase>=7350&&phase<8400)reach=1;
     else if(phase>=8400&&phase<9350)reach=1-ease((phase-8400)/950);
     var rub=phase>=7350&&phase<8400?Math.sin((phase-7350)/105):0;
-    arm(reach,rub);
+    // Подмена заканчивается до подъёма руки и начинается после её возвращения.
+    var blend=phase<6320?0:phase<6500?ease((phase-6320)/180):phase<=9350?1:phase<9530?1-ease((phase-9350)/180):0;
+    arm(reach,rub,blend);
     $('#itHumanHead').setAttribute('transform','rotate('+(-reach*.9+Math.sin(elapsed/1600)*.22).toFixed(3)+' 752 432)');
     $('.it-demo-scene').classList.toggle('is-scratching',reach>.02);
     return reach;
@@ -189,16 +191,16 @@
   function markup(){
     return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
       '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Набор серверного кода, работающие индикаторы и обмен данными. Администратор иногда отрывается от клавиатуры и чешет голову.</desc>'+
-      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><linearGradient id="itJacketGradient" x2="1" y2=".5"><stop stop-color="#080b10"/><stop offset="1" stop-color="#0b1018"/></linearGradient><linearGradient id="itSleeveGradient" gradientUnits="userSpaceOnUse"><stop stop-color="#080c13"/><stop offset=".55" stop-color="#111923"/><stop offset="1" stop-color="#0a111c"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
+      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><linearGradient id="itSleeveGradient" gradientUnits="userSpaceOnUse"><stop stop-color="#080c13"/><stop offset=".55" stop-color="#111923"/><stop offset="1" stop-color="#0a111c"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
       '<clipPath id="itScreenClip"><polygon points="822,359 1112,320 1113,536 819,525"/></clipPath>'+
       '<clipPath id="itHeadClip"><path id="itHeadShape" d="M714 375Q708 359 731 350Q738 332 772 345L792 349Q805 365 789 378L787 405Q787 426 774 436L749 433L721 427Z"/></clipPath>'+
       '<path id="itArmShape" d="M763 450C784 450 796 478 808 501L830 525Q841 531 855 531L863 531C874 523 888 531 894 540L896 549Q889 552 880 544L864 554Q837 566 818 561C798 566 788 534 779 513L758 477Z"/>'+
-      '<clipPath id="itRestArmClip"><use href="#itArmShape"/></clipPath>'+
-      '<clipPath id="itArmRimClip"><path d="m813 518 103 5v14l-103-4z"/></clipPath><clipPath id="itArmDeskClip"><path d="M826 536h90v29h-90z"/></clipPath>'+
-      '<mask id="itBaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><rect width="1672" height="941" fill="#fff"/><use href="#itHeadShape" fill="#000"/><use href="#itArmShape" fill="#000" stroke="#000" stroke-width="12" stroke-linejoin="round"/></mask><mask id="itRestArmMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><use href="#itArmShape" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/></mask></defs>'+
-      '<path d="M710 332h98v112h-98z" fill="#060a13"/><use href="#itArmShape" fill="#070b13" stroke="#070b13" stroke-width="16" stroke-linejoin="round"/><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itBaseMask)"/>'+
+      '<filter id="itArmPatchFeather" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.5"/></filter>'+
+      '<mask id="itArmPatchMask" maskUnits="userSpaceOnUse" x="730" y="420" width="200" height="190"><path d="M750 440Q780 435 797 457L815 489L844 515Q884 512 907 530L916 554V580Q860 593 798 589L778 565L759 503Z" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round" filter="url(#itArmPatchFeather)"/></mask>'+
+      '<mask id="itBaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><rect width="1672" height="941" fill="#fff"/><use href="#itHeadShape" fill="#000"/></mask><mask id="itRestArmMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><use href="#itArmShape" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/></mask></defs>'+
+      '<path d="M710 332h98v112h-98z" fill="#060a13"/><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itBaseMask)"/>'+
+      '<g id="itArmCleanFrame" opacity="0"><image href="/img/demos/it-studio-arm-clean.png" x="730" y="420" width="200" height="190" mask="url(#itArmPatchMask)"/></g>'+
       '<g id="itHumanHead"><image href="/img/demos/it-studio.png" width="1672" height="941" clip-path="url(#itHeadClip)"/></g>'+
-      '<g id="itArmBackdrop" clip-path="url(#itRestArmClip)"><use href="#itArmShape" fill="#070b13"/><path d="M748 444Q789 443 789 510L789 570H748Z" fill="url(#itJacketGradient)"/><g clip-path="url(#itArmRimClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100" y="-5"/></g><g clip-path="url(#itArmDeskClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100"/></g></g>'+
       '<g clip-path="url(#itScreenClip)"><polygon points="822,359 1112,320 1113,536 819,525" fill="url(#itScreenGradient)"/><g transform="matrix(1 -.11 -.008 1 834 359)"><circle class="it-ubuntu-dot" cx="3" cy="6" r="3.3"/><text class="it-terminal-file" id="itTerminalFile" x="12" y="8"></text><path class="it-terminal-rule" d="M-3 16h277"/><g transform="translate(0 23)"><text class="it-terminal-code" id="itTerminalCode"></text><rect class="it-terminal-cursor" id="itTerminalCursor" width="1.2" height="9"/></g></g></g>'+
       '<g class="it-connections">'+links.map(function(path,i){return '<path class="it-link-track" d="'+path+'"/><path class="it-link-pulse" pathLength="1" style="--it-path-delay:-'+i*.7+'s" d="'+path+'"/>'}).join('')+'</g>'+
       syncIcon(1181,327)+syncIcon(1220,483)+
