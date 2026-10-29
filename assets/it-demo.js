@@ -7,6 +7,9 @@
   var frame=0,lastTime=0,codeTime=0,lastLength=-1,lastSample=-1;
   var ideaTimer=0,sparkTimer=0;
   var mediaObserver=null,videoFrame=0;
+  var foregroundMask=null,foregroundReady=false,foregroundLoading=null;
+  // Маска исходного ролика: 120 кадров по 30 кадров/с, атлас из 12 колонок.
+  var foregroundArea={x:840,y:335,width:104,height:190,columns:12,frames:120,fps:30};
   var editorWidth=320,editorHeight=220;
   var screenCorners=[{x:870,y:354},{x:1105,y:323},{x:1105,y:500},{x:872,y:508}];
   var used={idea:false,spark:false};
@@ -92,6 +95,28 @@
       var taken=used[node.dataset.itEgg];node.setAttribute('aria-disabled',String(taken));node.setAttribute('tabindex',taken?'-1':'0');
     });
   }
+  function loadForeground(){
+    if(!foregroundLoading)foregroundLoading=new Promise(function(resolve){
+      foregroundMask=new Image();
+      foregroundMask.onload=function(){foregroundReady=true;resolve(true)};
+      foregroundMask.onerror=function(){resolve(false)};
+      foregroundMask.src='/img/demos/it-arm-mask.png';
+    });
+    return foregroundLoading;
+  }
+  function drawForeground(video,mediaTime){
+    var canvas=$('.it-foreground');
+    if(!canvas||!foregroundReady||video.readyState<2)return;
+    var area=foregroundArea,context=canvas.getContext('2d');
+    var index=Math.min(area.frames-1,Math.max(0,Math.round(mediaTime*area.fps)));
+    context.clearRect(0,0,area.width,area.height);
+    context.globalCompositeOperation='source-over';
+    context.drawImage(video,area.x*video.videoWidth/1672,area.y*video.videoHeight/941,area.width*video.videoWidth/1672,area.height*video.videoHeight/941,0,0,area.width,area.height);
+    context.globalCompositeOperation='destination-in';
+    context.drawImage(foregroundMask,index%area.columns*area.width,Math.floor(index/area.columns)*area.height,area.width,area.height,0,0,area.width,area.height);
+    context.globalCompositeOperation='source-over';
+    canvas.dataset.maskFrame=String(index);
+  }
   function editorTransform(scale,tx,ty){
     // Проективное отображение прямоугольного редактора в четыре угла экрана.
     var p=screenCorners,dx1=p[1].x-p[2].x,dx2=p[3].x-p[2].x,dx3=p[0].x-p[1].x+p[2].x-p[3].x;
@@ -118,6 +143,9 @@
     var radius=parseFloat(getComputedStyle(stage).borderTopLeftRadius)||0;
     svg.style.clipPath='inset('+top+'px '+left+'px round '+radius+'px)';
     $('.it-terminal').style.transform=editorTransform(scale,left-584*scale,top-132*scale);
+    var foreground=$('.it-foreground'),area=foregroundArea;
+    foreground.style.left=left+(area.x-584)*scale+'px';foreground.style.top=top+(area.y-132)*scale+'px';
+    foreground.style.width=area.width*scale+'px';foreground.style.height=area.height*scale+'px';
   }
   function watchMedia(){
     layoutVideo();
@@ -128,16 +156,23 @@
     if(!video||video.error)return;
     watchMedia();
     video.muted=true;
-    function showFrame(){
+    function showFrame(now,metadata){
       videoFrame=0;
-      if(active()&&!document.hidden&&!reduced.matches&&!video.paused)scene.classList.add('has-video');
+      if(!active()||document.hidden||reduced.matches)return;
+      drawForeground(video,metadata?metadata.mediaTime:Math.floor(video.currentTime*foregroundArea.fps)/foregroundArea.fps);
+      scene.classList.add('has-video');
+      if(video.requestVideoFrameCallback)videoFrame=video.requestVideoFrameCallback(showFrame);
     }
-    var playing=video.play();
-    if(playing)playing.then(function(){
-      if(!active()||document.hidden||reduced.matches){video.pause();return}
-      if(videoFrame&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(videoFrame);
-      if(video.requestVideoFrameCallback)videoFrame=video.requestVideoFrameCallback(showFrame);else showFrame();
-    }).catch(function(){if(video.paused)scene.classList.remove('has-video')});else showFrame();
+    loadForeground().then(function(ready){
+      if(!ready||!active()||document.hidden||reduced.matches)return;
+      var playing=video.play();
+      function begin(){
+        if(!active()||document.hidden||reduced.matches){video.pause();return}
+        if(videoFrame&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(videoFrame);
+        if(video.requestVideoFrameCallback)videoFrame=video.requestVideoFrameCallback(showFrame);else showFrame();
+      }
+      if(playing)playing.then(begin).catch(function(){if(video.paused)scene.classList.remove('has-video')});else begin();
+    });
   }
   function stop(){
     cancelAnimationFrame(frame);frame=0;lastTime=0;
@@ -153,6 +188,7 @@
     var delta=Math.min(lastTime?time-lastTime:16,80);lastTime=time;
     var video=$('.it-scene-video'),thinking=video&&!video.error&&!video.paused&&video.readyState>=2&&video.currentTime>.2&&video.currentTime<2.1;
     $('.it-demo-scene').classList.toggle('is-video-thinking',thinking);
+    if(video&&!video.requestVideoFrameCallback&&video.readyState>=2)drawForeground(video,Math.floor(video.currentTime*foregroundArea.fps)/foregroundArea.fps);
     if(!thinking)codeTime+=delta;
     renderCode(false);frame=requestAnimationFrame(tick);
   }
@@ -198,6 +234,7 @@
   function markup(){
     return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><div class="it-scene-media" aria-hidden="true"><video class="it-scene-video" src="/img/demos/it-studio.mp4" poster="/img/demos/it-studio-poster.jpg" muted playsinline loop preload="metadata" disablepictureinpicture tabindex="-1"></video></div>'+
       '<div class="it-terminal" aria-hidden="true"><div class="it-terminal-bar"><span class="it-terminal-file-icon">&lt;/&gt;</span><span id="itTerminalFile"></span><span class="it-terminal-bar-dots">···</span></div><div class="it-terminal-body"><pre class="it-terminal-lines" id="itTerminalLines"></pre><pre class="it-terminal-pre"><code id="itTerminalCode"></code></pre></div><div class="it-terminal-status"><span><i></i>Ubuntu</span><span id="itTerminalLanguage"></span><span>UTF-8</span></div></div>'+
+      '<canvas class="it-foreground" width="104" height="190" aria-hidden="true"></canvas>'+
       '<svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
       '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Администратор работает за клавиатурой и иногда чешет голову. На мониторе набирается серверный код, индикаторы оборудования мерцают, по соединениям идёт обмен данными.</desc>'+
       '<defs><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient></defs>'+
@@ -221,6 +258,11 @@
   dialog.addEventListener('error',function(event){
     if(event.target.matches&&event.target.matches('.it-scene-video')){
       event.target.pause();$('.it-demo-scene').classList.remove('has-video','is-video-thinking');
+    }
+  },true);
+  dialog.addEventListener('seeked',function(event){
+    if(event.target.matches&&event.target.matches('.it-scene-video')&&active()){
+      drawForeground(event.target,Math.floor(event.target.currentTime*foregroundArea.fps+.001)/foregroundArea.fps);
     }
   },true);
   reduced.addEventListener('change',function(){
