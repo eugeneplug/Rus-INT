@@ -1,8 +1,6 @@
 /* Кликабельные направления. Пока доступно демо 1С. */
 .board-tile-hit{position:absolute;left:5.3333%;top:7.1429%;width:24%;height:21.4286%;border-radius:4cqi;cursor:pointer}
 .board-tile-hit:focus-visible{outline:2px solid var(--acc-2);outline-offset:3px}
-.board-tile-hit::after{content:"Открыть ↗";position:absolute;left:0;right:0;bottom:13%;font:500 clamp(8px,1.8cqi,11px)/1 var(--body);color:rgba(239,239,235,.65);opacity:0;transform:translateY(3px);transition:.25s}
-.board-tile-hit:hover::after,.board-tile-hit:focus-visible::after{opacity:1;transform:none}
 .integration-board:has(.board-tile-hit:is(:hover,:focus-visible)) .board-brand--1c path{fill:#D91920;filter:drop-shadow(0 0 4px rgba(217,25,32,.3))}
 .integration-board:has(.board-tile-hit:is(:hover,:focus-visible)) [data-board-node="onec"] .board-face{stroke:rgba(217,25,32,.55)}
 
@@ -166,5 +164,5 @@
   .demo-contact-grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
-  .board-demo,.board-demo::backdrop,.board-demo *,.board-tile-hit::after{animation:none!important;transition:none!important}
+  .board-demo,.board-demo::backdrop,.board-demo *{animation:none!important;transition:none!important}
 }
