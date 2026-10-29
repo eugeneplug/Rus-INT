@@ -7,6 +7,8 @@
   var frame=0,lastTime=0,codeTime=0,lastLength=-1,lastSample=-1;
   var ideaTimer=0,sparkTimer=0;
   var mediaObserver=null,videoFrame=0;
+  var editorWidth=320,editorHeight=220;
+  var screenCorners=[{x:870,y:354},{x:1105,y:323},{x:1105,y:500},{x:872,y:508}];
   var used={idea:false,spark:false};
   Object.keys(used).forEach(function(key){try{used[key]=sessionStorage.getItem('ri_it_egg_'+key)==='1'}catch(e){}});
   var examples=[
@@ -69,7 +71,7 @@
   function paint(text){
     return text.split(/("[^"\n]*"|'[^'\n]*'|\b(?:from|import|class|def|if|return|for|in|do|then|fi|done|exit|set)\b|\b(?:ThreadingHTTPServer|BaseHTTPRequestHandler|python3|curl|nohup|printf|sleep)\b)/g).map(function(part){
       var kind=/^["']/.test(part)?'string':/^(from|import|class|def|if|return|for|in|do|then|fi|done|exit|set)$/.test(part)?'keyword':/^(ThreadingHTTPServer|BaseHTTPRequestHandler|python3|curl|nohup|printf|sleep)$/.test(part)?'command':'';
-      return kind?'<tspan class="it-code-'+kind+'">'+escape(part)+'</tspan>':escape(part);
+      return kind?'<span class="it-code-'+kind+'">'+escape(part)+'</span>':escape(part);
     }).join('');
   }
   function renderCode(complete){
@@ -78,17 +80,31 @@
     var example=examples[index],length=complete?example.code.length:Math.min(example.code.length,Math.floor(local*.075));
     if(lastSample===index&&lastLength===length)return;
     lastSample=index;lastLength=length;
-    var all=example.code.slice(0,length).split('\n'),start=Math.max(0,all.length-13),lines=all.slice(start);
-    $('#itTerminalCode').innerHTML=lines.map(function(line,i){return '<tspan x="0" y="'+(12+i*10.7)+'">'+paint(line)+'</tspan>'}).join('');
-    $('#itTerminalFile').textContent='admin@ubuntu: '+example.file;
-    $('#itTerminalCursor').setAttribute('x',Math.min(266,lines[lines.length-1].length*4.95));
-    $('#itTerminalCursor').setAttribute('y',(lines.length-1)*10.7+4);
+    var all=example.code.slice(0,length).split('\n'),start=Math.max(0,all.length-12),lines=all.slice(start);
+    $('#itTerminalCode').innerHTML=lines.map(paint).join('\n')+'<span class="it-terminal-cursor"></span>';
+    $('#itTerminalLines').textContent=lines.map(function(line,i){return String(start+i+1).padStart(2,' ')}).join('\n');
+    $('#itTerminalFile').textContent=example.file;
+    $('#itTerminalLanguage').textContent=index===0?'Python 3':'Bash';
     var scene=$('.it-demo-scene');scene.dataset.codeLength=String(length);scene.dataset.codeSample=String(index);
   }
   function syncEggs(){
     dialog.querySelectorAll('[data-it-egg]').forEach(function(node){
       var taken=used[node.dataset.itEgg];node.setAttribute('aria-disabled',String(taken));node.setAttribute('tabindex',taken?'-1':'0');
     });
+  }
+  function editorTransform(scale,tx,ty){
+    // Проективное отображение прямоугольного редактора в четыре угла экрана.
+    var p=screenCorners,dx1=p[1].x-p[2].x,dx2=p[3].x-p[2].x,dx3=p[0].x-p[1].x+p[2].x-p[3].x;
+    var dy1=p[1].y-p[2].y,dy2=p[3].y-p[2].y,dy3=p[0].y-p[1].y+p[2].y-p[3].y;
+    var denominator=dx1*dy2-dx2*dy1;
+    var g=(dx3*dy2-dx2*dy3)/denominator,h=(dx1*dy3-dx3*dy1)/denominator;
+    var a=p[1].x-p[0].x+g*p[1].x,b=p[3].x-p[0].x+h*p[3].x;
+    var d=p[1].y-p[0].y+g*p[1].y,e=p[3].y-p[0].y+h*p[3].y;
+    return 'matrix3d('+[
+      (scale*a+tx*g)/editorWidth,(scale*d+ty*g)/editorWidth,0,g/editorWidth,
+      (scale*b+tx*h)/editorHeight,(scale*e+ty*h)/editorHeight,0,h/editorHeight,
+      0,0,1,0,scale*p[0].x+tx,scale*p[0].y+ty,0,1
+    ].join(',')+')';
   }
   function layoutVideo(){
     var stage=$('.it-scene-stage'),media=$('.it-scene-media'),video=$('.it-scene-video'),svg=$('.it-scene-svg');
@@ -101,6 +117,7 @@
     video.style.width=1672*scale+'px';video.style.height=941*scale+'px';
     var radius=parseFloat(getComputedStyle(stage).borderTopLeftRadius)||0;
     svg.style.clipPath='inset('+top+'px '+left+'px round '+radius+'px)';
+    $('.it-terminal').style.transform=editorTransform(scale,left-584*scale,top-132*scale);
   }
   function watchMedia(){
     layoutVideo();
@@ -179,12 +196,12 @@
     return '<g transform="translate('+x+' '+y+')"><rect class="it-sync-face" width="56" height="58" rx="8"/><g class="it-sync-arrows"><path d="M13 28a15 15 0 0 1 26-10l3 4m0-10v10H32M43 31a15 15 0 0 1-26 10l-3-4m0 10V37h10"/></g></g>';
   }
   function markup(){
-    return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><div class="it-scene-media" aria-hidden="true"><video class="it-scene-video" src="/img/demos/it-studio.mp4" poster="/img/demos/it-studio-poster.jpg" muted playsinline loop preload="metadata" disablepictureinpicture tabindex="-1"></video></div><svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
+    return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><div class="it-scene-media" aria-hidden="true"><video class="it-scene-video" src="/img/demos/it-studio.mp4" poster="/img/demos/it-studio-poster.jpg" muted playsinline loop preload="metadata" disablepictureinpicture tabindex="-1"></video></div>'+
+      '<div class="it-terminal" aria-hidden="true"><div class="it-terminal-bar"><span class="it-terminal-file-icon">&lt;/&gt;</span><span id="itTerminalFile"></span><span class="it-terminal-bar-dots">···</span></div><div class="it-terminal-body"><pre class="it-terminal-lines" id="itTerminalLines"></pre><pre class="it-terminal-pre"><code id="itTerminalCode"></code></pre></div><div class="it-terminal-status"><span><i></i>Ubuntu</span><span id="itTerminalLanguage"></span><span>UTF-8</span></div></div>'+
+      '<svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
       '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Администратор работает за клавиатурой и иногда чешет голову. На мониторе набирается серверный код, индикаторы оборудования мерцают, по соединениям идёт обмен данными.</desc>'+
-      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
-      '<clipPath id="itScreenClip"><polygon points="865,352 1112,320 1113,536 863,528"/></clipPath></defs>'+
+      '<defs><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient></defs>'+
       '<image class="it-scene-poster" href="/img/demos/it-studio-poster.jpg" width="1672" height="941"/>'+
-      '<g clip-path="url(#itScreenClip)"><polygon points="865,352 1112,320 1113,536 863,528" fill="url(#itScreenGradient)"/><g transform="matrix(1 -.11 -.008 1 878 354)"><circle class="it-ubuntu-dot" cx="3" cy="6" r="3.3"/><text class="it-terminal-file" id="itTerminalFile" x="12" y="8"></text><path class="it-terminal-rule" d="M-3 16h235"/><g transform="translate(0 23)"><text class="it-terminal-code" id="itTerminalCode"></text><rect class="it-terminal-cursor" id="itTerminalCursor" width="1.2" height="9"/></g></g></g>'+
       '<g class="it-connections">'+links.map(function(path,i){return '<path class="it-link-track" d="'+path+'"/><path class="it-link-pulse" pathLength="1" style="--it-path-delay:-'+i*.7+'s" d="'+path+'"/>'}).join('')+'</g>'+
       syncIcon(1181,327)+syncIcon(1220,483)+
       rack(1295,[269,299,328,359,398,436,470,509,542],78,-12)+rack(1288,[583,614,644,674],91,-2)+rack(1513,[333,369,404,439,475,511,546,581,617,652],31,12)+
