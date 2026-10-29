@@ -3,12 +3,6 @@
 .it-demo-scene::before{display:none}
 .it-scene-stage{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden}
 .it-scene-svg{display:block;width:100%;height:100%}
-.it-sleeve{fill:url(#itSleeveGradient);stroke:#080d16;stroke-width:1.2;stroke-linejoin:round}
-.it-sleeve-edge{fill:none;stroke:#3166aa;stroke-width:1.05;stroke-linecap:round;opacity:.7}
-.it-elbow-crease{fill:none;stroke:#02060c;stroke-width:1.7;stroke-linecap:round;opacity:.6}
-.it-cuff{fill:#0b1018;stroke:#1b2636;stroke-width:.8;stroke-linejoin:round}
-.it-cuff-seam{fill:none;stroke:#344256;stroke-width:.7;opacity:.5}
-.it-hand-image{filter:saturate(.6) brightness(.9)}
 .it-terminal-code{font:400 8.2px/1 var(--mono);white-space:pre;fill:#d7e2f7}
 .it-terminal-file{font:400 7px/1 var(--mono);fill:#a2b1cc}
 .it-terminal-rule{fill:none;stroke:#28314b;stroke-width:.7}
@@ -27,7 +21,6 @@
 .it-server-data{fill:#6bafff;animation:it-server-data 1.2s steps(1,end) infinite;animation-delay:var(--it-data-delay,0s)}
 .it-floor-light{fill:none;stroke:#4281ff;stroke-width:2;filter:drop-shadow(0 0 5px #2262ff);animation:it-floor 4s ease-in-out infinite}
 .it-keyboard-lights path{fill:none;stroke:#659fff;stroke-width:1;animation:it-key 1.1s ease-in-out infinite;animation-delay:var(--it-key-delay,0s)}
-.it-demo-scene.is-scratching .it-keyboard-lights{opacity:0}
 .it-bulb{opacity:0;pointer-events:none}
 .it-bulb-icon{fill:none;stroke:#ffdf94;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #ffc85c)}
 .it-bulb-glass{fill:rgba(255,216,112,.13)}

@@ -4,7 +4,7 @@
   var dialog=document.getElementById('boardDemo');
   if(!dialog)return;
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
-  var frame=0,lastTime=0,elapsed=0,codeTime=0,lastLength=-1,lastSample=-1;
+  var frame=0,lastTime=0,codeTime=0,lastLength=-1,lastSample=-1;
   var ideaTimer=0,sparkTimer=0;
   var used={idea:false,spark:false};
   Object.keys(used).forEach(function(key){try{used[key]=sessionStorage.getItem('ri_it_egg_'+key)==='1'}catch(e){}});
@@ -84,57 +84,6 @@
     $('#itTerminalCursor').setAttribute('y',(lines.length-1)*10.7+4);
     var scene=$('.it-demo-scene');scene.dataset.codeLength=String(length);scene.dataset.codeSample=String(index);
   }
-  function ease(n){return n*n*(3-2*n)}
-  function point(p){return p.x.toFixed(2)+' '+p.y.toFixed(2)}
-  function offset(p,u,n,length,width){return {x:p.x+u.x*length+n.x*width,y:p.y+u.y*length+n.y*width}}
-  function arm(reach,rub,blend){
-    var t=reach,k=1-t;
-    var shoulder={x:773,y:468};
-    var wrist={x:k*k*k*861+3*k*k*t*886+3*k*t*t*840+t*t*t*803,y:k*k*k*540+3*k*k*t*510+3*k*t*t*398+t*t*t*378};
-    wrist.x+=rub*.35;wrist.y+=rub*.3;
-    var dx=wrist.x-shoulder.x,dy=wrist.y-shoulder.y,distance=Math.hypot(dx,dy);
-    var upper=80,lower=48+18*t,along=(upper*upper-lower*lower+distance*distance)/(2*distance);
-    var height=Math.sqrt(Math.max(0,upper*upper-along*along));
-    var elbow={x:shoulder.x+along*dx/distance-height*dy/distance,y:shoulder.y+along*dy/distance+height*dx/distance};
-    var u={x:(elbow.x-shoulder.x)/upper,y:(elbow.y-shoulder.y)/upper};
-    var v={x:(wrist.x-elbow.x)/lower,y:(wrist.y-elbow.y)/lower};
-    var n={x:-u.y,y:u.x},m={x:-v.y,y:v.x};
-    var s1=offset(shoulder,u,n,0,20),s2=offset(shoulder,u,n,0,-20);
-    var e1=offset(elbow,u,n,0,17),e2=offset(elbow,v,m,0,17);
-    var e3=offset(elbow,v,m,0,-17),e4=offset(elbow,u,n,0,-17);
-    var w1=offset(wrist,v,m,0,9.5),w2=offset(wrist,v,m,0,-9.5);
-    var outside={x:elbow.x+(n.x+m.x)*17,y:elbow.y+(n.y+m.y)*17};
-    var inside={x:elbow.x-(n.x+m.x)*17,y:elbow.y-(n.y+m.y)*17};
-    var outline='M'+point(s1)+'C'+point(offset(s1,u,n,32,0))+' '+point(offset(e1,u,n,-20,0))+' '+point(e1)+
-      'Q'+point(outside)+' '+point(e2)+'L'+point(w1)+'Q'+point(offset(wrist,v,m,2,0))+' '+point(w2)+
-      'L'+point(e3)+'Q'+point(inside)+' '+point(e4)+'C'+point(offset(e4,u,n,-20,0))+' '+point(offset(s2,u,n,32,0))+' '+point(s2)+
-      'Q'+point(offset(shoulder,u,n,-14,0))+' '+point(s1)+'Z';
-    $('#itSleeve').setAttribute('d',outline);
-    $('#itSleeveEdge').setAttribute('d','M'+point(s1)+'C'+point(offset(s1,u,n,32,0))+' '+point(offset(e1,u,n,-20,0))+' '+point(e1)+'Q'+point(outside)+' '+point(e2)+'L'+point(w1));
-    $('#itElbowCrease').setAttribute('d','M'+point(offset(elbow,u,n,-10,-11))+'Q'+point(offset(elbow,u,n,-7,-3))+' '+point(offset(elbow,v,m,12,-10)));
-    var angle=Math.atan2(v.y,v.x)*180/Math.PI;
-    var handAngle=angle+8*(1-t)-15*t+rub*.75;
-    $('#itHand').setAttribute('transform','translate('+point(wrist)+') rotate('+handAngle.toFixed(2)+')');
-    $('#itCuff').setAttribute('transform','translate('+point(wrist)+') rotate('+angle.toFixed(2)+')');
-    $('#itSleeveGradient').setAttribute('x1',elbow.x-20);$('#itSleeveGradient').setAttribute('y1',elbow.y+12);
-    $('#itSleeveGradient').setAttribute('x2',elbow.x+17);$('#itSleeveGradient').setAttribute('y2',elbow.y-15);
-    $('#itArmCleanFrame').setAttribute('opacity',blend.toFixed(3));
-    $('#itRestArm').setAttribute('opacity',(1-blend).toFixed(3));
-    $('#itMovingArm').setAttribute('opacity',blend.toFixed(3));
-  }
-  function pose(){
-    var phase=elapsed%18000,reach=0;
-    if(phase>=6500&&phase<7350)reach=ease((phase-6500)/850);
-    else if(phase>=7350&&phase<8400)reach=1;
-    else if(phase>=8400&&phase<9350)reach=1-ease((phase-8400)/950);
-    var rub=phase>=7350&&phase<8400?Math.sin((phase-7350)/105):0;
-    // Подмена заканчивается до подъёма руки и начинается после её возвращения.
-    var blend=phase<6320?0:phase<6500?ease((phase-6320)/180):phase<=9350?1:phase<9530?1-ease((phase-9350)/180):0;
-    arm(reach,rub,blend);
-    $('#itHumanHead').setAttribute('transform','rotate('+(-reach*.9+Math.sin(elapsed/1600)*.22).toFixed(3)+' 752 432)');
-    $('.it-demo-scene').classList.toggle('is-scratching',reach>.02);
-    return reach;
-  }
   function syncEggs(){
     dialog.querySelectorAll('[data-it-egg]').forEach(function(node){
       var taken=used[node.dataset.itEgg];node.setAttribute('aria-disabled',String(taken));node.setAttribute('tabindex',taken?'-1':'0');
@@ -147,8 +96,7 @@
   }
   function tick(time){
     frame=0;if(!active()||document.hidden||reduced.matches)return;
-    var delta=Math.min(lastTime?time-lastTime:16,80);lastTime=time;elapsed+=delta;
-    var reach=pose();if(reach<.03)codeTime+=delta;
+    var delta=Math.min(lastTime?time-lastTime:16,80);lastTime=time;codeTime+=delta;
     renderCode(false);frame=requestAnimationFrame(tick);
   }
   function resume(){
@@ -157,10 +105,10 @@
     if(!frame){lastTime=0;frame=requestAnimationFrame(tick)}
   }
   function start(){
-    stop();elapsed=0;codeTime=0;lastSample=-1;lastLength=-1;
-    var scene=$('.it-demo-scene');scene.classList.remove('is-scratching');scene.classList.add('is-restarting');
+    stop();codeTime=0;lastSample=-1;lastLength=-1;
+    var scene=$('.it-demo-scene');scene.classList.add('is-restarting');
     void scene.offsetWidth;scene.classList.remove('is-restarting');
-    pose();renderCode(reduced.matches);syncEggs();resume();
+    renderCode(reduced.matches);syncEggs();resume();
   }
   function egg(kind,event){
     if(!active()||used[kind])return;
@@ -190,17 +138,12 @@
   }
   function markup(){
     return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
-      '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Набор серверного кода, работающие индикаторы и обмен данными. Администратор иногда отрывается от клавиатуры и чешет голову.</desc>'+
-      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><linearGradient id="itSleeveGradient" gradientUnits="userSpaceOnUse"><stop stop-color="#080c13"/><stop offset=".55" stop-color="#111923"/><stop offset="1" stop-color="#0a111c"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
+      '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Администратор работает за клавиатурой. На мониторе набирается серверный код, индикаторы оборудования мерцают, по соединениям идёт обмен данными.</desc>'+
+      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
       '<clipPath id="itScreenClip"><polygon points="822,359 1112,320 1113,536 819,525"/></clipPath>'+
-      '<clipPath id="itHeadClip"><path id="itHeadShape" d="M714 375Q708 359 731 350Q738 332 772 345L792 349Q805 365 789 378L787 405Q787 426 774 436L749 433L721 427Z"/></clipPath>'+
       '<path id="itArmShape" d="M763 450C784 450 796 478 808 501L830 525Q841 531 855 531L863 531C874 523 888 531 894 540L896 549Q889 552 880 544L864 554Q837 566 818 561C798 566 788 534 779 513L758 477Z"/>'+
-      '<filter id="itArmPatchFeather" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.5"/></filter>'+
-      '<mask id="itArmPatchMask" maskUnits="userSpaceOnUse" x="730" y="420" width="200" height="190"><path d="M750 440Q780 435 797 457L815 489L844 515Q884 512 907 530L916 554V580Q860 593 798 589L778 565L759 503Z" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round" filter="url(#itArmPatchFeather)"/></mask>'+
-      '<mask id="itBaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><rect width="1672" height="941" fill="#fff"/><use href="#itHeadShape" fill="#000"/></mask><mask id="itRestArmMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><use href="#itArmShape" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/></mask></defs>'+
-      '<path d="M710 332h98v112h-98z" fill="#060a13"/><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itBaseMask)"/>'+
-      '<g id="itArmCleanFrame" opacity="0"><image href="/img/demos/it-studio-arm-clean.png" x="730" y="420" width="200" height="190" mask="url(#itArmPatchMask)"/></g>'+
-      '<g id="itHumanHead"><image href="/img/demos/it-studio.png" width="1672" height="941" clip-path="url(#itHeadClip)"/></g>'+
+      '<mask id="itRestArmMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><use href="#itArmShape" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/></mask></defs>'+
+      '<image href="/img/demos/it-studio.png" width="1672" height="941"/>'+
       '<g clip-path="url(#itScreenClip)"><polygon points="822,359 1112,320 1113,536 819,525" fill="url(#itScreenGradient)"/><g transform="matrix(1 -.11 -.008 1 834 359)"><circle class="it-ubuntu-dot" cx="3" cy="6" r="3.3"/><text class="it-terminal-file" id="itTerminalFile" x="12" y="8"></text><path class="it-terminal-rule" d="M-3 16h277"/><g transform="translate(0 23)"><text class="it-terminal-code" id="itTerminalCode"></text><rect class="it-terminal-cursor" id="itTerminalCursor" width="1.2" height="9"/></g></g></g>'+
       '<g class="it-connections">'+links.map(function(path,i){return '<path class="it-link-track" d="'+path+'"/><path class="it-link-pulse" pathLength="1" style="--it-path-delay:-'+i*.7+'s" d="'+path+'"/>'}).join('')+'</g>'+
       syncIcon(1181,327)+syncIcon(1220,483)+
@@ -208,7 +151,6 @@
       '<path class="it-floor-light" d="m1280 704 117 7m9-8 70-7m37-8 44-6"/>'+
       '<g class="it-keyboard-lights">'+[0,1,2,3,4,5,6].map(function(n){return '<path style="--it-key-delay:-'+n*.13+'s" d="m'+(890+n*6)+' 556h3"/>'}).join('')+'</g>'+
       '<g id="itRestArm"><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itRestArmMask)"/></g>'+
-      '<g id="itMovingArm" opacity="0"><path class="it-sleeve" id="itSleeve"/><path class="it-sleeve-edge" id="itSleeveEdge"/><path class="it-elbow-crease" id="itElbowCrease"/><g id="itHand"><image class="it-hand-image" href="/img/demos/it-hand.png" x="-6.72" y="-20.755" width="53.76" height="35.84"/></g><g id="itCuff"><path class="it-cuff" d="M-9-10 2-9.5V9.5L-9 10Z"/><path class="it-cuff-seam" d="M-6-9V9"/></g></g>'+
       '<g class="it-bulb" transform="translate(757 303)" aria-hidden="true"><circle class="it-bulb-halo" r="51" fill="url(#itBulbGlow)"/><g class="it-bulb-icon"><path class="it-bulb-glass" d="M-15-8a15 15 0 1 1 27 9c-4 5-7 7-7 13H-6C-6 8-9 6-13 1a15 15 0 0 1-2-9Z"/><path d="m-6 17 11 0m-10 4h9m-6 4h3M-4 10V-1l5 3 4-3v11M0-31v-6m-23 16-5-4m51 4 5-4M-29 0h-7m65 0h7"/></g></g>'+
       '<g id="itSparkPosition" transform="translate(1380 397)" aria-hidden="true"><g class="it-spark"><circle class="it-spark-glow" r="39"/><g class="it-spark-rays"><path d="m0-3-6-14 4 5-1-16m7 25 11-17-2 9 13-10M4 0l20-4-6 4 15 5M2 4l8 16-1-6 10 11M-2 4l-9 19 3-12-13 11M-4 1l-21 5 10-6-14-4"/><path class="it-spark-core" d="m-7 0 6-3 2-9 3 9 7 3-8 2-3 9-2-9Z"/></g></g></g>'+
       '<g class="it-egg-target" data-it-egg="idea" role="button" tabindex="0" aria-label="Идея администратора"><ellipse class="it-egg-outline" cx="755" cy="389" rx="45" ry="50"/></g>'+
@@ -222,7 +164,7 @@
   });
   reduced.addEventListener('change',function(){
     if(!active())return;
-    if(reduced.matches){stop();elapsed=0;pose();lastLength=-1;renderCode(true)}else start();
+    if(reduced.matches){stop();lastLength=-1;renderCode(true)}else start();
   });
   window.RusItDemo={markup:markup,start:start,stop:stop,resume:resume};
 })();
