@@ -21,8 +21,8 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/onest-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.min.css?v=20261029a">
-<link rel="stylesheet" href="/assets/hero.css?v=20261029b">
-<link rel="stylesheet" href="/assets/board-demo.css?v=20261029i">
+<link rel="stylesheet" href="/assets/hero.css?v=20261029c">
+<link rel="stylesheet" href="/assets/board-demo.css?v=20261029j">
 <link rel="stylesheet" href="/assets/ai-demo.css?v=20261029b">
 <link rel="stylesheet" href="/assets/it-demo.css?v=20261029d">
 
@@ -193,12 +193,12 @@
     <div class="integration-board up d2">
       <svg class="board-diagram" viewBox="0 0 600 560" role="img" aria-labelledby="boardTitle boardDesc">
         <title id="boardTitle">Все направления в одной системе</title>
-        <desc id="boardDesc">1С, Битрикс24, сайты, интеграция, ИИ, 3D, моушен и ИТ связаны между собой. В центре — кнопка обсуждения проекта.</desc>
+        <desc id="boardDesc">1С, Битрикс24, сайты, интеграция, ИИ, 3D и ИТ связаны между собой. В центре — кнопка обсуждения проекта.</desc>
         <path class="board-corners" d="M24 46V24h22M554 24h22v22M576 514v22h-22M46 536H24v-22"/>
         <circle class="board-orbit" cx="300" cy="280" r="125"/>
-        <path class="board-wires" d="M176 100H228M372 100H424M104 160V220M300 160V220M496 160V220M104 340V400M300 340V400M496 340V400M176 460H228M372 460H424M176 280H424"/>
-        <path class="board-signals" d="M176 100H228M372 100H424M104 160V220M300 160V220M496 160V220M104 340V400M300 340V400M496 340V400M176 460H228M372 460H424M176 280H424"/>
-        <path class="board-signals board-signals--lime" d="M176 100H228M496 160V220M104 340V400M372 460H424M176 280H424"/>
+        <path class="board-wires" d="M176 100H228M372 100H424M104 160V220M300 160V220M496 160V220M104 340V354Q104 370 120 370H480Q496 370 496 354V340M202 370V400M300 340V370M398 370V400M274 460H326M176 280H424"/>
+        <path class="board-signals" d="M176 100H228M372 100H424M104 160V220M300 160V220M496 160V220M104 340V354Q104 370 120 370H480Q496 370 496 354V340M202 370V400M300 340V370M398 370V400M274 460H326M176 280H424"/>
+        <path class="board-signals board-signals--lime" d="M176 100H228M496 160V220M104 340V354Q104 370 120 370H202V400M274 460H326M398 400V370H480Q496 370 496 354V340M176 280H424"/>
         <path class="board-brackets" d="M210 208h-20v20M390 208h20v20M190 332v20h20M390 352h20v-20"/>
         <g class="board-node board-node--lime" data-board-node="onec" transform="translate(32,40)">
           <rect class="board-frame" width="144" height="120" rx="23"/>
@@ -239,7 +239,7 @@
           </g>
           <text class="board-label" x="72" y="94" text-anchor="middle">Сайты</text>
         </g>
-        <g class="board-node" transform="translate(32,220)">
+        <g class="board-node" data-board-node="integration" transform="translate(32,220)">
           <rect class="board-frame" width="144" height="120" rx="23"/>
           <rect class="board-rim" x="8" y="8" width="128" height="104" rx="17"/>
           <rect class="board-face" x="15" y="15" width="114" height="90" rx="12"/>
@@ -275,7 +275,7 @@
           </g>
           <text class="board-label" x="72" y="94" text-anchor="middle">ИИ</text>
         </g>
-        <g class="board-node" transform="translate(32,400)">
+        <g class="board-node" data-board-node="scan3d" transform="translate(130,400)">
           <rect class="board-frame" width="144" height="120" rx="23"/>
           <rect class="board-rim" x="8" y="8" width="128" height="104" rx="17"/>
           <rect class="board-face" x="15" y="15" width="114" height="90" rx="12"/>
@@ -285,24 +285,7 @@
           <g class="board-icon board-gear-fallback" transform="translate(72,53)"><path d="M18.68 -3.46L23.87 -2.51L23.87 2.51L18.68 3.46L17.91 6.34L21.93 9.76L19.42 14.11L14.45 12.34L12.34 14.45L14.11 19.42L9.76 21.93L6.34 17.91L3.46 18.68L2.51 23.87L-2.51 23.87L-3.46 18.68L-6.34 17.91L-9.76 21.93L-14.11 19.42L-12.34 14.45L-14.45 12.34L-19.42 14.11L-21.93 9.76L-17.91 6.34L-18.68 3.46L-23.87 2.51L-23.87 -2.51L-18.68 -3.46L-17.91 -6.34L-21.93 -9.76L-19.42 -14.11L-14.45 -12.34L-12.34 -14.45L-14.11 -19.42L-9.76 -21.93L-6.34 -17.91L-3.46 -18.68L-2.51 -23.87L2.51 -23.87L3.46 -18.68L6.34 -17.91L9.76 -21.93L14.11 -19.42L12.34 -14.45L14.45 -12.34L19.42 -14.11L21.93 -9.76L17.91 -6.34Z"/><circle r="8"/></g>
           <text class="board-label" x="72" y="94" text-anchor="middle">3D</text>
         </g>
-        <g class="board-node board-node--lime" transform="translate(228,400)">
-          <rect class="board-frame" width="144" height="120" rx="23"/>
-          <rect class="board-rim" x="8" y="8" width="128" height="104" rx="17"/>
-          <rect class="board-face" x="15" y="15" width="114" height="90" rx="12"/>
-          <path class="board-edge" d="M19 93v4a12 12 0 0 0 12 12h82a12 12 0 0 0 12-12v-4"/>
-          <circle class="board-status" cx="25" cy="22" r="2"/><circle class="board-screw" cx="119" cy="22" r="1.4"/>
-          <circle class="board-screw" cx="25" cy="98" r="1.4"/><circle class="board-screw" cx="119" cy="98" r="1.4"/>
-          <g class="board-icon board-motion" transform="translate(72,53)">
-            <path class="board-motion-axes" d="M-25-25v46h51"/>
-            <path class="board-motion-handles" d="M-20 16v-28M20-16v28"/>
-            <rect class="board-motion-handle" x="-22" y="-14" width="4" height="4"/><rect class="board-motion-handle" x="18" y="10" width="4" height="4"/>
-            <path class="board-motion-curve" d="M-20 16C-20-12 20 12 20-16"/>
-            <circle class="board-motion-end" cx="-20" cy="16" r="2"/><circle class="board-motion-end" cx="20" cy="-16" r="2"/>
-            <circle class="board-motion-dot" r="3.5"/>
-          </g>
-          <text class="board-label" x="72" y="94" text-anchor="middle">Моушен</text>
-        </g>
-        <g class="board-node" data-board-node="it" transform="translate(424,400)">
+        <g class="board-node" data-board-node="it" transform="translate(326,400)">
           <rect class="board-frame" width="144" height="120" rx="23"/>
           <rect class="board-rim" x="8" y="8" width="128" height="104" rx="17"/>
           <rect class="board-face" x="15" y="15" width="114" height="90" rx="12"/>

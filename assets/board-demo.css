@@ -4,7 +4,7 @@
 .board-tile-hit[data-board-demo="bitrix"]{left:38%}
 .board-tile-hit[data-board-demo="sites"]{left:70.6667%}
 .board-tile-hit[data-board-demo="ai"]{left:70.6667%;top:39.2857%}
-.board-tile-hit[data-board-demo="it"]{left:70.6667%;top:71.4286%}
+.board-tile-hit[data-board-demo="it"]{left:54.3333%;top:71.4286%}
 .integration-board:has(.board-tile-hit[data-board-demo="onec"]:is(:hover,:focus-visible)) .board-brand--1c path{fill:#D91920;filter:drop-shadow(0 0 4px rgba(217,25,32,.3))}
 .integration-board:has(.board-tile-hit[data-board-demo="onec"]:is(:hover,:focus-visible)) [data-board-node="onec"] .board-face{stroke:rgba(217,25,32,.55)}
 .integration-board:has(.board-tile-hit[data-board-demo="bitrix"]:is(:hover,:focus-visible)) [data-board-node="bitrix"] .board-face{stroke:rgba(112,134,255,.75)}
