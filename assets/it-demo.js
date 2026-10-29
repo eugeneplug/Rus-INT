@@ -85,18 +85,51 @@
     var scene=$('.it-demo-scene');scene.dataset.codeLength=String(length);scene.dataset.codeSample=String(index);
   }
   function ease(n){return n*n*(3-2*n)}
+  function point(p){return p.x.toFixed(2)+' '+p.y.toFixed(2)}
+  function offset(p,u,n,length,width){return {x:p.x+u.x*length+n.x*width,y:p.y+u.y*length+n.y*width}}
+  function arm(reach,rub){
+    var t=reach,k=1-t;
+    var shoulder={x:773,y:468};
+    var wrist={x:k*k*k*861+3*k*k*t*886+3*k*t*t*840+t*t*t*803,y:k*k*k*540+3*k*k*t*510+3*k*t*t*398+t*t*t*378};
+    wrist.x+=rub*.35;wrist.y+=rub*.3;
+    var dx=wrist.x-shoulder.x,dy=wrist.y-shoulder.y,distance=Math.hypot(dx,dy);
+    var upper=80,lower=48+18*t,along=(upper*upper-lower*lower+distance*distance)/(2*distance);
+    var height=Math.sqrt(Math.max(0,upper*upper-along*along));
+    var elbow={x:shoulder.x+along*dx/distance-height*dy/distance,y:shoulder.y+along*dy/distance+height*dx/distance};
+    var u={x:(elbow.x-shoulder.x)/upper,y:(elbow.y-shoulder.y)/upper};
+    var v={x:(wrist.x-elbow.x)/lower,y:(wrist.y-elbow.y)/lower};
+    var n={x:-u.y,y:u.x},m={x:-v.y,y:v.x};
+    var s1=offset(shoulder,u,n,0,20),s2=offset(shoulder,u,n,0,-20);
+    var e1=offset(elbow,u,n,0,17),e2=offset(elbow,v,m,0,17);
+    var e3=offset(elbow,v,m,0,-17),e4=offset(elbow,u,n,0,-17);
+    var w1=offset(wrist,v,m,0,9.5),w2=offset(wrist,v,m,0,-9.5);
+    var outside={x:elbow.x+(n.x+m.x)*17,y:elbow.y+(n.y+m.y)*17};
+    var inside={x:elbow.x-(n.x+m.x)*17,y:elbow.y-(n.y+m.y)*17};
+    var outline='M'+point(s1)+'C'+point(offset(s1,u,n,32,0))+' '+point(offset(e1,u,n,-20,0))+' '+point(e1)+
+      'Q'+point(outside)+' '+point(e2)+'L'+point(w1)+'Q'+point(offset(wrist,v,m,2,0))+' '+point(w2)+
+      'L'+point(e3)+'Q'+point(inside)+' '+point(e4)+'C'+point(offset(e4,u,n,-20,0))+' '+point(offset(s2,u,n,32,0))+' '+point(s2)+
+      'Q'+point(offset(shoulder,u,n,-14,0))+' '+point(s1)+'Z';
+    $('#itSleeve').setAttribute('d',outline);
+    $('#itSleeveEdge').setAttribute('d','M'+point(s1)+'C'+point(offset(s1,u,n,32,0))+' '+point(offset(e1,u,n,-20,0))+' '+point(e1)+'Q'+point(outside)+' '+point(e2)+'L'+point(w1));
+    $('#itElbowCrease').setAttribute('d','M'+point(offset(elbow,u,n,-10,-11))+'Q'+point(offset(elbow,u,n,-7,-3))+' '+point(offset(elbow,v,m,12,-10)));
+    var angle=Math.atan2(v.y,v.x)*180/Math.PI;
+    var handAngle=angle+8*(1-t)-15*t+rub*.75;
+    $('#itHand').setAttribute('transform','translate('+point(wrist)+') rotate('+handAngle.toFixed(2)+')');
+    $('#itCuff').setAttribute('transform','translate('+point(wrist)+') rotate('+angle.toFixed(2)+')');
+    $('#itSleeveGradient').setAttribute('x1',elbow.x-20);$('#itSleeveGradient').setAttribute('y1',elbow.y+12);
+    $('#itSleeveGradient').setAttribute('x2',elbow.x+17);$('#itSleeveGradient').setAttribute('y2',elbow.y-15);
+    var blend=ease(Math.min(1,t/.12));
+    $('#itRestArm').setAttribute('opacity',(1-blend).toFixed(3));
+    $('#itMovingArm').setAttribute('opacity',blend.toFixed(3));
+  }
   function pose(){
     var phase=elapsed%18000,reach=0;
-    if(phase>=6500&&phase<7200)reach=ease((phase-6500)/700);
-    else if(phase>=7200&&phase<8250)reach=1;
-    else if(phase>=8250&&phase<9100)reach=1-ease((phase-8250)/850);
-    var rub=phase>=7200&&phase<8250?Math.sin((phase-7200)/65):0;
-    var shoulder=-94*reach+rub*.7+(1-reach)*Math.sin(elapsed/240)*.18;
-    var elbow=-66*reach+rub*2.4+(1-reach)*Math.sin(elapsed/110)*.55;
-    $('#itUpperArm').setAttribute('transform','rotate('+shoulder.toFixed(3)+' 775 465)');
-    $('#itForearm').setAttribute('transform','rotate('+elbow.toFixed(3)+' 817 539)');
+    if(phase>=6500&&phase<7350)reach=ease((phase-6500)/850);
+    else if(phase>=7350&&phase<8400)reach=1;
+    else if(phase>=8400&&phase<9350)reach=1-ease((phase-8400)/950);
+    var rub=phase>=7350&&phase<8400?Math.sin((phase-7350)/105):0;
+    arm(reach,rub);
     $('#itHumanHead').setAttribute('transform','rotate('+(-reach*.9+Math.sin(elapsed/1600)*.22).toFixed(3)+' 752 432)');
-    $('#itArmBackdrop').setAttribute('opacity',Math.min(1,reach*5).toFixed(3));
     $('.it-demo-scene').classList.toggle('is-scratching',reach>.02);
     return reach;
   }
@@ -156,23 +189,24 @@
   function markup(){
     return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><svg class="it-scene-svg" viewBox="584 132 990 680" role="group" aria-labelledby="itSceneTitle itSceneDescription">'+
       '<title id="itSceneTitle">Администратор управляет серверами Ubuntu</title><desc id="itSceneDescription">Набор серверного кода, работающие индикаторы и обмен данными. Администратор иногда отрывается от клавиатуры и чешет голову.</desc>'+
-      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><linearGradient id="itJacketGradient" x2="1" y2=".5"><stop stop-color="#080b10"/><stop offset="1" stop-color="#0b1018"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
+      '<defs><linearGradient id="itScreenGradient" x2="0" y2="1"><stop stop-color="#0b1223"/><stop offset="1" stop-color="#050b17"/></linearGradient><linearGradient id="itJacketGradient" x2="1" y2=".5"><stop stop-color="#080b10"/><stop offset="1" stop-color="#0b1018"/></linearGradient><linearGradient id="itSleeveGradient" gradientUnits="userSpaceOnUse"><stop stop-color="#080c13"/><stop offset=".55" stop-color="#111923"/><stop offset="1" stop-color="#0a111c"/></linearGradient><linearGradient id="itHandGradient" x2=".3" y2="1"><stop stop-color="#d5d0df"/><stop offset=".6" stop-color="#babace"/><stop offset="1" stop-color="#929bb5"/></linearGradient><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient>'+
       '<clipPath id="itScreenClip"><polygon points="822,359 1112,320 1113,536 819,525"/></clipPath>'+
       '<clipPath id="itHeadClip"><path id="itHeadShape" d="M714 375Q708 359 731 350Q738 332 772 345L792 349Q805 365 789 378L787 405Q787 426 774 436L749 433L721 427Z"/></clipPath>'+
-      '<clipPath id="itUpperClip"><path d="M763 450C784 450 796 478 808 501L830 535C835 546 823 557 811 557C797 553 788 534 779 513L758 477Z"/></clipPath>'+
-      '<clipPath id="itForearmClip"><path d="M810 524C826 529 839 532 853 531L863 531C874 523 888 531 894 540L895 548C888 550 884 542 878 542L861 551C838 563 820 566 808 551Z"/></clipPath>'+
+      '<path id="itArmShape" d="M763 450C784 450 796 478 808 501L830 525Q841 531 855 531L863 531C874 523 888 531 894 540L896 549Q889 552 880 544L864 554Q837 566 818 561C798 566 788 534 779 513L758 477Z"/>'+
+      '<clipPath id="itRestArmClip"><use href="#itArmShape"/></clipPath>'+
       '<clipPath id="itArmRimClip"><path d="m813 518 103 5v14l-103-4z"/></clipPath><clipPath id="itArmDeskClip"><path d="M826 536h90v29h-90z"/></clipPath>'+
-      '<mask id="itBaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><rect width="1672" height="941" fill="#fff"/><use href="#itHeadShape" fill="#000"/></mask></defs>'+
-      '<path d="M710 332h98v112h-98z" fill="#060a13"/><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itBaseMask)"/>'+
+      '<mask id="itBaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><rect width="1672" height="941" fill="#fff"/><use href="#itHeadShape" fill="#000"/><use href="#itArmShape" fill="#000" stroke="#000" stroke-width="12" stroke-linejoin="round"/></mask><mask id="itRestArmMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><use href="#itArmShape" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/></mask></defs>'+
+      '<path d="M710 332h98v112h-98z" fill="#060a13"/><use href="#itArmShape" fill="#070b13" stroke="#070b13" stroke-width="16" stroke-linejoin="round"/><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itBaseMask)"/>'+
       '<g id="itHumanHead"><image href="/img/demos/it-studio.png" width="1672" height="941" clip-path="url(#itHeadClip)"/></g>'+
-      '<g id="itArmBackdrop" opacity="0"><path d="M790 468L812 484L843 525L867 526Q888 520 898 539L901 555L869 562L830 569Q805 570 792 548Z" fill="#070b13"/><path d="M779 485Q781 518 810 564L790 580L775 548Z" fill="url(#itJacketGradient)"/><g clip-path="url(#itArmRimClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100" y="-5"/></g><g clip-path="url(#itArmDeskClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100"/></g></g>'+
+      '<g id="itArmBackdrop" clip-path="url(#itRestArmClip)"><use href="#itArmShape" fill="#070b13"/><path d="M748 444Q789 443 789 510L789 570H748Z" fill="url(#itJacketGradient)"/><g clip-path="url(#itArmRimClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100" y="-5"/></g><g clip-path="url(#itArmDeskClip)"><image href="/img/demos/it-studio.png" width="1672" height="941" x="-100"/></g></g>'+
       '<g clip-path="url(#itScreenClip)"><polygon points="822,359 1112,320 1113,536 819,525" fill="url(#itScreenGradient)"/><g transform="matrix(1 -.11 -.008 1 834 359)"><circle class="it-ubuntu-dot" cx="3" cy="6" r="3.3"/><text class="it-terminal-file" id="itTerminalFile" x="12" y="8"></text><path class="it-terminal-rule" d="M-3 16h277"/><g transform="translate(0 23)"><text class="it-terminal-code" id="itTerminalCode"></text><rect class="it-terminal-cursor" id="itTerminalCursor" width="1.2" height="9"/></g></g></g>'+
       '<g class="it-connections">'+links.map(function(path,i){return '<path class="it-link-track" d="'+path+'"/><path class="it-link-pulse" pathLength="1" style="--it-path-delay:-'+i*.7+'s" d="'+path+'"/>'}).join('')+'</g>'+
       syncIcon(1181,327)+syncIcon(1220,483)+
       rack(1295,[269,299,328,359,398,436,470,509,542],78,-12)+rack(1288,[583,614,644,674],91,-2)+rack(1513,[333,369,404,439,475,511,546,581,617,652],31,12)+
       '<path class="it-floor-light" d="m1280 704 117 7m9-8 70-7m37-8 44-6"/>'+
       '<g class="it-keyboard-lights">'+[0,1,2,3,4,5,6].map(function(n){return '<path style="--it-key-delay:-'+n*.13+'s" d="m'+(890+n*6)+' 556h3"/>'}).join('')+'</g>'+
-      '<g id="itUpperArm"><image href="/img/demos/it-studio.png" width="1672" height="941" clip-path="url(#itUpperClip)"/><g id="itForearm"><image href="/img/demos/it-studio.png" width="1672" height="941" clip-path="url(#itForearmClip)"/></g></g>'+
+      '<g id="itRestArm"><image href="/img/demos/it-studio.png" width="1672" height="941" mask="url(#itRestArmMask)"/></g>'+
+      '<g id="itMovingArm" opacity="0"><path class="it-sleeve" id="itSleeve"/><path class="it-sleeve-edge" id="itSleeveEdge"/><path class="it-elbow-crease" id="itElbowCrease"/><g id="itHand"><path class="it-hand-skin" d="M-2-7C5-9 11-11 17-9L25-6Q29-4 32 0L35 4Q36 7 33 8Q31 9 29 6L25 2 22 1 28 7Q30 10 27 12Q24 13 22 10L18 6 16 5 20 10Q21 13 18 14Q15 14 13 11L9 7Q7 7 8 10Q8 13 5 12L1 8-2 7Z"/><path class="it-hand-detail" d="M16-4q7 1 11 6M13 0q6 1 9 6M9 3q4 1 7 5M1 6q4-2 7-1"/></g><g id="itCuff"><path class="it-cuff" d="M-9-10 2-9.5V9.5L-9 10Z"/><path class="it-cuff-seam" d="M-6-9V9"/></g></g>'+
       '<g class="it-bulb" transform="translate(757 303)" aria-hidden="true"><circle class="it-bulb-halo" r="51" fill="url(#itBulbGlow)"/><g class="it-bulb-icon"><path class="it-bulb-glass" d="M-15-8a15 15 0 1 1 27 9c-4 5-7 7-7 13H-6C-6 8-9 6-13 1a15 15 0 0 1-2-9Z"/><path d="m-6 17 11 0m-10 4h9m-6 4h3M-4 10V-1l5 3 4-3v11M0-31v-6m-23 16-5-4m51 4 5-4M-29 0h-7m65 0h7"/></g></g>'+
       '<g id="itSparkPosition" transform="translate(1380 397)" aria-hidden="true"><g class="it-spark"><circle class="it-spark-glow" r="39"/><g class="it-spark-rays"><path d="m0-3-6-14 4 5-1-16m7 25 11-17-2 9 13-10M4 0l20-4-6 4 15 5M2 4l8 16-1-6 10 11M-2 4l-9 19 3-12-13 11M-4 1l-21 5 10-6-14-4"/><path class="it-spark-core" d="m-7 0 6-3 2-9 3 9 7 3-8 2-3 9-2-9Z"/></g></g></g>'+
       '<g class="it-egg-target" data-it-egg="idea" role="button" tabindex="0" aria-label="Идея администратора"><ellipse class="it-egg-outline" cx="755" cy="389" rx="45" ry="50"/></g>'+

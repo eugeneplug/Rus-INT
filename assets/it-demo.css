@@ -3,6 +3,13 @@
 .it-demo-scene::before{display:none}
 .it-scene-stage{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden}
 .it-scene-svg{display:block;width:100%;height:100%}
+.it-sleeve{fill:url(#itSleeveGradient);stroke:#080d16;stroke-width:1.2;stroke-linejoin:round}
+.it-sleeve-edge{fill:none;stroke:#3166aa;stroke-width:1.05;stroke-linecap:round;opacity:.7}
+.it-elbow-crease{fill:none;stroke:#02060c;stroke-width:1.7;stroke-linecap:round;opacity:.6}
+.it-cuff{fill:#0b1018;stroke:#1b2636;stroke-width:.8;stroke-linejoin:round}
+.it-cuff-seam{fill:none;stroke:#344256;stroke-width:.7;opacity:.5}
+.it-hand-skin{fill:url(#itHandGradient);stroke:#8993aa;stroke-width:.55;stroke-linejoin:round}
+.it-hand-detail{fill:none;stroke:#7e8ba5;stroke-width:.6;stroke-linecap:round;opacity:.6}
 .it-terminal-code{font:400 8.2px/1 var(--mono);white-space:pre;fill:#d7e2f7}
 .it-terminal-file{font:400 7px/1 var(--mono);fill:#a2b1cc}
 .it-terminal-rule{fill:none;stroke:#28314b;stroke-width:.7}
