@@ -22,6 +22,7 @@
 <link rel="preload" href="/assets/fonts/onest-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.min.css?v=20261029a">
 <link rel="stylesheet" href="/assets/hero.css?v=20261028c">
+<link rel="stylesheet" href="/assets/board-demo.css?v=20261029a">
 
 <link rel="canonical" href="https://rus-integration.ru/">
 <meta name="robots" content="index, follow">
@@ -197,7 +198,7 @@
         <path class="board-signals" d="M176 100H228M372 100H424M104 160V220M300 160V220M496 160V220M104 340V400M300 340V400M496 340V400M176 460H228M372 460H424M176 280H424"/>
         <path class="board-signals board-signals--lime" d="M176 100H228M496 160V220M104 340V400M372 460H424M176 280H424"/>
         <path class="board-brackets" d="M210 208h-20v20M390 208h20v20M190 332v20h20M390 352h20v-20"/>
-        <g class="board-node board-node--lime" transform="translate(32,40)">
+        <g class="board-node board-node--lime" data-board-node="onec" transform="translate(32,40)">
           <rect class="board-frame" width="144" height="120" rx="23"/>
           <rect class="board-rim" x="8" y="8" width="128" height="104" rx="17"/>
           <rect class="board-face" x="15" y="15" width="114" height="90" rx="12"/>
@@ -317,6 +318,7 @@
         </g>
       </svg>
       <div class="board-gear-view" aria-hidden="true"><canvas id="boardGear"></canvas></div>
+      <button class="board-tile-hit" type="button" data-board-demo="onec" aria-label="Открыть интерактивную демонстрацию 1С" aria-haspopup="dialog" aria-controls="boardDemo"></button>
       <button class="board-cta" type="button" data-go>
         <span class="board-cta-note">Следующий шаг</span>
         <span class="board-cta-title">Обсудить проект</span>
@@ -725,8 +727,11 @@
   <button class="btn btn-sm" id="cookOk"><span>Принять</span></button>
 </div>
 
+<dialog class="board-demo" id="boardDemo" aria-labelledby="demoTitle"></dialog>
+
 <script src="/assets/three.min.js?v=r128"></script>
 <script src="/assets/site.min.js?v=20261029a"></script>
 <script src="/assets/hero.js?v=20261028b"></script>
+<script src="/assets/board-demo.js?v=20261029a"></script>
 </body>
 </html>
