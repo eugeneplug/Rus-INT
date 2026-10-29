@@ -49,21 +49,20 @@
 @keyframes board-integration-node{0%,40%,100%{stroke:var(--bg)}15%,25%{stroke:#8294ff;fill:#8294ff}}
 @keyframes board-integration-pulse{0%{r:4px;opacity:.7}75%,100%{r:10px;opacity:0}}
 /* Мини-редактор: строки набираются по очереди, курсор следует за кодом. */
-.board-code-window{fill:rgba(255,255,255,.025)}
-.board-code-text{fill:#8294ff;stroke:none;font-family:var(--mono);font-size:7px;white-space:pre}
+.board-code-text{fill:#8294ff;stroke:none;font-family:var(--mono);font-size:8.5px;white-space:pre}
 .board-code-text--light{fill:var(--bg)}
 .board-code-reveal{animation:board-code-first 6s steps(8,end) infinite}
 .board-code-reveal--second{animation-name:board-code-second}
 .board-code-reveal--third{animation-name:board-code-third}
 .board-code-cursor{fill:var(--acc-2);stroke:none;animation:board-code-cursor 6s steps(8,end) infinite}
-@keyframes board-code-first{0%,5%{width:0}25%,92%{width:50px}100%{width:0}}
-@keyframes board-code-second{0%,28%{width:0}50%,92%{width:50px}100%{width:0}}
-@keyframes board-code-third{0%,53%{width:0}75%,92%{width:50px}100%{width:0}}
+@keyframes board-code-first{0%,5%{width:0}25%,92%{width:58px}100%{width:0}}
+@keyframes board-code-second{0%,28%{width:0}50%,92%{width:58px}100%{width:0}}
+@keyframes board-code-third{0%,53%{width:0}75%,92%{width:58px}100%{width:0}}
 @keyframes board-code-cursor{
   0%,5%{transform:translate(0,0);opacity:1}
-  25%{transform:translate(26px,0)}28%{transform:translate(0,10px)}
-  50%{transform:translate(38px,10px)}53%{transform:translate(0,20px)}
-  75%,85%{transform:translate(30px,20px);opacity:1}92%,100%{opacity:0}
+  25%{transform:translate(31px,0)}28%{transform:translate(0,13px)}
+  50%{transform:translate(46px,13px)}53%{transform:translate(0,26px)}
+  75%,85%{transform:translate(36px,26px);opacity:1}92%,100%{opacity:0}
 }
 /* Чип обменивается сигналами между узлами нейросети. */
 .board-ai-body{fill:rgba(112,134,255,.035)}
@@ -116,7 +115,7 @@
 }
 @media(prefers-reduced-motion:reduce){
   .integration-board *{animation:none!important}
-  .board-code-reveal{width:50px}
+  .board-code-reveal{width:58px}
   .board-code-cursor{display:none}
   .board-motion-dot{offset-distance:50%}
   .board-integration-packet,.board-integration-pulse{display:none}
