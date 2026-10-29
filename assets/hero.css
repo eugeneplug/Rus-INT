@@ -1,5 +1,6 @@
 /* Схема направлений на первом экране. Цвета и шрифты — из темы сайта. */
 #hero .hero-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.hero .hero-kicker{font-family:var(--body);font-size:clamp(15.5px,1.15vw,17px);font-weight:400;line-height:1.55;letter-spacing:normal;text-transform:none;color:var(--muted);margin:18px 0 0}
 .integration-board{
   position:relative;isolation:isolate;container-type:inline-size;width:100%;
   aspect-ratio:15/14;border:1px solid rgba(255,255,255,.1);border-radius:24px;
