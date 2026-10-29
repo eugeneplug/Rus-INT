@@ -1,8 +1,11 @@
 /* Размер окна наследуется от остальных направлений. */
 .it-demo-scene{display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;overflow:hidden;isolation:auto}
 .it-demo-scene::before{display:none}
-.it-scene-stage{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden}
-.it-scene-svg{display:block;width:100%;height:100%}
+.it-scene-stage{position:relative;isolation:isolate;width:100%;height:100%;border-radius:17px;overflow:hidden}
+.it-scene-media{position:absolute;z-index:0;overflow:hidden;border-radius:inherit;pointer-events:none}
+.it-scene-video{position:absolute;display:block;max-width:none;object-fit:fill;pointer-events:none}
+.it-scene-svg{position:relative;z-index:1;display:block;width:100%;height:100%}
+.it-demo-scene.has-video .it-scene-poster{opacity:0}
 .it-terminal-code{font:400 8.2px/1 var(--mono);white-space:pre;fill:#d7e2f7}
 .it-terminal-file{font:400 7px/1 var(--mono);fill:#a2b1cc}
 .it-terminal-rule{fill:none;stroke:#28314b;stroke-width:.7}
@@ -21,6 +24,7 @@
 .it-server-data{fill:#6bafff;animation:it-server-data 1.2s steps(1,end) infinite;animation-delay:var(--it-data-delay,0s)}
 .it-floor-light{fill:none;stroke:#4281ff;stroke-width:2;filter:drop-shadow(0 0 5px #2262ff);animation:it-floor 4s ease-in-out infinite}
 .it-keyboard-lights path{fill:none;stroke:#659fff;stroke-width:1;animation:it-key 1.1s ease-in-out infinite;animation-delay:var(--it-key-delay,0s)}
+.it-demo-scene.is-video-thinking .it-keyboard-lights{opacity:0}
 .it-bulb{opacity:0;pointer-events:none}
 .it-bulb-icon{fill:none;stroke:#ffdf94;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #ffc85c)}
 .it-bulb-glass{fill:rgba(255,216,112,.13)}
