@@ -6,10 +6,12 @@
   if(!triggers.length||!dialog)return;
   var active='onec';
   var codeDemo=window.RusCodeDemo;
+  var aiDemo=window.RusAiDemo;
   var settings={
     onec:{title:'Внедрение 1С',url:'/services/onec/',topic:'внедрение 1С',description:'Учёт, в котором любую цифру можно проверить до накладной или платежа. Связываем продажи, склад и финансы — без повторного ввода данных и ручных сверок.'},
     bitrix:{title:'Внедрение Битрикс24',url:'/services/bitrix/',topic:'внедрение Битрикс24',description:'Объединяем клиентов, переписку и задачи в одном процессе. Настраиваем CRM под вашу воронку, чтобы команда видела следующий шаг, а обращения не терялись между отделами.'},
-    sites:{title:'Сайты и мобильные приложения',url:'/services/dev/',topic:'сайты и приложения',description:'Разрабатываем сайты, сервисы и приложения под вашу задачу. Связываем заказы с CRM, оплату — с учётом, товары — со складом. Один сценарий вместо нескольких ручных операций.'}
+    sites:{title:'Сайты и мобильные приложения',url:'/services/dev/',topic:'сайты и приложения',description:'Разрабатываем сайты, сервисы и приложения под вашу задачу. Связываем заказы с CRM, оплату — с учётом, товары — со складом. Один сценарий вместо нескольких ручных операций.'},
+    ai:{title:'ИИ на ваших серверах',url:'/services/ai/',topic:'ИИ-автоматизация',description:'Объединяем модели, данные и рабочие процессы в одном контуре. ИИ помогает с кодом, изображениями и документами, а обработка остаётся на вашей инфраструктуре.'}
   };
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
   var docs=[
@@ -28,11 +30,11 @@
   var suite=null,suiteTimer=0,replyTimer=0;
   var drag=null,suppressClickUntil=0;
   function $(selector){return dialog.querySelector(selector)}
-  function stop(){cancelDrag(false);if(codeDemo)codeDemo.stop();clearTimeout(stepTimer);clearTimeout(finishTimer);clearTimeout(suiteTimer);clearTimeout(replyTimer);stepTimer=0;finishTimer=0;suiteTimer=0;replyTimer=0}
+  function stop(){cancelDrag(false);if(codeDemo)codeDemo.stop();if(aiDemo)aiDemo.stop();clearTimeout(stepTimer);clearTimeout(finishTimer);clearTimeout(suiteTimer);clearTimeout(replyTimer);stepTimer=0;finishTimer=0;suiteTimer=0;replyTimer=0}
   function build(){
     if(built===active)return;built=active;
     var config=settings[active];dialog.dataset.demoType=active;
-    var scene=active==='sites'?codeDemo.markup():active==='bitrix'?suiteMarkup():
+    var scene=active==='ai'?aiDemo.markup():active==='sites'?codeDemo.markup():active==='bitrix'?suiteMarkup():
       '<div class="flow-demo-scene" role="group" aria-label="Демонстрация автоматической обработки документов"><div class="flow-demo-window">'+
       '<div class="flow-demo-bar"><span class="flow-demo-dots" aria-hidden="true"><i></i><i></i></span><span>Документы</span><span class="flow-demo-live">Автоматический обмен</span></div>'+
       '<div class="flow-demo-list">'+docs.map(function(doc,i){return '<button class="flow-doc" type="button" data-demo-doc="'+i+'"><span class="flow-doc-icon">'+documentIcon+'</span><span class="flow-doc-title">'+doc.title+'</span><span class="flow-doc-status"></span></button>'}).join('')+'</div>'+
@@ -59,6 +61,7 @@
     $('.flow-demo-count').textContent='Обработано '+states.filter(function(state){return state==='done'}).length+' из '+docs.length;
   }
   function reset(){
+    if(active==='ai'){stop();aiDemo.start();return}
     if(active==='sites'){stop();codeDemo.start();return}
     if(active==='bitrix'){resetSuite();return}
     stop();processing=-1;states=docs.map(function(){return reduced.matches?'done':'waiting'});update();
@@ -85,7 +88,7 @@
     },reduced.matches?0:1000);
   }
   function open(type){
-    if(dialog.open||!settings[type]||(type==='sites'&&!codeDemo))return;
+    if(dialog.open||!settings[type]||(type==='sites'&&!codeDemo)||(type==='ai'&&!aiDemo))return;
     active=type;clearTimeout(closeTimer);consult=false;build();
     previousFocus=document.activeElement;wasLocked=document.body.classList.contains('lock');
     document.body.classList.add('lock');dialog.classList.remove('is-closing');dialog.showModal();
@@ -135,9 +138,10 @@
     }
     var button=e.target.closest('[data-demo-doc]');if(button)process(Number(button.dataset.demoDoc),true);
   });
-  reduced.addEventListener('change',function(){if(dialog.open&&active!=='sites'){if(active==='bitrix'){clearTimeout(suiteTimer);scheduleSuite()}else reset()}});
+  reduced.addEventListener('change',function(){if(dialog.open&&active!=='sites'&&active!=='ai'){if(active==='bitrix'){clearTimeout(suiteTimer);scheduleSuite()}else reset()}});
   document.addEventListener('visibilitychange',function(){
     if(!dialog.open)return;
+    if(active==='ai'){if(document.hidden)aiDemo.stop();else aiDemo.resume();return}
     if(active==='sites'){if(document.hidden)codeDemo.stop();else codeDemo.resume();return}
     if(active==='bitrix'){
       if(document.hidden){cancelDrag(false);clearTimeout(suiteTimer);clearTimeout(replyTimer)}
