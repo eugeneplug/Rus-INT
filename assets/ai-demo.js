@@ -4,7 +4,7 @@
   var dialog=document.getElementById('boardDemo');
   if(!dialog)return;
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
-  var frame=0,lastTime=0,elapsed=0,paused=false,burstTimer=0,lastSample=-1,lastLength=-1;
+  var frame=0,lastTime=0,elapsed=0,lastSample=-1,lastLength=-1;
   var samples=[
     ['agent = LocalAgent()','task = queue.next()','','context = docs.search(','    task.question',')','','answer = agent.generate(','    task.prompt,','    context=context',')','task.complete(answer)'].join('\n'),
     ['async def run_pipeline():','    task = await queue.next()','','    result = await model.run(','        prompt=task.prompt,','        data=storage.context()', '    )','','    await storage.save(result)','    await notify.team(','        status="completed"','    )'].join('\n'),
@@ -44,42 +44,26 @@
     $('.ai-demo-scene').dataset.codeLength=String(length);
   }
   function stop(){
-    cancelAnimationFrame(frame);frame=0;lastTime=0;clearTimeout(burstTimer);
+    cancelAnimationFrame(frame);frame=0;lastTime=0;
     var scene=$('.ai-demo-scene');
-    if(scene){scene.classList.add('is-suspended');scene.classList.remove('is-boosted')}
+    if(scene)scene.classList.add('is-suspended');
   }
   function tick(time){
-    frame=0;if(!active()||document.hidden||paused||reduced.matches)return;
+    frame=0;if(!active()||document.hidden||reduced.matches)return;
     elapsed+=Math.min(lastTime?time-lastTime:16,80);lastTime=time;
     renderCode(false);frame=requestAnimationFrame(tick);
   }
-  function controls(){
-    var toggle=$('[data-ai-pause]');
-    if(!toggle)return;
-    toggle.disabled=reduced.matches;toggle.textContent=reduced.matches?'Без анимации':paused?'Продолжить':'Пауза';
-    toggle.setAttribute('aria-pressed',String(paused));
-    dialog.querySelectorAll('[data-ai-pulse]').forEach(function(button){button.disabled=paused||reduced.matches});
-    $('.ai-demo-status').textContent=reduced.matches?'Статичная демонстрация':paused?'Сценарий приостановлен':'Нейронная сеть активна';
-  }
   function resume(){
-    if(!active()||document.hidden||paused||reduced.matches)return;
+    if(!active()||document.hidden||reduced.matches)return;
     $('.ai-demo-scene').classList.remove('is-suspended');
-    controls();
     if(!frame){lastTime=0;frame=requestAnimationFrame(tick)}
   }
   function start(){
-    stop();elapsed=0;paused=false;lastSample=-1;lastLength=-1;
+    stop();elapsed=0;lastSample=-1;lastLength=-1;
     var scene=$('.ai-demo-scene');
-    scene.classList.remove('is-paused','is-boosted');scene.classList.add('is-restarting');
+    scene.classList.add('is-restarting');
     void scene.offsetWidth;scene.classList.remove('is-restarting');
-    renderCode(reduced.matches);controls();resume();
-  }
-  function pulse(){
-    if(paused||reduced.matches)return;
-    clearTimeout(burstTimer);var scene=$('.ai-demo-scene');
-    scene.classList.remove('is-boosted');void scene.offsetWidth;scene.classList.add('is-boosted');
-    $('.ai-demo-status').textContent='Демонстрационный импульс отправлен';
-    burstTimer=setTimeout(function(){if(active()){scene.classList.remove('is-boosted');controls()}},1800);
+    renderCode(reduced.matches);resume();
   }
   function gear(){
     var points=[],step=Math.PI*2/10;
@@ -126,20 +110,11 @@
       rack(1264,[239,299,359,420,479,539],103)+rack(1146,[337,392,448],108)+rack(1079,[519,568,618],95)+
       '<path class="ai-scene-floor-glow" d="m1058 669 119 9m20-33 75-12m15-17 107-17"/>'+
       infoCard(433,193,'doc',0)+infoCard(947,192,'image',1)+infoCard(654,482,'data',2)+infoCard(892,536,'gear',3)+
-      '</svg><button type="button" class="ai-scene-core-hit" data-ai-pulse aria-label="Отправить демонстрационный нейронный импульс"></button></div>'+
-      '<div class="ai-demo-controls"><span class="ai-demo-status" role="status" aria-live="polite"></span><div><button type="button" data-ai-pulse>Отправить импульс <span aria-hidden="true">↗</span></button><button type="button" data-ai-pause aria-pressed="false">Пауза</button></div></div></div>';
+      '</svg></div></div>';
   }
-  dialog.addEventListener('click',function(e){
-    if(!active())return;
-    if(e.target.closest('[data-ai-pulse]'))pulse();
-    else if(e.target.closest('[data-ai-pause]')){
-      paused=!paused;$('.ai-demo-scene').classList.toggle('is-paused',paused);
-      if(paused)stop();else resume();controls();
-    }
-  });
   reduced.addEventListener('change',function(){
     if(!active())return;
-    if(reduced.matches){stop();lastLength=-1;renderCode(true);controls()}else start();
+    if(reduced.matches){stop();lastLength=-1;renderCode(true)}else start();
   });
   window.RusAiDemo={markup:markup,start:start,stop:stop,resume:resume};
 })();

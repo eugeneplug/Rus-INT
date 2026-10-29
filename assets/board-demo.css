@@ -95,10 +95,6 @@
 .code-token-comment{color:#727887;font-style:italic}
 .code-demo-footer{display:flex;align-items:center;gap:13px;flex-shrink:0;border-top:1px solid rgba(239,239,235,.07);padding-top:10px;color:rgba(239,239,235,.3);font-size:8px;min-height:25px}
 .code-demo-status{margin-right:auto;font-variant-numeric:tabular-nums}
-.code-demo-footer button{font:500 8px/1.3 var(--body);color:rgba(239,239,235,.55);white-space:nowrap;transition:color .2s}
-.code-demo-footer button:hover{color:var(--bg)}
-.code-demo-footer button span{margin-left:4px;color:#9faeff;font-size:12px}
-.code-demo-footer [hidden]{display:none}
 @keyframes code-caret{50%{opacity:0}}
 /* Авторские мини-сценарии CRM, переписки и командных задач. */
 .suite-demo-window{height:100%;display:flex;flex-direction:column;min-height:0}
@@ -222,7 +218,6 @@
   .code-demo-body{font-size:10px;gap:9px}
   .code-demo-numbers{width:15px}
   .code-demo-footer{gap:10px;font-size:7px}
-  .code-demo-footer button{font-size:7px}
 }
 @media(prefers-reduced-motion:reduce){
   .board-demo,.board-demo::backdrop,.board-demo *,.board-demo *::before,.board-demo *::after{animation:none!important;transition:none!important}

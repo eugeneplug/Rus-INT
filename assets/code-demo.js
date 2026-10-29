@@ -147,6 +147,7 @@
 ];
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
   var bag=[],lastLanguage='',variants={},current=null,source='',position=0,fraction=0,frame=0,lastTime=0,autoScroll=true;
+  var nextTimer=0,nextDelay=2000,nextStarted=0;
   try{lastLanguage=sessionStorage.getItem('ri_code_language')||''}catch(e){}
   var keywords={};
   ('async await const let var function return import from export default new if else throw try catch class extends for of in switch case break true false null undefined typeof instanceof def with as lambda self none and or not elif except finally yield package func type struct range defer go select map chan nil error public private protected static echo foreach endfor endif use namespace fn declare readonly interface string number boolean void select from where group by order desc asc limit join on insert into values update set returning sum count coalesce as begin end функция конецфункции процедура конецпроцедуры экспорт перем далее возврат новый если тогда иначе конецесли для каждого из цикл конеццикла истина ложь неопределено попытка исключение конецпопытки и или не').split(' ').forEach(function(word){keywords[word]=true});
@@ -154,7 +155,21 @@
   function $(selector){return dialog.querySelector(selector)}
   function escape(text){return String(text).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function active(){return dialog.open&&dialog.dataset.demoType==='sites'}
-  function stop(){cancelAnimationFrame(frame);frame=0;lastTime=0}
+  function stop(){
+    cancelAnimationFrame(frame);frame=0;lastTime=0;
+    if(nextTimer){
+      clearTimeout(nextTimer);nextTimer=0;
+      nextDelay=Math.max(0,nextDelay-(performance.now()-nextStarted));
+    }
+  }
+  function scheduleNext(){
+    if(!active()||document.hidden||nextTimer)return;
+    nextStarted=performance.now();
+    nextTimer=setTimeout(function(){
+      nextTimer=0;nextDelay=0;
+      if(active()&&!document.hidden)start();
+    },nextDelay);
+  }
   function highlight(text){
     var html='',end=0,match;tokenPattern.lastIndex=0;
     while((match=tokenPattern.exec(text))){
@@ -189,7 +204,6 @@
     $('.code-demo-numbers').textContent=Array.from({length:count},function(_,i){return i+1}).join('\n');
     if(autoScroll){var body=$('.code-demo-body');body.scrollTop=body.scrollHeight}
     var complete=position>=source.length;
-    $('[data-code-complete]').hidden=complete;
     $('.code-demo-scene').classList.toggle('is-typing',!complete);
     $('.code-demo-status').textContent=complete?source.split('\n').length+' строк · демонстрационный код':'Набираем код…';
   }
@@ -198,6 +212,7 @@
     stop();position=source.length;render();
     if(!keepTail&&autoScroll)$('.code-demo-body').scrollTop=0;
     var announcement=$('#flowDemoAnnouncement');if(announcement)announcement.textContent='Пример '+current.language.label+' показан полностью.';
+    scheduleNext();
   }
   function tick(time){
     frame=0;if(!active()||document.hidden)return;
@@ -208,13 +223,14 @@
     frame=requestAnimationFrame(tick);
   }
   function resume(){
-    if(!active()||document.hidden||frame||!current||position>=source.length)return;
+    if(!active()||document.hidden||frame||!current)return;
+    if(position>=source.length){scheduleNext();return}
     if(reduced.matches){finish();return}
     lastTime=0;frame=requestAnimationFrame(tick);
   }
   function start(){
     stop();if(!languages.length||!active())return;
-    current=choose();source=current.example.code;position=0;fraction=0;autoScroll=true;
+    current=choose();source=current.example.code;position=0;fraction=0;autoScroll=true;nextDelay=2000;
     var scene=$('.code-demo-scene');scene.dataset.language=current.language.id;
     $('.code-demo-language').textContent=current.language.label;
     $('.code-demo-filename').textContent=current.example.filename;
@@ -227,13 +243,8 @@
   function markup(){
     return '<div class="flow-demo-scene code-demo-scene"><div class="code-demo-header"><span class="code-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-demo-filename"></span><span class="code-demo-language"></span></div>'+
       '<div class="code-demo-body" role="region" aria-label="Пример кода" tabindex="0"><div class="code-demo-numbers" aria-hidden="true"></div><pre class="code-demo-pre"><code class="code-demo-source"></code></pre></div>'+
-      '<div class="code-demo-footer"><span class="code-demo-status"></span><button type="button" data-code-complete>Показать целиком</button><button type="button" data-code-next>Другой пример <span aria-hidden="true">↻</span></button></div></div>';
+      '<div class="code-demo-footer"><span class="code-demo-status"></span></div></div>';
   }
-  dialog.addEventListener('click',function(e){
-    if(!active())return;
-    if(e.target.closest('[data-code-next]'))start();
-    else if(e.target.closest('[data-code-complete]'))finish();
-  });
   dialog.addEventListener('wheel',function(e){if(active()&&e.target.closest('.code-demo-body'))autoScroll=false},{passive:true});
   reduced.addEventListener('change',function(){if(active()){if(reduced.matches)finish();else resume()}});
   window.RusCodeDemo={markup:markup,start:start,stop:stop,resume:resume};
