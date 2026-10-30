@@ -10,10 +10,8 @@
   function active(){return dialog.open&&dialog.dataset.demoType==='scan3d'}
   function markup(){
     return '<div class="flow-demo-scene scan-demo-scene" data-scan-state="loading">'+
-      '<div class="scan-demo-header"><span><i></i>3D-сканирование</span><span class="scan-demo-status" role="status" aria-live="polite">Подготовка модели</span></div>'+
-      '<div class="scan-demo-viewport"><canvas class="scan-demo-canvas" tabindex="0" aria-label="Интерактивная 3D-модель двигателя" aria-describedby="scanDemoHint"></canvas><div class="scan-demo-loading"><span></span>Загружаем геометрию</div><div class="scan-demo-corners" aria-hidden="true"></div></div>'+
-      '<div class="scan-demo-progress" aria-hidden="true"><i></i></div>'+
-      '<div class="scan-demo-footer"><div class="scan-demo-caption"><b>Двигатель</b><span id="scanDemoHint">Зажмите и вращайте · Колесо — масштаб</span></div><button type="button" data-scan-reset aria-label="Вернуть исходный ракурс" title="Исходный ракурс" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 8 7-5 7 5v8H3zM8 16v-5h4v5"/></svg></button><button type="button" data-scan-replay disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 8a6 6 0 1 0-.5 5M16 3v5h-5"/></svg><span>Повторить</span></button></div></div>';
+      '<div class="scan-demo-viewport"><canvas class="scan-demo-canvas" tabindex="0" aria-label="Интерактивная 3D-модель двигателя. Вращение — мышью или стрелками, масштаб — колёсиком или клавишами плюс и минус."></canvas><div class="scan-demo-loading"><span></span>Загружаем геометрию</div><div class="scan-demo-corners" aria-hidden="true"></div></div>'+
+      '<div class="scan-demo-progress" aria-hidden="true"><i></i></div></div>';
   }
   function script(url){
     return new Promise(function(resolve,reject){
@@ -79,11 +77,6 @@
       camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();render(current);
     }
     canvas.addEventListener('keydown',keyboard);current.cleanups.push(function(){canvas.removeEventListener('keydown',keyboard)});
-    var reset=host.querySelector('[data-scan-reset]'),replay=host.querySelector('[data-scan-replay]');
-    function repeat(){if(!current.loaded)return;current.elapsed=0;current.ready=false;current.lastPercent=-1;current.interacted=false;resetView(current);paint(current);resume()}
-    function resetCamera(){current.interacted=true;resetView(current);render(current)}
-    replay.addEventListener('click',repeat);reset.addEventListener('click',resetCamera);
-    current.cleanups.push(function(){replay.removeEventListener('click',repeat);reset.removeEventListener('click',resetCamera)});
     return current;
   }
   function resetView(current){
@@ -114,7 +107,7 @@
     current.distance=box.getBoundingSphere(new THREE.Sphere()).radius/Math.sin(THREE.MathUtils.degToRad(17))*1.04;
     current.controls.minDistance=current.distance*.5;current.controls.maxDistance=current.distance*1.9;
     current.loaded=true;resetView(current);current.host.querySelector('.scan-demo-loading').hidden=true;
-    current.host.querySelectorAll('button').forEach(function(button){button.disabled=false});paint(current);resume();
+    paint(current);resume();
   }
   function paint(current){
     if(!current.loaded)return;
@@ -124,9 +117,8 @@
     current.beam.position.y=current.clip.constant;current.beam.visible=progress<1;
     current.wire.visible=reveal<1;current.points.visible=reveal<1;current.wireMaterial.opacity=.16*(1-reveal);current.points.material.opacity=.65*(1-reveal);
     current.host.style.setProperty('--scan-progress',(progress*100).toFixed(1)+'%');
-    var percent=Math.floor(progress*100),phase=progress<1?'scanning':reveal<1?'revealing':'ready';
-    if(current.host.dataset.scanState!==phase){current.host.dataset.scanState=phase;current.host.querySelector('.scan-demo-status').textContent=phase==='scanning'?'Сканируем поверхность':phase==='revealing'?'Собираем модель':'Модель готова · 360°'}
-    if(percent!==current.lastPercent){current.lastPercent=percent;current.host.querySelector('.scan-demo-progress').setAttribute('data-progress',percent+'%')}
+    var phase=progress<1?'scanning':reveal<1?'revealing':'ready';
+    if(current.host.dataset.scanState!==phase)current.host.dataset.scanState=phase;
     current.ready=phase==='ready';current.controls.autoRotate=current.ready&&!current.interacted&&!reduced.matches;current.controls.autoRotateSpeed=.4;
   }
   function render(current){current.renderer.render(current.scene,current.camera)}
@@ -143,9 +135,7 @@
   function start(){
     dispose();var host=dialog.querySelector('.scan-demo-scene'),attempt=++generation;
     host.dataset.scanState='loading';host.style.setProperty('--scan-progress','0%');
-    host.querySelector('.scan-demo-status').textContent='Подготовка модели';
     var loading=host.querySelector('.scan-demo-loading');loading.hidden=false;loading.innerHTML='<span></span>Загружаем геометрию';
-    host.querySelectorAll('button').forEach(function(button){button.disabled=true});
     if(!window.THREE){failure(host);return}
     loadModel().then(function(template){
       if(attempt!==generation||!host.isConnected||!active())return;
@@ -153,7 +143,7 @@
     }).catch(function(){if(attempt===generation&&host.isConnected)failure(host)});
   }
   function failure(host){
-    if(!host)return;host.dataset.scanState='error';host.querySelector('.scan-demo-status').textContent='Предпросмотр недоступен';
+    if(!host)return;host.dataset.scanState='error';
     var loading=host.querySelector('.scan-demo-loading');loading.hidden=false;loading.innerHTML='<b>Не удалось показать 3D-модель</b><a href="'+modelUrl+'" download="engine.glb">Скачать модель GLB ↗</a>';
   }
   reduced.addEventListener('change',function(){if(active())resume()});
