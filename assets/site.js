@@ -172,7 +172,7 @@ var CARD_ART=[
  '<svg viewBox="0 0 100 100" fill="none"><rect x="24" y="52" width="24" height="22" rx="3" stroke="#E9EBF2" stroke-width="3"/><rect x="52" y="52" width="24" height="22" rx="3" stroke="#E9EBF2" stroke-width="3"/><rect x="38" y="28" width="24" height="22" rx="3" stroke="#1F3CFF" stroke-width="3"/></svg>',
  '<svg viewBox="0 0 100 100" fill="none"><rect x="30" y="36" width="40" height="34" rx="8" stroke="#E9EBF2" stroke-width="3"/><circle cx="42" cy="52" r="3.6" fill="#1F3CFF"/><circle cx="58" cy="52" r="3.6" fill="#1F3CFF"/><path d="M50 36V26" stroke="#E9EBF2" stroke-width="3"/><circle cx="50" cy="23" r="4" fill="#E8FF4D"/></svg>',
  '<svg viewBox="0 0 100 100" fill="none"><path d="M50 24l22 12v28L50 76 28 64V36z" stroke="#E9EBF2" stroke-width="3" stroke-linejoin="round"/><path d="M50 50l22-14M50 50v26M50 50L28 36" stroke="#1F3CFF" stroke-width="2.4"/></svg>',
- '<svg viewBox="0 0 100 100" fill="none"><text x="50" y="62" text-anchor="middle" font-family="Onest,sans-serif" font-size="34" font-weight="700" fill="#E9EBF2">24</text><rect x="26" y="70" width="48" height="4" rx="2" fill="#1F3CFF"/></svg>',
+ '<svg viewBox="0 0 100 100" fill="none"><text x="50" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="34" font-weight="700" fill="#E9EBF2">24</text><rect x="26" y="70" width="48" height="4" rx="2" fill="#1F3CFF"/></svg>',
  '<svg viewBox="0 0 100 100" fill="none"><rect x="28" y="26" width="38" height="48" rx="4" stroke="#E9EBF2" stroke-width="3"/><path d="M36 40h22M36 50h22M36 60h14" stroke="#1F3CFF" stroke-width="2.6"/><path d="M68 34l8 8-18 18-9 1 1-9z" stroke="#E9EBF2" stroke-width="3" stroke-linejoin="round"/></svg>'
 ];
 (function(){
@@ -329,7 +329,7 @@ var CARD_ART=[
       var cv2=document.createElement('canvas');cv2.width=512;cv2.height=256;
       var cx2=cv2.getContext('2d');
       cx2.clearRect(0,0,512,256);
-      cx2.font='700 150px Onest, Arial, sans-serif';
+      cx2.font='700 150px Inter, Arial, sans-serif';
       cx2.textAlign='center';cx2.textBaseline='middle';
       cx2.fillStyle='#EEF0FA';
       cx2.fillText('AI',256,136);

@@ -1,0 +1,14 @@
+Inter web fonts prepared from the user-provided Inter.zip.
+
+Sources:
+  Inter-VariableFont_opsz,wght.ttf
+  Inter-Italic-VariableFont_opsz,wght.ttf
+
+Converted to WOFF2 with FontTools 4.68.0 and Brotli 1.2.1.
+Split into disjoint Cyrillic, Latin and extended Unicode subsets.
+All source Unicode characters and OpenType layout features are retained across the subsets.
+Variable axes retained: wght 100-900 and opsz 14-32.
+The Cyrillic and Latin normal subsets are preloaded; other subsets and italics load when used.
+
+Copyright 2020 The Inter Project Authors.
+License: SIL Open Font License 1.1; see Inter-OFL.txt.
