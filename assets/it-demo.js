@@ -62,11 +62,11 @@
     ].join('\n')}
   ];
   var links=[
-    'M1125 432H1129Q1136 432 1136 407V386Q1136 362 1156 362H1180',
-    'M1209 328V309Q1209 283 1238 283H1267',
-    'M1126 445H1151Q1184 445 1184 477V601Q1184 633 1215 633H1258',
-    'M1185 514H1219',
-    'M1276 512H1290'
+    'M1125 432H1129Q1136 432 1136 407V386Q1136 360 1156 360H1176',
+    'M1203.5 327V309Q1203.5 283 1238 283H1267',
+    'M1126 445H1151Q1180 445 1180 477V601Q1180 633 1215 633H1258',
+    'M1180 511.5H1213',
+    'M1268.5 508.5H1290'
   ];
   function $(selector){return dialog.querySelector(selector)}
   function active(){return dialog.open&&dialog.dataset.demoType==='it'}
@@ -272,8 +272,9 @@
     return ys.map(function(y,i){return '<g style="--it-led-delay:-'+(i*.27+x*.001)+'s"><rect class="it-server-led" x="'+x+'" y="'+(y-2)+'" width="2.5" height="5" rx="1.2"/><rect class="it-server-led it-server-led--right" x="'+(x+width)+'" y="'+(y+slope-4)+'" width="2" height="8" rx="1"/>'+
       [0,1,2,3,4,5].map(function(n){return '<rect class="it-server-data" style="--it-data-delay:-'+(i*.24+n*.17)+'s" x="'+(x+10+n*4)+'" y="'+(y-1+n*slope/width*4)+'" width="2" height="1.3"/>'}).join('')+'</g>'}).join('');
   }
-  function syncIcon(x,y){
-    return '<g transform="translate('+x+' '+y+')"><rect class="it-sync-face" width="56" height="58" rx="8"/><g class="it-sync-arrows"><path d="M13 28a15 15 0 0 1 26-10l3 4m0-10v10H32M43 31a15 15 0 0 1-26 10l-3-4m0 10V37h10"/></g></g>';
+  function syncIcon(x,y,tilt){
+    // Рамка уже есть в ролике: перекрываем только статичные стрелки внутри неё.
+    return '<g class="it-sync-panel" transform="matrix(1 '+tilt+' 0 1 '+x+' '+y+')"><rect class="it-sync-face" x="4" y="4" width="48" height="48" rx="6"/><g class="it-sync-arrows"><path d="M13 28a15 15 0 0 1 26-10l3 4m0-10v10H32M43 31a15 15 0 0 1-26 10l-3-4m0 10V37h10"/></g></g>';
   }
   function markup(){
     return '<div class="flow-demo-scene it-demo-scene"><div class="it-scene-stage"><div class="it-scene-media" aria-hidden="true"><video class="it-scene-video" src="/img/demos/it-studio.mp4" poster="/img/demos/it-studio-poster.jpg" muted playsinline preload="auto" disablepictureinpicture tabindex="-1"></video></div>'+
@@ -284,7 +285,7 @@
       '<defs><radialGradient id="itBulbGlow"><stop stop-color="#ffdd8a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcc64" stop-opacity="0"/></radialGradient></defs>'+
       '<image class="it-scene-poster" href="/img/demos/it-studio-poster.jpg" width="1672" height="941"/>'+
       '<g class="it-connections">'+links.map(function(path,i){return '<path class="it-link-track" d="'+path+'"/><path class="it-link-pulse" pathLength="1" style="--it-path-delay:-'+i*.7+'s" d="'+path+'"/>'}).join('')+'</g>'+
-      syncIcon(1181,327)+syncIcon(1220,483)+
+      syncIcon(1175.5,330.5,-.12)+syncIcon(1212.5,482.2,-.05)+
       rack(1295,[269,299,328,359,398,436,470,509,542],78,-12)+rack(1288,[583,614,644,674],91,-2)+rack(1513,[333,369,404,439,475,511,546,581,617,652],31,12)+
       '<path class="it-floor-light" d="m1280 704 117 7m9-8 70-7m37-8 44-6"/>'+
       '<g class="it-keyboard-lights">'+[0,1,2,3,4,5,6].map(function(n){return '<path style="--it-key-delay:-'+n*.13+'s" d="m'+(890+n*6)+' 556h3"/>'}).join('')+'</g>'+

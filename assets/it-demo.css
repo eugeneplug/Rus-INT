@@ -27,7 +27,7 @@
 .it-terminal-cursor{display:inline-block;width:1px;height:10px;vertical-align:-1px;background:#bfd6f4;animation:it-caret .8s steps(1,end) infinite}
 .it-link-track{fill:none;stroke:#5486ff;stroke-width:1;opacity:.16}
 .it-link-pulse{fill:none;stroke:#b5eaff;stroke-width:3;stroke-linecap:round;stroke-dasharray:.028 .972;filter:drop-shadow(0 0 4px #3879ff);animation:it-data-pulse 3.8s linear infinite;animation-delay:var(--it-path-delay,0s)}
-.it-sync-face{fill:#080f25;stroke:#6d9bff;stroke-width:1.5;filter:drop-shadow(0 0 4px #3569ff)}
+.it-sync-face{fill:#0b1938}
 .it-sync-arrows{transform-box:fill-box;transform-origin:center;animation:it-sync 6s linear infinite}
 .it-sync-arrows path{fill:none;stroke:#d2e8ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .it-server-led{fill:#9cdbff;filter:drop-shadow(0 0 3px #3783ff);animation:it-server-led 2.4s ease-in-out infinite;animation-delay:var(--it-led-delay,0s)}
