@@ -8,12 +8,14 @@
   var codeDemo=window.RusCodeDemo;
   var aiDemo=window.RusAiDemo;
   var itDemo=window.RusItDemo;
+  var scan3dDemo=window.RusScan3dDemo;
   var settings={
     onec:{title:'Внедрение 1С',url:'/services/onec/',topic:'внедрение 1С',description:'Учёт, в котором любую цифру можно проверить до накладной или платежа. Связываем продажи, склад и финансы — без повторного ввода данных и ручных сверок.'},
     bitrix:{title:'Внедрение Битрикс24',url:'/services/bitrix/',topic:'внедрение Битрикс24',description:'Объединяем клиентов, переписку и задачи в одном процессе. Настраиваем CRM под вашу воронку, чтобы команда видела следующий шаг, а обращения не терялись между отделами.'},
     sites:{title:'Сайты и мобильные приложения',url:'/services/dev/',topic:'сайты и приложения',description:'Разрабатываем сайты, сервисы и приложения под вашу задачу. Связываем заказы с CRM, оплату — с учётом, товары — со складом. Один сценарий вместо нескольких ручных операций.'},
     ai:{title:'ИИ на ваших серверах',url:'/services/ai/',topic:'ИИ-автоматизация',description:'Объединяем модели, данные и рабочие процессы в одном контуре. ИИ помогает с кодом, изображениями и документами, а обработка остаётся на вашей инфраструктуре.'},
-    it:{title:'IT-инфраструктура',url:'/services/it/',topic:'IT-инфраструктура',description:'Настраиваем серверы, сеть, мониторинг и резервные копии. Автоматизируем развёртывание и проверку сервисов, чтобы инфраструктура работала стабильно, а сбои были видны вовремя.'}
+    it:{title:'IT-инфраструктура',url:'/services/it/',topic:'IT-инфраструктура',description:'Настраиваем серверы, сеть, мониторинг и резервные копии. Автоматизируем развёртывание и проверку сервисов, чтобы инфраструктура работала стабильно, а сбои были видны вовремя.'},
+    scan3d:{title:'3D-сканирование и модели',url:'/services/scan3d/',topic:'3D-моделирование',description:'От реального объекта — к цифровой модели. Восстанавливаем геометрию, прорабатываем детали и готовим 3D-модели для визуализации, производства и интерактивных презентаций.',note:'Демонстрационная версия. Визуализация сканирования на готовой 3D-модели.'}
   };
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
   var docs=[
@@ -32,11 +34,11 @@
   var suite=null,suiteTimer=0,replyTimer=0;
   var drag=null,suppressClickUntil=0;
   function $(selector){return dialog.querySelector(selector)}
-  function stop(){cancelDrag(false);if(codeDemo)codeDemo.stop();if(aiDemo)aiDemo.stop();if(itDemo)itDemo.stop();clearTimeout(stepTimer);clearTimeout(finishTimer);clearTimeout(suiteTimer);clearTimeout(replyTimer);stepTimer=0;finishTimer=0;suiteTimer=0;replyTimer=0}
+  function stop(){cancelDrag(false);if(codeDemo)codeDemo.stop();if(aiDemo)aiDemo.stop();if(itDemo)itDemo.stop();if(scan3dDemo)scan3dDemo.stop();clearTimeout(stepTimer);clearTimeout(finishTimer);clearTimeout(suiteTimer);clearTimeout(replyTimer);stepTimer=0;finishTimer=0;suiteTimer=0;replyTimer=0}
   function build(){
     if(built===active)return;built=active;
     var config=settings[active];dialog.dataset.demoType=active;
-    var scene=active==='it'?itDemo.markup():active==='ai'?aiDemo.markup():active==='sites'?codeDemo.markup():active==='bitrix'?suiteMarkup():
+    var scene=active==='scan3d'?scan3dDemo.markup():active==='it'?itDemo.markup():active==='ai'?aiDemo.markup():active==='sites'?codeDemo.markup():active==='bitrix'?suiteMarkup():
       '<div class="flow-demo-scene" role="group" aria-label="Демонстрация автоматической обработки документов"><div class="flow-demo-window">'+
       '<div class="flow-demo-bar"><span class="flow-demo-dots" aria-hidden="true"><i></i><i></i></span><span>Документы</span><span class="flow-demo-live">Автоматический обмен</span></div>'+
       '<div class="flow-demo-list">'+docs.map(function(doc,i){return '<button class="flow-doc" type="button" data-demo-doc="'+i+'"><span class="flow-doc-icon">'+documentIcon+'</span><span class="flow-doc-title">'+doc.title+'</span><span class="flow-doc-status"></span></button>'}).join('')+'</div>'+
@@ -45,7 +47,7 @@
       '<button class="flow-demo-close" type="button" data-demo-close aria-label="Закрыть окно"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button>'+
       '<span class="flow-demo-eyebrow">Направление</span><h2 class="flow-demo-title" id="demoTitle">'+config.title+'</h2>'+scene+
       '<p class="flow-demo-description">'+config.description+'</p>'+
-      '<p class="flow-demo-note">Демонстрационная версия. Иллюстрация процесса автоматизации от РУСИНТЕГРАЦИИ.</p>'+
+      '<p class="flow-demo-note">'+(config.note||'Демонстрационная версия. Иллюстрация процесса автоматизации от РУСИНТЕГРАЦИИ.')+'</p>'+
       '<div class="flow-demo-actions"><a class="flow-demo-action flow-demo-action--primary" href="'+config.url+'"><span>Смотреть направление</span><i>'+arrow+'</i></a>'+
       '<button class="flow-demo-action" type="button" data-demo-consult><span>Обсудить проект</span><i>'+arrow+'</i></button></div>'+
       '<p class="sr-only" id="flowDemoAnnouncement" role="status" aria-live="polite"></p></div>';
@@ -63,6 +65,7 @@
     $('.flow-demo-count').textContent='Обработано '+states.filter(function(state){return state==='done'}).length+' из '+docs.length;
   }
   function reset(){
+    if(active==='scan3d'){stop();scan3dDemo.start();return}
     if(active==='it'){stop();itDemo.start();return}
     if(active==='ai'){stop();aiDemo.start();return}
     if(active==='sites'){stop();codeDemo.start();return}
@@ -91,7 +94,7 @@
     },reduced.matches?0:1000);
   }
   function open(type){
-    if(dialog.open||!settings[type]||(type==='sites'&&!codeDemo)||(type==='ai'&&!aiDemo)||(type==='it'&&!itDemo))return;
+    if(dialog.open||!settings[type]||(type==='sites'&&!codeDemo)||(type==='ai'&&!aiDemo)||(type==='it'&&!itDemo)||(type==='scan3d'&&!scan3dDemo))return;
     active=type;clearTimeout(closeTimer);consult=false;build();
     previousFocus=document.activeElement;wasLocked=document.body.classList.contains('lock');
     document.body.classList.add('lock');dialog.classList.remove('is-closing');dialog.showModal();
@@ -141,9 +144,10 @@
     }
     var button=e.target.closest('[data-demo-doc]');if(button)process(Number(button.dataset.demoDoc),true);
   });
-  reduced.addEventListener('change',function(){if(dialog.open&&active!=='sites'&&active!=='ai'&&active!=='it'){if(active==='bitrix'){clearTimeout(suiteTimer);scheduleSuite()}else reset()}});
+  reduced.addEventListener('change',function(){if(dialog.open&&active!=='sites'&&active!=='ai'&&active!=='it'&&active!=='scan3d'){if(active==='bitrix'){clearTimeout(suiteTimer);scheduleSuite()}else reset()}});
   document.addEventListener('visibilitychange',function(){
     if(!dialog.open)return;
+    if(active==='scan3d'){if(document.hidden)scan3dDemo.stop();else scan3dDemo.resume();return}
     if(active==='it'){if(document.hidden)itDemo.stop();else itDemo.resume();return}
     if(active==='ai'){if(document.hidden)aiDemo.stop();else aiDemo.resume();return}
     if(active==='sites'){if(document.hidden)codeDemo.stop();else codeDemo.resume();return}

@@ -32,4 +32,5 @@ Options -Indexes
 
 <IfModule mod_mime.c>
   AddType font/woff2 .woff2
+  AddType model/gltf-binary .glb
 </IfModule>
