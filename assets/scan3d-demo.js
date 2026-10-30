@@ -4,16 +4,16 @@
   var dialog=document.getElementById('boardDemo');
   if(!dialog)return;
   var reduced=matchMedia('(prefers-reduced-motion:reduce)');
-  var modelUrl='/img/models/card-reader.glb';
+  var modelUrl='/img/models/engine.glb';
   var libraries=null,modelPromise=null,view=null,frame=0,lastTime=0,generation=0;
   var scanDuration=3200,revealDuration=650;
   function active(){return dialog.open&&dialog.dataset.demoType==='scan3d'}
   function markup(){
     return '<div class="flow-demo-scene scan-demo-scene" data-scan-state="loading">'+
       '<div class="scan-demo-header"><span><i></i>3D-сканирование</span><span class="scan-demo-status" role="status" aria-live="polite">Подготовка модели</span></div>'+
-      '<div class="scan-demo-viewport"><canvas class="scan-demo-canvas" tabindex="0" aria-label="Интерактивная 3D-модель картридера" aria-describedby="scanDemoHint"></canvas><div class="scan-demo-loading"><span></span>Загружаем геометрию</div><div class="scan-demo-corners" aria-hidden="true"></div></div>'+
+      '<div class="scan-demo-viewport"><canvas class="scan-demo-canvas" tabindex="0" aria-label="Интерактивная 3D-модель двигателя" aria-describedby="scanDemoHint"></canvas><div class="scan-demo-loading"><span></span>Загружаем геометрию</div><div class="scan-demo-corners" aria-hidden="true"></div></div>'+
       '<div class="scan-demo-progress" aria-hidden="true"><i></i></div>'+
-      '<div class="scan-demo-footer"><div class="scan-demo-caption"><b>Картридер</b><span id="scanDemoHint">Зажмите и вращайте · Колесо — масштаб</span></div><button type="button" data-scan-reset aria-label="Вернуть исходный ракурс" title="Исходный ракурс" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 8 7-5 7 5v8H3zM8 16v-5h4v5"/></svg></button><button type="button" data-scan-replay disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 8a6 6 0 1 0-.5 5M16 3v5h-5"/></svg><span>Повторить</span></button></div></div>';
+      '<div class="scan-demo-footer"><div class="scan-demo-caption"><b>Двигатель</b><span id="scanDemoHint">Зажмите и вращайте · Колесо — масштаб</span></div><button type="button" data-scan-reset aria-label="Вернуть исходный ракурс" title="Исходный ракурс" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 8 7-5 7 5v8H3zM8 16v-5h4v5"/></svg></button><button type="button" data-scan-replay disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 8a6 6 0 1 0-.5 5M16 3v5h-5"/></svg><span>Повторить</span></button></div></div>';
   }
   function script(url){
     return new Promise(function(resolve,reject){
@@ -111,7 +111,7 @@
     var grid=new THREE.GridHelper(5,24,0x5d74e0,0x485074);grid.position.y=current.bottom-.07;grid.material.transparent=true;grid.material.opacity=.18;current.geometries.push(grid.geometry);current.materials.push(grid.material);current.scene.add(grid);
     var ringGeometry=new THREE.RingGeometry(1.6,1.605,100),ringMaterial=new THREE.MeshBasicMaterial({color:0x7387e8,transparent:true,opacity:.3,side:THREE.DoubleSide});current.geometries.push(ringGeometry);current.materials.push(ringMaterial);
     var ring=new THREE.Mesh(ringGeometry,ringMaterial);ring.rotation.x=-Math.PI/2;ring.position.y=grid.position.y+.01;current.scene.add(ring);
-    current.distance=box.getBoundingSphere(new THREE.Sphere()).radius/Math.sin(THREE.MathUtils.degToRad(17))*1.18;
+    current.distance=box.getBoundingSphere(new THREE.Sphere()).radius/Math.sin(THREE.MathUtils.degToRad(17))*1.04;
     current.controls.minDistance=current.distance*.5;current.controls.maxDistance=current.distance*1.9;
     current.loaded=true;resetView(current);current.host.querySelector('.scan-demo-loading').hidden=true;
     current.host.querySelectorAll('button').forEach(function(button){button.disabled=false});paint(current);resume();
@@ -154,7 +154,7 @@
   }
   function failure(host){
     if(!host)return;host.dataset.scanState='error';host.querySelector('.scan-demo-status').textContent='Предпросмотр недоступен';
-    var loading=host.querySelector('.scan-demo-loading');loading.hidden=false;loading.innerHTML='<b>Не удалось показать 3D-модель</b><a href="'+modelUrl+'" download="card-reader.glb">Скачать модель GLB ↗</a>';
+    var loading=host.querySelector('.scan-demo-loading');loading.hidden=false;loading.innerHTML='<b>Не удалось показать 3D-модель</b><a href="'+modelUrl+'" download="engine.glb">Скачать модель GLB ↗</a>';
   }
   reduced.addEventListener('change',function(){if(active())resume()});
   window.RusScan3dDemo={markup:markup,start:start,stop:stop,resume:resume};
